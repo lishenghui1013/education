@@ -1,0 +1,172 @@
+<extend name="Public/base"/>
+
+<!--<script type="text/javascript" src="__PUBLIC__/dataTable/jquery.dataTables.min.js"></script>-->
+
+<block name="main">
+    <!--<link rel="stylesheet" href="__PUBLIC__/css/dataTable.css">-->
+    <!--<link href="__VENDOR__/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" media="screen" type="text/css"/>-->
+
+    <fieldset class="layui-elem-field">
+        <legend>视频目录列表</legend>
+        <span class="layui-btn layui-btn-normal api-add" style="margin-left:15px;" data-url="{:U('addCatalog', array('video_id' => $video_id))}"><i class="layui-icon">&#xe608;</i> 新增</span>
+        <span class="layui-btn layui-btn-normal api-add" style="margin-left:30px;"><i class="layui-icon">&#xe608;</i> 批量添加</span>
+        <div class="layui-field-box">
+
+
+            <form class="layui-form" action="" method="post">
+                <div class="layui-form-item">
+
+                    <div class="layui-inline">
+                        <div class="layui-input-inline" style="width: 300px;">
+                            <input type="text" name="title" placeholder="请输入标题关键词" class="layui-input" value="{$title}">
+                        </div>
+                    </div>
+                    <input type="hidden" name="video_id" value="{$video_id}"/>
+                    <div class="layui-inline">
+                        <button class="layui-btn" lay-submit lay-filter="formDemo">
+                            查询
+                        </button>
+                    </div>
+
+                </div>
+            </form>
+            <table class="layui-table" lay-even>
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>标题</th>
+                    <th>发布时间</th>
+                    <th>发布人</th>
+                    <th>浏览量</th>
+                    <th>收藏量</th>
+                    <th>分享量</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <volist name="list" id="vo">
+                    <tr>
+                        <td>{$vo['sort']}</td>
+                        <td>{$vo['title']}</td>
+                        <td>{$vo['pub_time']|date="Y-m-d H:i:s",###}</td>
+                        <td>{$vo['username']}</td>
+                        <td>{$vo['read_num']}</td>
+                        <td>{$vo['collect_num']}</td>
+                        <td>{$vo['share_num']}</td>
+                        <if condition="$vo['show_status'] eq 1">
+                            <td style="color:green;">
+                                上线
+                            </td>
+                            <else/>
+                            <td style="color:red;">
+                                下线
+                            </td>
+                        </if>
+
+                        <td>
+                            <if condition="$vo['show_status'] eq 2">
+                                <span class="layui-btn confirm" data-info="你确定上线当前项么？" data-id="{$vo['id']}"
+                                      data-url="{:U('openCatalog')}">上线</span>
+                                <else/>
+                                <span class="layui-btn layui-btn-danger confirm" data-info="你确定下线当前项么？"
+                                      data-id="{$vo['id']}" data-url="{:U('closeCatalog')}">下线</span>
+                            </if>
+                            <span data-url="{:U('updateCatalog', array('id' => $vo['id']))}"
+                                  class="layui-btn edit layui-btn-normal">编辑</span>
+                            <span class="layui-btn layui-btn-danger look" data-url="{:U('lookCatalog', array('id' => $vo['id'],'video_id'=>$vo['video_id']))}">查看</span>
+                        </td>
+                    </tr>
+                </volist>
+                </tbody>
+            </table>
+            <link href="__VENDOR__/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" media="screen"
+                  type="text/css"/>
+
+            <ul class="pagination">
+                {$page}
+            </ul>
+        </div>
+
+
+    </fieldset>
+
+</block>
+
+
+<block name="myScript">
+
+
+    <script>
+
+        layui.use(['layer','form','laypage'], function () {
+            var form = layui.form(),
+                layer = layui.layer;
+            //监听提交
+           /* form.on('submit(formDemo)', function(data){
+                layer.msg(JSON.stringify(data.field));
+                return true;
+            });*/
+
+
+            $('.api-add').on('click', function () {
+                var ownObj = $(this);
+                var index = layer.open({
+                    title: '添加记录',
+                    type: 2,
+                    area: ['60%', '100%'],
+                    maxmin: true,
+                    content: ownObj.attr('data-url')
+                });
+
+            });
+            $('.edit').on('click', function () {
+                var ownObj = $(this);
+                layer.open({
+                    title: '编辑',
+                    type: 2,
+                    area: ['80%', '80%'],
+                    maxmin: true,
+                    content: ownObj.attr('data-url')
+                });
+            });
+            //查看
+            $('.look').on('click', function () {
+                var ownObj = $(this);
+                layer.open({
+                    title: '查看记录信息',
+                    type: 2,
+                    area: ['80%', '80%'],
+                    maxmin: true,
+                    content: ownObj.attr('data-url')
+                });
+            });
+            $('.confirm').on('click', function () {
+                var ownObj = $(this);
+                layer.confirm(ownObj.attr('data-info'), {
+                    btn: ['确定', '取消'] //按钮
+                }, function () {
+                    $.ajax({
+                        type: "POST",
+                        url: ownObj.attr('data-url'),
+                        data: {id: ownObj.attr('data-id')},
+                        success: function (msg) {
+                            if (msg.code == 1) {
+                                location.reload();
+                            } else {
+                                layer.msg(msg.msg, {
+                                    icon: 5,
+                                    shade: [0.6, '#393D49'],
+                                    time: 1500
+                                });
+                            }
+                        }
+                    });
+                });
+            });
+
+
+
+        });
+    </script>
+</block>

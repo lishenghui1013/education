@@ -1,0 +1,168 @@
+<extend name="Public/base"/>
+<block name="main">
+    <fieldset class="layui-elem-field">
+        <legend>知识点管理 - 查看知识点</legend>
+        <div class="layui-field-box">
+            <form class="layui-form" action="" id="health_form">
+                <if condition="isset($list['id'])">
+                    <input type="hidden" name="id" value="{$list['id']}" disabled>
+                </if>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red">*</span> 标题</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" required
+                               value="{:(isset($list['title'])?$list['title']:'')}" lay-verify="required"
+                               class="layui-input" disabled>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red">*</span> 级别</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="class_name" required
+                               value="{:(isset($list['class_name'])?$list['class_name']:'')}" lay-verify="required"
+                               class="layui-input" disabled>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red">*</span> 科目</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="subject_name" required
+                               value="{:(isset($list['subject_name'])?$list['subject_name']:'')}" lay-verify="required"
+                               class="layui-input" disabled>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red">*</span> 版本</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="versions_name" required
+                               value="{:(isset($list['versions_name'])?$list['versions_name']:'')}"
+                               lay-verify="required"
+                               class="layui-input" disabled>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red">*</span> 封面</label>
+                    <div class="layui-input-block">
+                        <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                            <div class="layui-upload-list" id="demo2">
+                                <if condition="$list['cover'] neq ''">
+                                    <img style="width:150px;height:150px;margin-left:5px" src="{$list['cover']}">
+                                </if>
+
+                            </div>
+                        </blockquote>
+                    </div>
+                </div>
+
+                <style>
+                    #demo2 {
+                        margin: 10px 0 0 0
+                    }
+
+                    #demo2 dd {
+                        position: relative;
+                        margin: 0 10px 10px 0;
+                        float: left
+                    }
+
+                    #demo2 .operate {
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        z-index: 1
+                    }
+
+                    #demo2 .operate i {
+                        cursor: pointer;
+                        background: #2F4056;
+                        padding: 2px;
+                        line-height: 15px;
+                        text-align: center;
+                        color: #fff;
+                        margin-left: 1px;
+                        float: left;
+                        filter: alpha(opacity=80);
+                        -moz-opacity: .8;
+                        -khtml-opacity: .8;
+                        opacity: .8
+                    }
+                </style>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red">*</span> 是否隐藏</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="versions_name" required
+                               value="{$list['show_status']==1?'上线':'下线'}" lay-verify="required"
+                               class="layui-input" disabled>
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">内容</label>
+
+                    <!-- 加载编辑器的容器 -->
+                    <div class="layui-input-block" contenteditable="true">
+                        <script id="container" name="content" type="text/plain">{:(isset($list['content'])?$list['content']:'')}
+                        </script>
+                        <!-- 配置文件 -->
+                        <script type="text/javascript" src="__PUBLIC__/ueditor/ueditor.config.js"></script>
+                        <!-- 编辑器源码文件 -->
+                        <script type="text/javascript" src="__PUBLIC__/ueditor/ueditor.all.min.js"></script>
+                        <!-- 实例化编辑器 -->
+                        <script type="text/javascript">
+                            var ue = UE.getEditor('container',{
+                                readonly:true
+                            });
+
+                        </script>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red">*</span> 收藏量</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="collect_num" required
+                               value="{:(isset($list['collect_num'])?$list['collect_num']:'0')}" lay-verify="required"
+                               class="layui-input" disabled>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red">*</span> 分享量</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="share_num" required
+                               value="{:(isset($list['share_num'])?$list['share_num']:'')}" lay-verify="required"
+                               class="layui-input" disabled>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red">*</span> 阅读量</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="read_num" required
+                               value="{:(isset($list['read_num'])?$list['read_num']:'')}" lay-verify="required"
+                               class="layui-input" disabled>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red">*</span> 发布人</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="username" required
+                               value="{:(isset($list['username'])?$list['username']:'')}" lay-verify="required"
+                               class="layui-input" disabled>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red">*</span> 发布时间</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="pub_time" required
+                               value="{:(isset($list['pub_time'])?date('Y年m月d日 H:i:s',$list['pub_time']):'')}"
+                               lay-verify="required"
+                               class="layui-input" disabled>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </fieldset>
+</block>
+<block name="myScript">
+
+</block>

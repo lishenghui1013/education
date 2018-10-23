@@ -1,0 +1,127 @@
+<extend name="Public/base"/>
+<block name="main">
+    <fieldset class="layui-elem-field">
+        <legend>课本管理 - {:(isset($detail['id'])?'编辑':'新增')}课本目录</legend>
+        <div class="layui-field-box">
+            <form class="layui-form" action="" id="health_form" method="post">
+                <if condition="isset($detail['id'])">
+                    <input type="hidden" name="id" value="{$detail['id']}">
+
+                </if>
+                <if condition="isset($detail['textbook_id'])">
+                    <input type="hidden" name="textbook_id" value="{$detail['textbook_id']}">
+                    <else/>
+                    <input type="hidden" name="textbook_id" value="{$textbook_id}">
+                </if>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red">*</span> 标题</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" required
+                               value="{:(isset($detail['title'])?$detail['title']:'')}" lay-verify="required"
+                               placeholder="请输入标题" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red">*</span> 排序</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="sort" required
+                               value="{:(isset($detail['sort'])?$detail['sort']:0)}" lay-verify="required"
+                               placeholder="请输入序号" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">内容</label>
+                    <div class="layui-input-block">
+                        <textarea id="editor"
+                                  name="content">{:(isset($detail['content'])?$detail['content']:'')}</textarea>
+                        <script type="text/javascript" src="__PUBLIC__/ueditor/ueditor.config.js"></script>
+                        <script type="text/javascript" src="__PUBLIC__/ueditor/ueditor.all.min.js"></script>
+                        <script>
+                            var ue = UE.getEditor("editor");
+
+                        </script>
+                        <!-- <input type="text" name="content" value="{:(isset($detail['content'])?$detail['content']:'')}" placeholder="请输入内容" class="layui-input">  -->
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red">*</span> 是否隐藏</label>
+                    <div class="layui-input-block">
+
+                        <input type="checkbox" name="show_status" lay-skin="switch" lay-text="下线|上线" {:((
+                               $detail['show_status']==1)?'checked':'')}>
+
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="admin-form">立即提交</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </fieldset>
+</block>
+<block name="myScript">
+
+    <if condition="isset($detail['id'])">
+        <script>
+            layui.use('form', function () {
+                var form = layui.form();
+                form.on('submit(admin-form)', function (data) {
+                    //alert(data.field);
+                    $.ajax({
+                        type: "POST",
+                        url: '{:U("updateCatalog")}',
+                        data: data.field,
+                        success: function (msg) {
+                            //alert(msg);return false;
+                            if (msg.code == 1) {
+                                parent.location.reload();
+                            } else {
+                                parent.layer.msg(msg.msg, {
+                                    icon: 5,
+                                    shade: [0.6, '#393D49'],
+                                    time: 1500
+                                });
+                            }
+                        }
+                    });
+                    return false;
+                });
+
+            });
+        </script>
+        <else/>
+        <script>
+            layui.use('form', function () {
+                var form = layui.form();
+                form.on('submit(admin-form)', function (data) {
+                    $.ajax({
+                        type: "POST",
+                        url: '{:U("addCatalog")}',
+                        data: data.field,
+                        success: function (msg) {
+                            console.log('helll');
+                            if (msg.code == 1) {
+                                console.log('suss');
+                                parent.location.reload();
+                            } else {
+                                console.log('fail');
+                                parent.layer.msg(msg.msg, {
+                                    icon: 5,
+                                    shade: [0.6, '#393D49'],
+                                    time: 1500
+                                });
+                            }
+                        }
+                    });
+                    return false;
+                });
+
+            });
+        </script>
+    </if>
+</block>

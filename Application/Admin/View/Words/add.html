@@ -1,0 +1,249 @@
+<extend name="Public/base"/>
+<block name="main">
+    <fieldset class="layui-elem-field">
+        <legend>词组管理 - {:(isset($detail['id'])?'编辑':'新增')}词组</legend>
+        <div class="layui-field-box">
+            <form class="layui-form" action="" id="health_form" method="post">
+                <if condition="isset($detail['id'])">
+                    <input type="hidden" name="id" value="{$detail['id']}">
+                </if>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red">*</span> 标题</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" required
+                               value="{:(isset($detail['title'])?$detail['title']:'')}" lay-verify="required"
+                               placeholder="请输入标题" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red">*</span> 级别</label>
+                    <div class="layui-input-block">
+                        <select name="class_id" lay-verify="">
+                            <option value="0">请选择级别</option>
+                            <volist name="class_list" id="vo">
+                                <if condition="$detail['class_id'] eq $vo['id']">
+                                    <option value="{$vo['id']}" selected>{$vo['class_name']}</option>
+                                    <else/>
+                                    <option value="{$vo['id']}">{$vo['class_name']}</option>
+                                </if>
+
+                            </volist>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red">*</span> 科目</label>
+                    <div class="layui-input-block">
+                        <select name="subject_id" lay-verify="">
+                            <option value="0">请选择科目</option>
+                            <volist name="subject_list" id="vo">
+
+                                <if condition="$detail['subject_id'] eq $vo['id']">
+                                    <option value="{$vo['id']}" selected>{$vo['subject_name']}</option>
+                                    <else/>
+                                    <option value="{$vo['id']}">{$vo['subject_name']}</option>
+                                </if>
+                            </volist>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red">*</span> 版本</label>
+                    <div class="layui-input-block">
+                        <select name="versions_id" lay-verify="">
+                            <option value="0">请选择版本</option>
+                            <volist name="versions_list" id="vo">
+                                <if condition="$detail['versions_id'] eq $vo['id']">
+                                    <option value="{$vo['id']}" selected>{$vo['versions_name']}</option>
+                                    <else/>
+                                    <option value="{$vo['id']}">{$vo['versions_name']}</option>
+                                </if>
+                            </volist>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">封面</label>
+
+                    <input name="file" class="layui-upload-file" type="file">
+                    <!--<blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                        预览图：
+                        <div class="layui-upload-list" id="demo2">
+                            <if condition="$detail['cover'] neq ''">
+                                <img style="width:150px;height:150px;margin-left:5px" src="{$detail['cover']}">
+                            </if>
+
+                        </div>
+                    </blockquote>-->
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">预览图：</label>
+
+                        <div class="layui-upload-list" id="demo2">
+                            <if condition="$detail['cover'] neq ''">
+                                <img style="width:150px;height:150px;margin-left:5px" src="{$detail['cover']}">
+                            </if>
+
+                        </div>
+
+                </div>
+                <style>
+                    #demo2 {
+                        margin: 10px 0 0 0
+                    }
+
+                    #demo2 dd {
+                        position: relative;
+                        margin: 0 10px 10px 0;
+                        float: left
+                    }
+
+                    #demo2 .operate {
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        z-index: 1
+                    }
+
+                    #demo2 .operate i {
+                        cursor: pointer;
+                        background: #2F4056;
+                        padding: 2px;
+                        line-height: 15px;
+                        text-align: center;
+                        color: #fff;
+                        margin-left: 1px;
+                        float: left;
+                        filter: alpha(opacity=80);
+                        -moz-opacity: .8;
+                        -khtml-opacity: .8;
+                        opacity: .8
+                    }
+                </style>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red">*</span> 是否隐藏</label>
+                    <div class="layui-input-block">
+
+                        <input type="checkbox" name="show_status" lay-skin="switch" lay-text="下线|上线" {:((
+                               $detail['show_status']==1)?'checked':'')}>
+
+                    </div>
+                </div>
+                <!--<div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">价格</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="price"
+                               value="{:(isset($detail['price'])?$detail['price']:'')}" placeholder="请输入价格"
+                               class="layui-input">
+                    </div>
+                </div>-->
+                <input type="hidden" name="article_type" value="WT"/>
+
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">内容</label>
+                    <div class="layui-input-block">
+                        <textarea id="editor"
+                                  name="content">{:(isset($detail['content'])?$detail['content']:'')}</textarea>
+                        <script type="text/javascript" src="__PUBLIC__/ueditor/ueditor.config.js"></script>
+                        <script type="text/javascript" src="__PUBLIC__/ueditor/ueditor.all.min.js"></script>
+                        <script>
+                            var ue = UE.getEditor("editor");
+
+                        </script>
+                        <!-- <input type="text" name="content" value="{:(isset($detail['content'])?$detail['content']:'')}" placeholder="请输入内容" class="layui-input">  -->
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="admin-form">立即提交</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </fieldset>
+</block>
+<block name="myScript">
+    <script>
+        layui.use('upload', function () {
+            layui.upload({
+                url: '{:U("upload")}' //上传接口
+                , success: function (res) { //上传成功后的回调
+
+                    var l = $("img").length;
+                    img = res;
+
+                    var html = '<dd class="item_img" id="' + img.imgid + '">'
+                        + '<img style="margin-left:5px;width:150px;height:150px" src="' + img.url + '" /><input type="hidden" name="cover" value="' + img.url + '">';
+
+                    $('#demo2').append(html);
+                }
+            });
+
+
+        });
+
+
+    </script>
+    <if condition="isset($detail['id'])">
+        <script>
+            layui.use('form', function () {
+                var form = layui.form();
+                form.on('submit(admin-form)', function (data) {
+                    //alert(data.field);
+                    $.ajax({
+                        type: "POST",
+                        url: '{:U("update")}',
+                        data: data.field,
+                        success: function (msg) {
+                            //alert(msg);return false;
+                            if (msg.code == 1) {
+                                parent.location.reload();
+                            } else {
+                                parent.layer.msg(msg.msg, {
+                                    icon: 5,
+                                    shade: [0.6, '#393D49'],
+                                    time: 1500
+                                });
+                            }
+                        }
+                    });
+                    return false;
+                });
+
+            });
+        </script>
+        <else/>
+        <script>
+            layui.use('form', function () {
+                var form = layui.form();
+                form.on('submit(admin-form)', function (data) {
+                    $.ajax({
+                        type: "POST",
+                        url: '{:U("add")}',
+                        data: data.field,
+                        success: function (msg) {
+                            console.log('helll');
+                            if (msg.code == 1) {
+                                console.log('suss');
+                                parent.location.reload();
+                            } else {
+                                console.log('fail');
+                                parent.layer.msg(msg.msg, {
+                                    icon: 5,
+                                    shade: [0.6, '#393D49'],
+                                    time: 1500
+                                });
+                            }
+                        }
+                    });
+                    return false;
+                });
+
+            });
+        </script>
+    </if>
+</block>
