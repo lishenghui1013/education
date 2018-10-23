@@ -6,14 +6,16 @@
             <form class="layui-form" action="" id="health_form" method="post">
                 <if condition="isset($detail['id'])">
                     <input type="hidden" name="id" value="{$detail['id']}">
+                    <else/>
+                    <input type="hidden" name="to_userid" value="{$to_userid}"/>
                 </if>
-                <input type="hidden" name="to_userid" value="{$to_userid}"/>
+
                 <div class="layui-form-item">
-                    <label class="layui-form-label"><span style="color:red">*</span> 用户</label>
+                    <label class="layui-form-label"><span style="color:red"></span> 用户</label>
                     <div class="layui-input-block">
                         <input type="text" name="title" required
                                value="{:(isset($user_name)?$user_name:'')}" lay-verify="required"
-                               disabled class="layui-input">
+                               disabled class="layui-input" style="outline:none;overflow:hidden;border:none;">
                     </div>
                 </div>
                 <div class="layui-form-item">

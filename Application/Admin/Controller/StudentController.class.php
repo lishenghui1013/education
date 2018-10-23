@@ -19,7 +19,7 @@ class StudentController extends BaseController {
         $currentpage = I('get.p/d', 1);//当前页码
         $user_name = I('post.user_name')!==''?I('post.user_name'):(I('get.user_name')!==''?I('get.user_name'):'');//用户名
         $phone = I('post.phone')!==''?I('post.phone'):(I('get.phone')!==''?I('get.phone'):'');//电话
-
+        $map['use_status'] = 1;
         if ($user_name != '') {
             $map['user_name'] = $user_name;
         }
@@ -41,12 +41,25 @@ class StudentController extends BaseController {
         $Page->setConfig('theme', '%HEADER% %FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END%');
             //分页跳转的时候保证查询条件
         foreach ($map as $key => $val) {
+            $key = implode(explode('.',$key));
+            if($key=='_string'){
+
+                $temp_arr = explode(' ',$map[$key]);
+                foreach($temp_arr as $k=>$v){
+                    $temp_arr[$key] = trim($v);
+                }
+                $key = implode(explode('.',$temp_arr['0']));
+                $val = substr($temp_arr['2'],2,-2);
+
+            }
             $Page->parameter[$key] = urlencode($val);
 
         }
         $show = $Page->show();// 分页显示输出
         $this->assign('list', $list);//查询到的数据
         $this->assign('page', $show);// 赋值分页输出
+        $this->assign('user_name', $user_name);//查询姓名
+        $this->assign('phone', $phone);// 查询手机号
         $this->display();
     }
 
@@ -92,14 +105,13 @@ class StudentController extends BaseController {
 
         $pagenum = I('post.pagenum/d', 1);//每页显示条数
         $currentpage = I('get.p/d', 1);//当前页码
-
-        $map['n.to_userid'] = I('post.user_id');
+        $map['n.to_userid'] = I('get.user_id');
         $map['n.del_status'] = 2;
 
         //查询总条数
         $count = D('api_notice as n')->join('left join api_users as u on u.id=n.to_userid')->join('left join api_user as a on a.id=n.send_userid')->where($map)->count();//查询满足要求的总记录数
 
-        $list = D('api_notice as n')->join('left join api_users as u on u.id=n.to_userid')->join('left join api_user as a on a.id=n.send_userid')->field('n.id,u.user_name,n.title,n.content,n.del_status,n.read_status,n.read_time,n.send_userid,n.add_time,a.username')->where($map)->order('id desc')->page($currentpage . ',' . $pagenum)->select();
+        $list = D('api_notice as n')->join('left join api_users as u on u.id=n.to_userid')->join('left join api_user as a on a.id=n.send_userid')->field('n.id,u.user_name,n.to_userid,n.title,n.content,n.del_status,n.read_status,n.read_time,n.send_userid,n.add_time,a.username')->where($map)->order('id desc')->page($currentpage . ',' . $pagenum)->select();
 
         $Page = new \Think\Page($count, $pagenum);// 实例化分页类 传入总记录数和每页显示的记录数
         $Page->lastSuffix = false;//最后一页不显示为总页数
@@ -157,8 +169,8 @@ class StudentController extends BaseController {
             $id = I('get.id');
             $subject_list = D('api_notice as n')->join('left join api_users as u on u.id=n.to_userid')->field('n.id,n.title,n.content,n.to_userid,u.user_name')->where('n.id='.$id)->find();
 
-            $this->assign('subject_list', $subject_list);
-
+            $this->assign('detail', $subject_list);
+            $this->assign('user_name', $subject_list['user_name']);
             $this->display('addNotice');
         } elseif (IS_POST) {
             $postData = I('post.');
