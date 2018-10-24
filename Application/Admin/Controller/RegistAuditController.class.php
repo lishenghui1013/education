@@ -11,6 +11,7 @@ class RegistAuditController extends BaseController
 {
     public function index()
     {
+        $this->assign('count',5);
         $this->display();
     }
 
@@ -21,34 +22,53 @@ class RegistAuditController extends BaseController
      */
     public function ajaxGetIndex()
     {
-        $postData = I('post.');
-        $start = $postData['start'] ? $postData['start'] : 0;
-        $limit = $postData['length'] ? $postData['length'] : 20;
-        $draw = $postData['draw'];
+        $getInfo = I('post.');
+        $start = $getInfo['start'] ? $getInfo['start'] : 0;
+        $limit = $getInfo['length'] ? $getInfo['length'] : 1;
+        $add_time = $getInfo['add_time'] ? strtotime($getInfo['add_time']) : '';//查询的时间
+        $audit_status = $getInfo['audit_status'] ? $getInfo['audit_status'] : '';//查询的审核状态
         $where = array();
-        $getInfo = I('get.');
-        $date = $getInfo['date'] ? $getInfo['date'] : '';
-        $del_status = $getInfo['del_status'] ? $getInfo['del_status'] : '';
-        if ($date != '') {
-            $big_time = $date + 24 * 60 * 60;
-            $where['s.add_time'] = array('elt', $big_time);
-            $where['s.add_time'] = array('egt', $date);
+        if ($add_time != '') {
+            $big_time = $add_time + 24 * 60 * 60;
+            $where['s.add_time'] = array(array('elt', $big_time),array('egt', $add_time));
         }
-        if ($del_status != '') {
-            $where['s.del_status'] = $del_status;
+        if ($audit_status != '') {
+            $where['s.audit_status'] = $audit_status;
         }
-
+        /*var_dump($where);exit;*/
         //查询总条数
         $total = D('api_ct_users as s')->join('left join api_provinces as p on p.id=s.province_id')->join('left join api_cities as c on c.id=s.city_id')->join('left join api_areas as a on a.id=s.area_id')->join('left join api_user as u on u.id=s.audit_id')->where($where)->count();//查询满足要求的总记录数
 
-        $info = D('api_ct_users as s')->join('left join api_provinces as p on p.id=s.province_id')->join('left join api_cities as c on c.id=s.city_id')->join('left join api_areas as a on a.id=s.area_id')->join('left join api_user as u on u.id=s.audit_id')->field('s.id,s.user_name,s.phone,s.com_name,s.address,p.province,c.city,a.area,s.add_time,u.username,s.audit_time,s.audit_status')->where($where)->order('e.id')->limit($start, $limit)->select();
+        $info = D('api_ct_users as s')->join('left join api_provinces as p on p.id=s.province_id')->join('left join api_cities as c on c.id=s.city_id')->join('left join api_areas as a on a.id=s.area_id')->join('left join api_user as u on u.id=s.audit_id')->field('s.id,s.user_name,s.phone,s.com_name,s.address,p.province,c.city,a.area,s.add_time,u.username,s.audit_time,s.audit_status')->where($where)->order('s.id')->limit($start, $limit)->select();
+        foreach($info as $keys=>$values){
 
-        $data = array(
-            'draw'            => $draw,
-            'recordsTotal'    => $total,
-            'recordsFiltered' => $total,
-            'data'            => $info
-        );
+            foreach($values as $key=>$value){
+
+                if($values[$key]===null){
+                    $info[$keys][$key] = '';
+
+                }
+            }
+
+        }
+        if($info){
+            $data = array(
+                'add_time'=>$getInfo['add_time'],
+                'audit_status'=>$audit_status,
+                'status'=>'success',
+                'total' => $total,
+                'data' => $info
+            );
+        }else{
+            $data = array(
+                'add_time'=>$getInfo['add_time'],
+                'audit_status'=>$audit_status,
+                'status'=>'fail',
+                'total' => $total,
+                'data' => $info
+            );
+        }
+
         $this->ajaxReturn($data, 'json');
     }
 
@@ -60,15 +80,14 @@ class RegistAuditController extends BaseController
     public function open()
     {
         $id = I('post.id');
-        $arr['e_status'] = 'S';
-        $arr['audit_userid'] = session('uid');
+        $arr['audit_status'] = 'S';
+        $arr['audit_id'] = session('uid');
         $arr['audit_time'] = time();
-
-        $res = D('api_expense')->where(array('id' => $id))->save($arr);
+        $res = D('api_ct_users')->where(array('id' => $id))->save($arr);
         if ($res === false) {
             $this->ajaxError('操作失败');
         } else {
-            $this->ajaxSuccess('添加成功');
+            $this->ajaxSuccess('操作成功');
         }
     }
 
@@ -80,10 +99,10 @@ class RegistAuditController extends BaseController
     public function close()
     {
         $id = I('post.id');
-        $arr['e_status'] = 'F';
-        $arr['audit_userid'] = session('uid');
+        $arr['audit_status'] = 'F';
+        $arr['audit_id'] = session('uid');
         $arr['audit_time'] = time();
-        $res = D('api_expense')->where(array('id' => $id))->save($arr);
+        $res = D('api_ct_users')->where(array('id' => $id))->save($arr);
         if ($res === false) {
             $this->ajaxError('操作失败');
         } else {

@@ -231,7 +231,7 @@ class WordsController extends BaseController
             $upload->exts = array('jpg', 'gif', 'png', 'jpeg'); // 设置附件上传类型
             $upload->rootPath = THINK_PATH;          // 设置附件上传根目录
             $upload->savePath = '../Public/';    // 设置附件上传（子）目录
-            $upload->subName = 'uplods/articlePublish/Words/';  //子文件夹
+            $upload->subName = 'uploads/articlePublish/Words/';  //子文件夹
             $upload->replace = true;  //同名文件是否覆盖
             // 上传文件
             $images = $upload->upload();

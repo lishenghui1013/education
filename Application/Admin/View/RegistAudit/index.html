@@ -1,103 +1,30 @@
-
-                <!--<tbody>
-                <volist name="list" id="vo">
-                    <tr>
-                        <td>{$vo['id']}</td>
-                        <td>{$vo['user_name']}</td>
-                        <td>{$vo['phone']}</td>
-                        <td>{$vo['balance']}</td>
-                        <td>{$vo['e_money']}</td>
-                        <td>{$vo['bank_name']}</td>
-                        <td>{$vo['bank_card']}</td>
-                        <td>{$vo['Acc_open']}</td>
-                        <td>{$vo['add_time']|date="Y-m-d",###}</td>
-                        <td>{$vo['audit_time']|date="Y-m-d",###}</td>
-                        <td>{$vo['username']}</td>
-                        <if condition="$vo['e_status'] eq 'W'">
-                            <td style="color:#444444;">
-                                待审核
-                            </td>
-                            <elseif condition="$vo['e_status'] eq 'S'"/>
-
-                                <td style="color:green;">
-                                    已通过
-                                </td>
-                            <else/>
-                            <td style="color:red;">
-                                已拒绝
-                            </td>
-                        </if>
-
-                        <td>
-                            <if condition="$vo['e_status'] eq 'F'">
-                                <span class="layui-btn confirm" data-info="你确定通过当前申请吗？" data-id="{$vo['id']}"
-                                      data-url="{:U('open')}">通过</span>
-                                <elseif condition="$vo['e_status'] eq 'W'"/>
-                                <span class="layui-btn confirm" data-info="你确定通过当前申请吗？" data-id="{$vo['id']}"
-                                      data-url="{:U('open')}">通过</span>
-                                <span class="layui-btn layui-btn-danger confirm" data-info="你确定拒绝当前申请吗？"
-                                      data-id="{$vo['id']}" data-url="{:U('close')}">拒绝</span>
-                                <else/>
-                                <span class="layui-btn layui-btn-danger confirm" data-info="你确定拒绝当前申请吗？"
-                                      data-id="{$vo['id']}" data-url="{:U('close')}">拒绝</span>
-                            </if>
-                        </td>
-                    </tr>
-                </volist>
-                </tbody>-->
-
-
-
-<extend name="Public/base" />
+<extend name="Public/base"/>
 <block name="main">
-    <script type="text/javascript" src="__PUBLIC__/dataTable/jquery.dataTables.min.js"></script>
-    <link rel="stylesheet" href="__PUBLIC__/css/dataTable.css">
+
     <fieldset class="layui-elem-field">
-        <legend>申请提现列表</legend>
+        <legend>机构管理-注册审核列表</legend>
         <div class="layui-field-box">
             <form class="layui-form" id="form-admin-add" action="">
                 <div class="layui-form-item">
-                    <!--<div class="layui-inline">
-                        <select name="type">
-                            <option value="">请选择查询方式</option>
-                            <option value="1">操作URL</option>
-                            <option value="2">用户昵称</option>
-                            <option value="3">用户ID</option>
-                        </select>
-                    </div>
-                    <div class="layui-inline">
-                        <div class="layui-input-inline" style="width: 300px;">
-                            <input type="text" name="keyword" placeholder="请输入关键词" class="layui-input">
-                        </div>
-                    </div>-->
+
                     <label class="layui-form-label"> 注册日期</label>
                     <div class="layui-inline">
 
-                        <input class="layui-input" placeholder="注册日期" onclick="layui.laydate({elem: this, festival: true})">
+                        <input class="layui-input" placeholder="注册日期"
+                               onclick="layui.laydate({elem: this, festival: true})" value="" name="add_time" id="add_time" autocomplete="off">
                     </div>
                     <div class="layui-inline">
-                        <select name="e_status">
-                            <option value="">状态</option>
-                            <if condition="$status eq 'W'">
-                                <option value="W" selected>待审核</option>
-                                <else/>
-                                <option value="W">待审核</option>
-                            </if>
-                            <if condition="$status eq 'S'">
-                                <option value="S" selected>已通过</option>
-                                <else/>
-                                <option value="S">已通过</option>
-                            </if>
-                            <if condition="$status eq 'F'">
-                                <option value="F" selected>已拒绝</option>
-                                <else/>
-                                <option value="F">已拒绝</option>
-                            </if>
+                        <select name="audit_status" id="audit_status">
+                            <option value="">选择状态</option>
+                            <option value="">全部状态</option>
+                            <option value="W">待审核</option>
+                            <option value="S">已通过</option>
+                            <option value="S">未通过</option>
 
                         </select>
                     </div>
-                    <div class="layui-inline">
-                        <span class="layui-btn sub">查询</span>
+                    <div class="layui-inline" id="search">
+                        <span class="layui-btn sub" lay-submit lay-filter="search">查询</span>
                     </div>
                 </div>
             </form>
@@ -107,146 +34,226 @@
                     <th>ID</th>
                     <th>姓名</th>
                     <th>电话</th>
-                    <th>余额</th>
-                    <th>提现金额</th>
-                    <th>银行</th>
-                    <th>卡号</th>
-                    <th>开户网点</th>
-                    <th>申请日期</th>
-                    <th>审核日期</th>
+                    <th>机构名称</th>
+                    <th>地址</th>
+                    <th>注册时间</th>
                     <th>审核人</th>
+                    <th>审核时间</th>
                     <th>状态</th>
                     <th>操作</th>
                 </tr>
                 </thead>
+                <tbody id="tbody">
+
+                </tbody>
             </table>
+            <div id="demo"></div>
         </div>
+
     </fieldset>
 </block>
+
+
 <block name="myScript">
     <script>
-        /**
-         * 格式化时间戳
-         * @param fmt
-         * @returns {*}
-         * @constructor
-         */
-        Date.prototype.Format = function (fmt) {
-            var o = {
-                "M+": this.getMonth() + 1, //月份
-                "d+": this.getDate(), //日
-                "h+": this.getHours(), //小时
-                "m+": this.getMinutes(), //分
-                "s+": this.getSeconds(), //秒
-                "q+": Math.floor((this.getMonth() + 3) / 3), //季度
-                "S": this.getMilliseconds() //毫秒
-            };
-            if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-            for (var k in o)
-                if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-            return fmt;
-        };
+    Date.prototype.format = function(format){
+    var o = {
+    "M+" : this.getMonth()+1, //month
+    "d+" : this.getDate(), //day
+    "h+" : this.getHours(), //hour
+    "m+" : this.getMinutes(), //minute
+    "s+" : this.getSeconds(), //second
+    "q+" : Math.floor((this.getMonth()+3)/3), //quarter
+    "S" : this.getMilliseconds() //millisecond
+    }
 
-        layui.use(['layer', 'form','laydate'], function() {
-            var laydate = layui.laydate;
-            $(document).on('click', '.confirm', function () {
-                var ownObj = $(this);
-                layer.confirm(ownObj.attr('data-info'), {
-                    btn: ['确定','取消'] //按钮
-                }, function(){
-                    $.ajax({
-                        type: "POST",
-                        url: ownObj.attr('data-url'),
-                        data: {id:ownObj.attr('data-id')},
-                        success: function(msg){
-                            if( msg.code == 1 ){
-                                location.reload();
-                            }else{
-                                layer.msg(msg.msg, {
-                                    icon: 5,
-                                    shade: [0.6, '#393D49'],
-                                    time:1500
-                                });
-                            }
-                        }
+    if(/(y+)/.test(format)) {
+    format = format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+    }
+
+    for(var k in o) {
+    if(new RegExp("("+ k +")").test(format)) {
+    format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length));
+    }
+    }
+    return format;
+    }
+
+    /*//使用方法
+    var now = new Date();
+    var nowStr = now.format("yyyy-MM-dd hh:mm:ss");
+    //使用方法2:
+    var testDate = new Date();
+    var testStr = testDate.format("YYYY年MM月dd日hh小时mm分ss秒");
+    alert(testStr);
+    //示例：
+    alert(new Date().Format("yyyy年MM月dd日"));
+    alert(new Date().Format("MM/dd/yyyy"));
+    alert(new Date().Format("yyyyMMdd"));
+    alert(new Date().Format("yyyy-MM-dd hh:mm:ss"));*/
+    </script>
+    <script>
+
+        layui.use([ 'form', 'laypage','layer', 'laydate'], function () {
+            var form = layui.form(),
+                laydate = layui.laydate,
+                layer = layui.layer,
+                laypage = layui.laypage(
+                    {
+                        cont: 'demo'
+                        ,curr:1
+                        ,pages: 2 //控制器转过来的页数
                     });
-                });
-            });
 
-            $(document).on('click', '.edit', function () {
-                var ownObj = $(this);
-                layer.open({
-                    type: 2,
-                    area: ['80%', '80%'],
-                    maxmin: true,
-                    content: ownObj.attr('data-url')+'&id='+ownObj.attr('data-id')
-                });
-            });
 
-            var myFun = function (query) {
-                query = query || '';
-                return $('#list-admin').DataTable({
-                    dom: 'rt<"bottom"ifpl><"clear">',
-                    ordering: false,
-                    autoWidth: false,
-                    searching:false,
-                    serverSide: true,
-                    ajax: {
-                        url:'{:U("ajaxGetIndex")}' + query,
-                        type: 'POST',
-                        dataSrc: function ( json ) {
-                            console.log(json);
-                            if( json.code == 0 ){
-                                parent.layer.msg(json.msg, {
-                                    icon: 5,
-                                    shade: [0.6, '#393D49'],
-                                    time:1500
-                                });
+
+
+            $.ajax({
+                type: "POST",
+                url: "{:U('ajaxGetIndex')}",
+                data: '',
+                success: function (msg) {
+                    var html = '';
+                    var data = msg.data;
+                    if (msg.status == 'success') {
+                        for (var x in data) {
+                            var str_status = '';
+                            var add_time = '';
+                            var audit_time = '';
+                            if(data[x].audit_status=='S'){
+                                str_status = '<span style="color:green;">已通过</span>'
+                            }else if(data[x].audit_status=='F'){
+                                str_status = '<span style="color:red;">未通过</span>'
                             }else{
-                                return json.data;
+                                str_status = '<span style="color:#0000FF;">待审核</span>'
                             }
+                            if(data[x].add_time!=''){
+                                add_time=new Date(data[x].add_time*1000).format("yyyy-MM-dd");
+                            }else{
+                                add_time='--';
+                            }
+                            if(data[x].audit_time!=''){
+                                audit_time=new Date(data[x].audit_time*1000).format("yyyy-MM-dd");
+                            }else{
+                                audit_time='--';
+                            }
+                            html += '<tr><td>' + data[x].id + '</td><td>' + data[x].user_name + '</td><td>' + data[x].phone + '</td><td>'
+                                +data[x].com_name + '</td><td>' + data[x].province + data[x].city + data[x].area + data[x].address + '</td><td>' + add_time + '</td><td>'
+                                + data[x].username + '</td><td>' + audit_time + '</td><td>' + str_status + '</td><td>'
+                                + '<span class="layui-btn confirm" data-info="你确定通过审核吗？" data-id="' + data[x].id + '"data-url="{:U(\'open\')}">通过</span>'+
+                            '<span class="layui-btn confirm" data-info="你确定拒绝审核吗？" data-id="' + data[x].id + '"data-url="{:U(\'close\')}">拒绝</span>' + '</td></tr>'
                         }
-                    },
-                    columnDefs:[
-                        {
-                            "targets":4,
-                            "render": function(data){
-                                return new Date(data*1000).Format("yyyy-MM-dd");
-                            }
-                        },
-                        {
-                            "targets":12,
-                            "render":function(data, type, row){
-                                var returnStr = '';
-                                returnStr += '<span class="layui-btn edit layui-btn-normal" ' +
-                                    'data-id="' + row.id +'" data-url="{:U(\'open\')}">通过</span>';
-                                returnStr += '<span class="layui-btn layui-btn-danger confirm" ' +
-                                    'data-id="' + row.id +'" data-info="你确定拒绝该申请吗？" data-url="{:U(\'close\')}">拒绝</span>';
-                                return returnStr;
-                            }
-                        }
-                    ],
-                    iDisplayLength : 20,
-                    aLengthMenu : [20, 30, 50],
-                    columns: [
-                        {"data": "id"},
-                        {"data": "user_name"},
-                        {"data": "phone" },
-                        {"data": "com_name" },
-                        {"data": "address" },
-                        {"data": "add_time"},
-                        {"data": "username"},
-                        {"data": "audit_time" },
-                        {"data": "audit_status" },
-                        {"data": null }
-                    ]
-                });
-            };
-            var myTable = myFun();
-            $('.sub').on("click", function(){
-                myTable.destroy();
-                myTable = myFun('&'+ $('#form-admin-add').serialize());
+
+
+                    } else {
+                        html = '<tr><td colspan="10" style="text-align:center;">暂无数据</td></tr>'
+
+                    }
+                    $("#tbody").html(html);
+
+                    $('.confirm').on('click', function () {
+                        var ownObj = $(this);
+                        layer.confirm(ownObj.attr('data-info'), {
+                            btn: ['确定', '取消'] //按钮
+                        }, function () {
+                            $.ajax({
+                                type: "POST",
+                                url: ownObj.attr('data-url'),
+                                data: {id: ownObj.attr('data-id')},
+                                success: function (msg) {
+                                    if (msg.code == 1) {
+                                        location.reload();
+                                    } else {
+                                        layer.msg(msg.msg, {
+                                            icon: 5,
+                                            shade: [0.6, '#393D49'],
+                                            time: 1500
+                                        });
+                                    }
+                                }
+                            });
+                        });
+                    });
+                }
             });
+
+            form.on('submit(search)', function(data){
+                var ownObj = $(this);
+                $.ajax({
+                    type: "POST",
+                    url: "{:U('ajaxGetIndex')}",
+                    data: data.field,
+                    success: function (msg) {
+                        var html = '';
+                        var data = msg.data;
+                        if (msg.status == 'success') {
+
+                            for (var x in data) {
+                                var str_status = '';
+                                var add_time = '';
+                                var audit_time = '';
+                                if(data[x].audit_status=='S'){
+                                    str_status = '<span style="color:green;">已通过</span>'
+                                }else if(data[x].audit_status=='F'){
+                                    str_status = '<span style="color:red;">未通过</span>'
+                                }else{
+                                    str_status = '<span style="color:#0000FF;">待审核</span>'
+                                }
+                                if(data[x].add_time!=''){
+                                    add_time=new Date(data[x].add_time*1000).format("yyyy-MM-dd");
+                                }else{
+                                    add_time='--';
+                                }
+                                if(data[x].audit_time!=''){
+                                    audit_time=new Date(data[x].audit_time*1000).format("yyyy-MM-dd");
+                                }else{
+                                    audit_time='--';
+                                }
+                                html += '<tr><td>' + data[x].id + '</td><td>' + data[x].user_name + '</td><td>' + data[x].phone + '</td><td>'
+                                    +data[x].com_name + '</td><td>' + data[x].province + data[x].city + data[x].area + data[x].address + '</td><td>' + add_time + '</td><td>'
+                                    + data[x].username + '</td><td>' + audit_time + '</td><td>' + str_status + '</td><td>'
+                                    + '<span class="layui-btn confirm" data-info="你确定通过审核吗？" data-id="' + data[x].id + '"data-url="{:U(\'open\')}">通过</span>'+
+                                    '<span class="layui-btn confirm" data-info="你确定拒绝审核吗？" data-id="' + data[x].id + '"data-url="{:U(\'close\')}">拒绝</span>' + '</td></tr>'
+                            }
+
+
+                        } else {
+                            html = '<tr><td colspan="10" style="text-align:center;">暂无数据</td></tr>'
+
+                        }
+                        $("#tbody").html(html);
+                        $('.confirm').on('click', function () {
+                            var ownObj = $(this);
+                            layer.confirm(ownObj.attr('data-info'), {
+                                btn: ['确定', '取消'] //按钮
+                            }, function () {
+                                $.ajax({
+                                    type: "POST",
+                                    url: ownObj.attr('data-url'),
+                                    data: {id: ownObj.attr('data-id')},
+                                    success: function (msg) {
+                                        if (msg.code == 1) {
+                                            location.reload();
+                                        } else {
+                                            layer.msg(msg.msg, {
+                                                icon: 5,
+                                                shade: [0.6, '#393D49'],
+                                                time: 1500
+                                            });
+                                        }
+                                    }
+                                });
+                            });
+                        });
+                    }
+                });
+                return false;
+            });
+
+
+
+
+
         });
     </script>
 </block>
