@@ -24,7 +24,7 @@ class RegistAuditController extends BaseController
     {
         $getInfo = I('post.');
         $curr = $getInfo['curr'] ? $getInfo['curr'] : 1;//当前页
-        $limit = $getInfo['length'] ? $getInfo['length'] : 1;//每页显示条数
+        $limit = $getInfo['limit'] ? $getInfo['limit'] : 1;//每页显示条数
         $start = ($curr-1) * $limit;//开始
 
         $add_time = $getInfo['add_time'] ? strtotime($getInfo['add_time']) : '';//查询的时间
@@ -55,6 +55,7 @@ class RegistAuditController extends BaseController
         }
         if($info){
             $data = array(
+                'limit'=>$limit,
                 'curr'=>$curr,
                 'add_time'=>$getInfo['add_time'],
                 'audit_status'=>$audit_status,
@@ -64,6 +65,7 @@ class RegistAuditController extends BaseController
             );
         }else{
             $data = array(
+                'limit'=>$limit,
                 'curr'=>$curr,
                 'add_time'=>$getInfo['add_time'],
                 'audit_status'=>$audit_status,

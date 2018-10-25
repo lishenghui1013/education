@@ -20,7 +20,7 @@
                             <option value="">全部状态</option>
                             <option value="W">待审核</option>
                             <option value="S">已通过</option>
-                            <option value="S">未通过</option>
+                            <option value="F">未通过</option>
 
                         </select>
                     </div>
@@ -29,7 +29,9 @@
                     </div>
                 </div>
             </form>
-            <input type="hidden" name="curr" id="curr"/>
+            <input type="hidden" name="limit" id="limit" value=""/>
+            <input type="hidden" name="curr" id="curr" value=""/>
+            <input type="hidden" name="total" id="total" value=""/>
             <table class="layui-table" id="list-admin" lay-even>
                 <thead>
                 <tr>
@@ -95,88 +97,12 @@
         alert(new Date().Format("yyyy-MM-dd hh:mm:ss"));*/
     </script>
     <script>
-        function getlist(object){
+        function ajaxlist(object){
             $.ajax({
                 type: "POST",
                 url: "{:U('ajaxGetIndex')}",
                 data: object,
-                success: function (msg) {
-                    var html = '';
-                    var data = msg.data;
-                    if (msg.status == 'success') {
-                        for (var x in data) {
-                            var str_status = '';
-                            var add_time = '';
-                            var audit_time = '';
-                            if (data[x].audit_status == 'S') {
-                                str_status = '<span style="color:green;">已通过</span>'
-                            } else if (data[x].audit_status == 'F') {
-                                str_status = '<span style="color:red;">未通过</span>'
-                            } else {
-                                str_status = '<span style="color:#0000FF;">待审核</span>'
-                            }
-                            if (data[x].add_time != '') {
-                                add_time = new Date(data[x].add_time * 1000).format("yyyy-MM-dd");
-                            } else {
-                                add_time = '--';
-                            }
-                            if (data[x].audit_time != '') {
-                                audit_time = new Date(data[x].audit_time * 1000).format("yyyy-MM-dd");
-                            } else {
-                                audit_time = '--';
-                            }
-                            html += '<tr><td>' + data[x].id + '</td><td>' + data[x].user_name + '</td><td>' + data[x].phone + '</td><td>'
-                                + data[x].com_name + '</td><td>' + data[x].province + data[x].city + data[x].area + data[x].address + '</td><td>' + add_time + '</td><td>'
-                                + data[x].username + '</td><td>' + audit_time + '</td><td>' + str_status + '</td><td>'
-                                + '<span class="layui-btn confirm" data-info="你确定通过审核吗？" data-id="' + data[x].id + '"data-url="{:U(\'open\')}">通过</span>' +
-                                '<span class="layui-btn confirm" data-info="你确定拒绝审核吗？" data-id="' + data[x].id + '"data-url="{:U(\'close\')}">拒绝</span>' + '</td></tr>'
-                        }
-                        $("#currentpage").val(msg.curr);
-
-                    } else {
-                        html = '<tr><td colspan="10" style="text-align:center;">暂无数据</td></tr>'
-
-                    }
-                    $("#tbody").html(html);
-
-                }
-            });
-        }
-
-
-        layui.use(['form', 'laypage', 'layer', 'laydate'], function () {
-            var form = layui.form(),
-                laydate = layui.laydate,
-                layer = layui.layer,
-                laypage = layui.laypage;
-            //分页开始
-            var laypage = layui.laypage
-                , layer = layui.layer;
-            var curr = $("#curr").val(); //获取当前分页数
-            if (curr == '') { //为空时赋值1
-                curr = 1;
-            }
-            laypage({
-                cont: 'demo'
-                , curr: curr
-                , pages: 2 //控制器转过来的页数
-                , jump: function (obj, first) {
-                    if (!first) {  //跳转必须放在这个里边，不然无限刷新
-
-                        var object = new Object();
-                        object.curr = obj.curr;
-                        object.add_time = $("#add_time").val();
-                        object.audit_status = $("#audit_status").val();
-                        getlist(object);
-                    }
-                }
-            });
-
-            getlist();
-            /*$.ajax({
-                type: "POST",
-                url: "{:U('ajaxGetIndex')}",
-                data: '',
+                async:false,
                 success: function (msg) {
                     var html = '';
                     var data = msg.data;
@@ -209,13 +135,14 @@
                                 '<span class="layui-btn confirm" data-info="你确定拒绝审核吗？" data-id="' + data[x].id + '"data-url="{:U(\'close\')}">拒绝</span>' + '</td></tr>'
                         }
 
-
                     } else {
                         html = '<tr><td colspan="10" style="text-align:center;">暂无数据</td></tr>'
 
                     }
                     $("#tbody").html(html);
-
+                    $("#curr").val(msg.curr);
+                    $("#limit").val(msg.limit);
+                    $("#total").val(msg.total);
                     $('.confirm').on('click', function () {
                         var ownObj = $(this);
                         layer.confirm(ownObj.attr('data-info'), {
@@ -240,11 +167,50 @@
                         });
                     });
                 }
-            });*/
+            });
+        }
+        function pagenum(){
+            var curr = $("#curr").attr('value'); //获取当前分页数
+            var limit = $("#limit").val(); //每页显示条数
+            var total = $("#total").val(); //总条数
+            var page = Math.ceil(total / limit);
+            var laypage = layui.laypage
+                , layer = layui.layer;
+
+            if (curr == '') { //为空时赋值1
+                curr = 1;
+            }
+
+            laypage({
+                cont: 'demo'
+                , curr: curr
+                , pages: page //控制器转过来的页数
+                ,groups:5
+                ,first:'首页'
+                , jump: function (obj, first) {
+                    if (!first) {  //跳转必须放在这个里边，不然无限刷新
+
+                        var object = new Object();
+                        object.curr = obj.curr;
+                        object.add_time = $("#add_time").val();
+                        object.audit_status = $("#audit_status").val();
+                        ajaxlist(object);
+                    }
+                }
+            });
+        }
+
+        layui.use(['form', 'laypage', 'layer', 'laydate'], function () {
+            var form = layui.form(),
+                laydate = layui.laydate;
+            ajaxlist();
+            pagenum();
 
             form.on('submit(search)', function (data) {
                 var object = data.field;
-                getlist(object);
+                object.curr = 1;
+                ajaxlist(object);
+                pagenum();
                 return false;
             });
 
