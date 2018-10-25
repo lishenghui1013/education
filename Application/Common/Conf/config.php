@@ -33,12 +33,12 @@ return array(
 
     'TMPL_CACHE_ON' => false,//禁止模板编译缓存
     'HTML_CACHE_ON' => false,//禁止静态缓存
-	'MODULE_ALLOW_LIST' => array ('Home','Admin'),
+    'MODULE_ALLOW_LIST' => array ('Home','Admin'),
     'DEFAULT_MODULE' => 'Home',//默认访问模块
-	'URL_MODEL'=>2,//可重写url模式
-	'LOG_RECORD' => true,
+    'URL_MODEL'=>2,//可重写url模式
+    'LOG_RECORD' => true,
     'LOG_LEVEL'  =>'EMERG,ALERT,CRIT,ERR,notice,info,debug',
-	'APP_URL'=>'/education/',
+    'APP_URL'=>'/education/',
 
 );
 

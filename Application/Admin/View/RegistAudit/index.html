@@ -11,7 +11,8 @@
                     <div class="layui-inline">
 
                         <input class="layui-input" placeholder="注册日期"
-                               onclick="layui.laydate({elem: this, festival: true})" value="" name="add_time" id="add_time" autocomplete="off">
+                               onclick="layui.laydate({elem: this, festival: true})" value="" name="add_time"
+                               id="add_time" autocomplete="off">
                     </div>
                     <div class="layui-inline">
                         <select name="audit_status" id="audit_status">
@@ -28,6 +29,7 @@
                     </div>
                 </div>
             </form>
+            <input type="hidden" name="curr" id="curr"/>
             <table class="layui-table" id="list-admin" lay-even>
                 <thead>
                 <tr>
@@ -56,59 +58,122 @@
 
 <block name="myScript">
     <script>
-    Date.prototype.format = function(format){
-    var o = {
-    "M+" : this.getMonth()+1, //month
-    "d+" : this.getDate(), //day
-    "h+" : this.getHours(), //hour
-    "m+" : this.getMinutes(), //minute
-    "s+" : this.getSeconds(), //second
-    "q+" : Math.floor((this.getMonth()+3)/3), //quarter
-    "S" : this.getMilliseconds() //millisecond
-    }
+        Date.prototype.format = function (format) {
+            var o = {
+                "M+": this.getMonth() + 1, //month
+                "d+": this.getDate(), //day
+                "h+": this.getHours(), //hour
+                "m+": this.getMinutes(), //minute
+                "s+": this.getSeconds(), //second
+                "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
+                "S": this.getMilliseconds() //millisecond
+            }
 
-    if(/(y+)/.test(format)) {
-    format = format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
-    }
+            if (/(y+)/.test(format)) {
+                format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            }
 
-    for(var k in o) {
-    if(new RegExp("("+ k +")").test(format)) {
-    format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length));
-    }
-    }
-    return format;
-    }
+            for (var k in o) {
+                if (new RegExp("(" + k + ")").test(format)) {
+                    format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+                }
+            }
+            return format;
+        }
 
-    /*//使用方法
-    var now = new Date();
-    var nowStr = now.format("yyyy-MM-dd hh:mm:ss");
-    //使用方法2:
-    var testDate = new Date();
-    var testStr = testDate.format("YYYY年MM月dd日hh小时mm分ss秒");
-    alert(testStr);
-    //示例：
-    alert(new Date().Format("yyyy年MM月dd日"));
-    alert(new Date().Format("MM/dd/yyyy"));
-    alert(new Date().Format("yyyyMMdd"));
-    alert(new Date().Format("yyyy-MM-dd hh:mm:ss"));*/
+        /*//使用方法
+        var now = new Date();
+        var nowStr = now.format("yyyy-MM-dd hh:mm:ss");
+        //使用方法2:
+        var testDate = new Date();
+        var testStr = testDate.format("YYYY年MM月dd日hh小时mm分ss秒");
+        alert(testStr);
+        //示例：
+        alert(new Date().Format("yyyy年MM月dd日"));
+        alert(new Date().Format("MM/dd/yyyy"));
+        alert(new Date().Format("yyyyMMdd"));
+        alert(new Date().Format("yyyy-MM-dd hh:mm:ss"));*/
     </script>
     <script>
+        function getlist(object){
+            $.ajax({
+                type: "POST",
+                url: "{:U('ajaxGetIndex')}",
+                data: object,
+                success: function (msg) {
+                    var html = '';
+                    var data = msg.data;
+                    if (msg.status == 'success') {
+                        for (var x in data) {
+                            var str_status = '';
+                            var add_time = '';
+                            var audit_time = '';
+                            if (data[x].audit_status == 'S') {
+                                str_status = '<span style="color:green;">已通过</span>'
+                            } else if (data[x].audit_status == 'F') {
+                                str_status = '<span style="color:red;">未通过</span>'
+                            } else {
+                                str_status = '<span style="color:#0000FF;">待审核</span>'
+                            }
+                            if (data[x].add_time != '') {
+                                add_time = new Date(data[x].add_time * 1000).format("yyyy-MM-dd");
+                            } else {
+                                add_time = '--';
+                            }
+                            if (data[x].audit_time != '') {
+                                audit_time = new Date(data[x].audit_time * 1000).format("yyyy-MM-dd");
+                            } else {
+                                audit_time = '--';
+                            }
+                            html += '<tr><td>' + data[x].id + '</td><td>' + data[x].user_name + '</td><td>' + data[x].phone + '</td><td>'
+                                + data[x].com_name + '</td><td>' + data[x].province + data[x].city + data[x].area + data[x].address + '</td><td>' + add_time + '</td><td>'
+                                + data[x].username + '</td><td>' + audit_time + '</td><td>' + str_status + '</td><td>'
+                                + '<span class="layui-btn confirm" data-info="你确定通过审核吗？" data-id="' + data[x].id + '"data-url="{:U(\'open\')}">通过</span>' +
+                                '<span class="layui-btn confirm" data-info="你确定拒绝审核吗？" data-id="' + data[x].id + '"data-url="{:U(\'close\')}">拒绝</span>' + '</td></tr>'
+                        }
+                        $("#currentpage").val(msg.curr);
 
-        layui.use([ 'form', 'laypage','layer', 'laydate'], function () {
+                    } else {
+                        html = '<tr><td colspan="10" style="text-align:center;">暂无数据</td></tr>'
+
+                    }
+                    $("#tbody").html(html);
+
+                }
+            });
+        }
+
+
+        layui.use(['form', 'laypage', 'layer', 'laydate'], function () {
             var form = layui.form(),
                 laydate = layui.laydate,
                 layer = layui.layer,
-                laypage = layui.laypage(
-                    {
-                        cont: 'demo'
-                        ,curr:1
-                        ,pages: 2 //控制器转过来的页数
-                    });
+                laypage = layui.laypage;
+            //分页开始
+            var laypage = layui.laypage
+                , layer = layui.layer;
+            var curr = $("#curr").val(); //获取当前分页数
+            if (curr == '') { //为空时赋值1
+                curr = 1;
+            }
+            laypage({
+                cont: 'demo'
+                , curr: curr
+                , pages: 2 //控制器转过来的页数
+                , jump: function (obj, first) {
+                    if (!first) {  //跳转必须放在这个里边，不然无限刷新
 
+                        var object = new Object();
+                        object.curr = obj.curr;
+                        object.add_time = $("#add_time").val();
+                        object.audit_status = $("#audit_status").val();
+                        getlist(object);
+                    }
+                }
+            });
 
-
-
-            $.ajax({
+            getlist();
+            /*$.ajax({
                 type: "POST",
                 url: "{:U('ajaxGetIndex')}",
                 data: '',
@@ -120,28 +185,28 @@
                             var str_status = '';
                             var add_time = '';
                             var audit_time = '';
-                            if(data[x].audit_status=='S'){
+                            if (data[x].audit_status == 'S') {
                                 str_status = '<span style="color:green;">已通过</span>'
-                            }else if(data[x].audit_status=='F'){
+                            } else if (data[x].audit_status == 'F') {
                                 str_status = '<span style="color:red;">未通过</span>'
-                            }else{
+                            } else {
                                 str_status = '<span style="color:#0000FF;">待审核</span>'
                             }
-                            if(data[x].add_time!=''){
-                                add_time=new Date(data[x].add_time*1000).format("yyyy-MM-dd");
-                            }else{
-                                add_time='--';
+                            if (data[x].add_time != '') {
+                                add_time = new Date(data[x].add_time * 1000).format("yyyy-MM-dd");
+                            } else {
+                                add_time = '--';
                             }
-                            if(data[x].audit_time!=''){
-                                audit_time=new Date(data[x].audit_time*1000).format("yyyy-MM-dd");
-                            }else{
-                                audit_time='--';
+                            if (data[x].audit_time != '') {
+                                audit_time = new Date(data[x].audit_time * 1000).format("yyyy-MM-dd");
+                            } else {
+                                audit_time = '--';
                             }
                             html += '<tr><td>' + data[x].id + '</td><td>' + data[x].user_name + '</td><td>' + data[x].phone + '</td><td>'
-                                +data[x].com_name + '</td><td>' + data[x].province + data[x].city + data[x].area + data[x].address + '</td><td>' + add_time + '</td><td>'
+                                + data[x].com_name + '</td><td>' + data[x].province + data[x].city + data[x].area + data[x].address + '</td><td>' + add_time + '</td><td>'
                                 + data[x].username + '</td><td>' + audit_time + '</td><td>' + str_status + '</td><td>'
-                                + '<span class="layui-btn confirm" data-info="你确定通过审核吗？" data-id="' + data[x].id + '"data-url="{:U(\'open\')}">通过</span>'+
-                            '<span class="layui-btn confirm" data-info="你确定拒绝审核吗？" data-id="' + data[x].id + '"data-url="{:U(\'close\')}">拒绝</span>' + '</td></tr>'
+                                + '<span class="layui-btn confirm" data-info="你确定通过审核吗？" data-id="' + data[x].id + '"data-url="{:U(\'open\')}">通过</span>' +
+                                '<span class="layui-btn confirm" data-info="你确定拒绝审核吗？" data-id="' + data[x].id + '"data-url="{:U(\'close\')}">拒绝</span>' + '</td></tr>'
                         }
 
 
@@ -175,83 +240,13 @@
                         });
                     });
                 }
-            });
+            });*/
 
-            form.on('submit(search)', function(data){
-                var ownObj = $(this);
-                $.ajax({
-                    type: "POST",
-                    url: "{:U('ajaxGetIndex')}",
-                    data: data.field,
-                    success: function (msg) {
-                        var html = '';
-                        var data = msg.data;
-                        if (msg.status == 'success') {
-
-                            for (var x in data) {
-                                var str_status = '';
-                                var add_time = '';
-                                var audit_time = '';
-                                if(data[x].audit_status=='S'){
-                                    str_status = '<span style="color:green;">已通过</span>'
-                                }else if(data[x].audit_status=='F'){
-                                    str_status = '<span style="color:red;">未通过</span>'
-                                }else{
-                                    str_status = '<span style="color:#0000FF;">待审核</span>'
-                                }
-                                if(data[x].add_time!=''){
-                                    add_time=new Date(data[x].add_time*1000).format("yyyy-MM-dd");
-                                }else{
-                                    add_time='--';
-                                }
-                                if(data[x].audit_time!=''){
-                                    audit_time=new Date(data[x].audit_time*1000).format("yyyy-MM-dd");
-                                }else{
-                                    audit_time='--';
-                                }
-                                html += '<tr><td>' + data[x].id + '</td><td>' + data[x].user_name + '</td><td>' + data[x].phone + '</td><td>'
-                                    +data[x].com_name + '</td><td>' + data[x].province + data[x].city + data[x].area + data[x].address + '</td><td>' + add_time + '</td><td>'
-                                    + data[x].username + '</td><td>' + audit_time + '</td><td>' + str_status + '</td><td>'
-                                    + '<span class="layui-btn confirm" data-info="你确定通过审核吗？" data-id="' + data[x].id + '"data-url="{:U(\'open\')}">通过</span>'+
-                                    '<span class="layui-btn confirm" data-info="你确定拒绝审核吗？" data-id="' + data[x].id + '"data-url="{:U(\'close\')}">拒绝</span>' + '</td></tr>'
-                            }
-
-
-                        } else {
-                            html = '<tr><td colspan="10" style="text-align:center;">暂无数据</td></tr>'
-
-                        }
-                        $("#tbody").html(html);
-                        $('.confirm').on('click', function () {
-                            var ownObj = $(this);
-                            layer.confirm(ownObj.attr('data-info'), {
-                                btn: ['确定', '取消'] //按钮
-                            }, function () {
-                                $.ajax({
-                                    type: "POST",
-                                    url: ownObj.attr('data-url'),
-                                    data: {id: ownObj.attr('data-id')},
-                                    success: function (msg) {
-                                        if (msg.code == 1) {
-                                            location.reload();
-                                        } else {
-                                            layer.msg(msg.msg, {
-                                                icon: 5,
-                                                shade: [0.6, '#393D49'],
-                                                time: 1500
-                                            });
-                                        }
-                                    }
-                                });
-                            });
-                        });
-                    }
-                });
+            form.on('submit(search)', function (data) {
+                var object = data.field;
+                getlist(object);
                 return false;
             });
-
-
-
 
 
         });
