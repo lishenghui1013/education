@@ -125,9 +125,10 @@ class PublishAuditController extends BaseController {
     public function look()
     {
         $id = I('get.id');
-
-        $list = D('api_publish as p')->join('left join api_publish_content as c on c.publish_id=p.id')->join('left join api_ct_users as s on s.id=p.pub_userid')->field('p.title,p.price,p.cover,p.read_num,p.collect_num,p.share_num,p.user_type,p.item_type,p.intro,c.id,c.title,s.user_name,p.pub_time')->where(array('p.id' => $id))->find();
-        $this->assign('list', $list);
+        $catalogList = D('api_publish_content as c')->join('left join api_publish as p on p.id=c.publish_id')->join('left join api_ct_users as s on s.id=c.pub_userid')->field('count(c.id) as total,c.title,c.id,p.id as pid,p.title as ptitle')->where(array('c.publish_id'=>$id))->select();
+        $this->assign('catalogList', $catalogList);
+        var_dump($catalogList);
+        exit;
         $this->display();
     }
     /**

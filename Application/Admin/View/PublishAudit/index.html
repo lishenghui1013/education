@@ -138,7 +138,7 @@
                                 + data[x].username + '</td><td>' + audit_time + '</td><td>' + str_status + '</td><td>'
                                 + '<span class="layui-btn confirm" data-info="你确定通过审核吗？" data-id="' + data[x].id + '"data-url="{:U(\'open\')}">通过</span>' +
                                 '<span class="layui-btn confirm" data-info="你确定拒绝审核吗？" data-id="' + data[x].id + '"data-url="{:U(\'close\')}">拒绝</span>' +
-                                '<a href="{:substr(U(\'Admin/PublishAudit/look/\'),0,-5)}'+'/id/'+data[x].id+'" target="_self"><span class="layui-btn look layui-btn-normal">查看</span></a></td></tr>'
+                                '<a href="{:substr(U(\'Admin/PublishAudit/look/\'),0,-5)}'+'/id/'+data[x].id+'" target="_self" class="layui-btn look layui-btn-normal">查看</a></td></tr>'
                         }
 
                     } else {

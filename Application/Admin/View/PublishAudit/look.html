@@ -50,9 +50,13 @@
                 </thead>
                 <tbody id="tbody">
                     <tr>
-                        <td>
+                        <foreach name="catalogList" item="vo" >
+                            <td>
+                                {$vo.title}
 
-                        </td>
+                            </td>
+                        </foreach>
+
                         <td rowspan="{$total+1}">
                             <form class="layui-form" action="" id="health_form">
 
@@ -74,27 +78,10 @@
                                     <div class="layui-input-block">
                                         <input type="text" name="title" required
                                                value="{:(isset($list['title'])?$list['title']:'')}" lay-verify="required"
-                                               class="layui-input" disabled>
+                                               class="layui-input" disabled style="outline:none;border:none;overflow: hidden">
                                     </div>
                                 </div>
-                                <div class="layui-form-item">
-                                    <label class="layui-form-label"> 项目类型</label>
-                                    <div class="layui-input-block">
-                                        <input type="text" name="class_name" required
-                                               value="{:(isset($list['item_type'])?($list['item_type']=='ART'?'文章':($list['item_type']=='RAD'?'视频':($list['item_type']=='SRAD'?'系列视频':($list['item_type']=='FILE'?'文件':($list['item_type']=='PIC'?'图片':''))))):'')}"
-                                               lay-verify="required"
-                                               class="layui-input" disabled>
-                                    </div>
-                                </div>
-                                <div class="layui-form-item">
-                                    <label class="layui-form-label"> 发布人类型</label>
-                                    <div class="layui-input-block">
-                                        <input type="text" name="subject_name" required
-                                               value="{:(isset($list['subject_name'])?($list['subject_name']=='COM'?'机构':($list['subject_name']=='TEA'?'老师':($list['subject_name']=='STU'?'学生':''))):'')}"
-                                               lay-verify="required"
-                                               class="layui-input" disabled>
-                                    </div>
-                                </div>
+
 
                                 <div class="layui-form-item layui-form-text">
                                     <label class="layui-form-label">简介</label>
@@ -104,47 +91,27 @@
                     </textarea>
                                     </div>
                                 </div>
-                                <div class="layui-form-item">
-                                    <label class="layui-form-label"> 收藏量</label>
-                                    <div class="layui-input-block">
-                                        <input type="text" name="collect_num" required
-                                               value="{:(isset($list['collect_num'])?$list['collect_num']:'0')}" lay-verify="required"
-                                               class="layui-input" disabled>
-                                    </div>
-                                </div>
-                                <div class="layui-form-item">
-                                    <label class="layui-form-label"> 分享量</label>
-                                    <div class="layui-input-block">
-                                        <input type="text" name="share_num" required
-                                               value="{:(isset($list['share_num'])?$list['share_num']:'')}" lay-verify="required"
-                                               class="layui-input" disabled>
-                                    </div>
-                                </div>
-                                <div class="layui-form-item">
-                                    <label class="layui-form-label"> 阅读量</label>
-                                    <div class="layui-input-block">
-                                        <input type="text" name="read_num" required
-                                               value="{:(isset($list['read_num'])?$list['read_num']:'')}" lay-verify="required"
-                                               class="layui-input" disabled>
-                                    </div>
-                                </div>
+
                                 <div class="layui-form-item">
                                     <label class="layui-form-label"> 发布人</label>
-                                    <div class="layui-input-block">
+                                    <div class="layui-input-inline">
                                         <input type="text" name="user_name" required
                                                value="{:(isset($list['user_name'])?$list['user_name']:'')}" lay-verify="required"
-                                               class="layui-input" disabled>
+                                               class="layui-input" disabled style="outline:none;border:none;overflow: hidden">
                                     </div>
-                                </div>
-                                <div class="layui-form-item">
-                                    <label class="layui-form-label"> 发布时间</label>
-                                    <div class="layui-input-block">
-                                        <input type="text" name="pub_time" required
-                                               value="{:(isset($list['pub_time'])?date('Y年m月d日 H:i:s',$list['pub_time']):'')}"
-                                               lay-verify="required"
-                                               class="layui-input" disabled>
+                                    <div class="layui-inline" style="float:right;">
+                                        <label class="layui-form-label"> 发布时间</label>
+                                        <div class="layui-input-inline">
+
+                                            <input type="text" name="pub_time" required
+                                                   value="{:(isset($list['pub_time'])?date('Y年m月d日 H:i:s',$list['pub_time']):'')}"
+                                                   lay-verify="required"
+                                                   class="layui-input" disabled style="outline:none;border:none;overflow: hidden">
+                                        </div>
                                     </div>
+
                                 </div>
+
                             </form>
                         </td>
                     </tr>
