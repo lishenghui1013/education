@@ -11,7 +11,6 @@ class RegistAuditController extends BaseController
 {
     public function index()
     {
-        $this->assign('count',5);
         $this->display();
     }
 

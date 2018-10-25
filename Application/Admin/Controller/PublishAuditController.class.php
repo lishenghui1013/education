@@ -9,29 +9,128 @@ namespace Admin\Controller;
 
 
 class PublishAuditController extends BaseController {
+    public function index()
+    {
+        $this->display();
+    }
+
     /**
      * 列表页
      * @author: 李胜辉
-     * @time: 2018/10/17 17:32
+     * @time: 2018/10/25 17:32
      */
-    public function index() {
-        $this->display();
+    public function ajaxGetIndex()
+    {
+        $getInfo = I('post.');
+        $curr = $getInfo['curr'] ? $getInfo['curr'] : 1;//当前页
+        $limit = $getInfo['limit'] ? $getInfo['limit'] : 1;//每页显示条数
+        $start = ($curr-1) * $limit;//开始
+
+        $add_time = $getInfo['add_time'] ? strtotime($getInfo['add_time']) : '';//查询的时间
+        $audit_status = $getInfo['audit_status'] ? $getInfo['audit_status'] : '';//查询的审核状态
+        $where = array();
+        if ($add_time != '') {
+            $big_time = $add_time + 24 * 60 * 60;
+            $where['s.add_time'] = array(array('elt', $big_time),array('egt', $add_time));
+        }
+        if ($audit_status != '') {
+            $where['s.audit_status'] = $audit_status;
+        }
+        /*var_dump($where);exit;*/
+        //查询总条数
+        $total = D('api_ct_users as s')->join('left join api_provinces as p on p.id=s.province_id')->join('left join api_cities as c on c.id=s.city_id')->join('left join api_areas as a on a.id=s.area_id')->join('left join api_user as u on u.id=s.audit_id')->where($where)->count();//查询满足要求的总记录数
+
+        $info = D('api_ct_users as s')->join('left join api_provinces as p on p.id=s.province_id')->join('left join api_cities as c on c.id=s.city_id')->join('left join api_areas as a on a.id=s.area_id')->join('left join api_user as u on u.id=s.audit_id')->field('s.id,s.user_name,s.phone,s.com_name,s.address,p.province,c.city,a.area,s.add_time,u.username,s.audit_time,s.audit_status')->where($where)->order('s.id')->limit($start, $limit)->select();
+        foreach($info as $keys=>$values){
+
+            foreach($values as $key=>$value){
+
+                if($values[$key]===null){
+                    $info[$keys][$key] = '';
+
+                }
+            }
+
+        }
+        if($info){
+            $data = array(
+                'limit'=>$limit,
+                'curr'=>$curr,
+                'add_time'=>$getInfo['add_time'],
+                'audit_status'=>$audit_status,
+                'status'=>'success',//查询状态:成功为success,失败为fail
+                'total' => $total,
+                'data' => $info
+            );
+        }else{
+            $data = array(
+                'limit'=>$limit,
+                'curr'=>$curr,
+                'add_time'=>$getInfo['add_time'],
+                'audit_status'=>$audit_status,
+                'status'=>'fail',
+                'total' => $total,
+                'data' => $info
+            );
+        }
+
+        $this->ajaxReturn($data, 'json');
+    }
+
+    /**
+     * 审核通过
+     * @author: 李胜辉
+     * @time: 2018/10/23 09:32
+     */
+    public function open()
+    {
+        $id = I('post.id');
+        $arr['audit_status'] = 'S';
+        $arr['audit_id'] = session('uid');
+        $arr['audit_time'] = time();
+        $res = D('api_ct_users')->where(array('id' => $id))->save($arr);
+        if ($res === false) {
+            $this->ajaxError('操作失败');
+        } else {
+            $this->ajaxSuccess('操作成功');
+        }
+    }
+
+    /**
+     * 拒绝通过
+     * @author: 李胜辉
+     * @time: 2018/10/23 09:32
+     */
+    public function close()
+    {
+        $id = I('post.id');
+        $arr['audit_status'] = 'F';
+        $arr['audit_id'] = session('uid');
+        $arr['audit_time'] = time();
+        $res = D('api_ct_users')->where(array('id' => $id))->save($arr);
+        if ($res === false) {
+            $this->ajaxError('操作失败');
+        } else {
+            $this->ajaxSuccess('添加成功');
+        }
     }
     /**
-     * 添加页
+     * 查看
      * @author: 李胜辉
-     * @time: 2018/10/17 17:32
+     * @time: 2018/10/25 09:32
      */
-    public function add() {
-        $this->display();
-    }
-    /**
-     * 修改页
-     * @author: 李胜辉
-     * @time: 2018/10/17 17:32
-     */
-    public function update() {
-        $this->display();
+    public function look()
+    {
+        $id = I('post.id');
+        $arr['audit_status'] = 'S';
+        $arr['audit_id'] = session('uid');
+        $arr['audit_time'] = time();
+        $res = D('api_ct_users')->where(array('id' => $id))->save($arr);
+        if ($res === false) {
+            $this->ajaxError('操作失败');
+        } else {
+            $this->ajaxSuccess('操作成功');
+        }
     }
 
 
