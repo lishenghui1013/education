@@ -1,0 +1,172 @@
+<extend name="Public/base"/>
+<block name="main">
+    <fieldset class="layui-elem-field">
+        <legend>发布审核管理 - 查看发布内容</legend>
+        <div class="layui-field-box">
+            <style>
+                #demo2 {
+                    margin: 10px 0 0 0
+                }
+
+                #demo2 dd {
+                    position: relative;
+                    margin: 0 10px 10px 0;
+                    float: left
+                }
+
+                #demo2 .operate {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    z-index: 1
+                }
+
+                #demo2 .operate i {
+                    cursor: pointer;
+                    background: #2F4056;
+                    padding: 2px;
+                    line-height: 15px;
+                    text-align: center;
+                    color: #fff;
+                    margin-left: 1px;
+                    float: left;
+                    filter: alpha(opacity=80);
+                    -moz-opacity: .8;
+                    -khtml-opacity: .8;
+                    opacity: .8
+                }
+            </style>
+
+            <table class="layui-table" id="list-admin" lay-even>
+                <colgroup>
+                    <col width="20%">
+                    <col width="80%">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>标题</th>
+                    <th>内容</th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+                    <tr>
+                        <td>
+
+                        </td>
+                        <td rowspan="{$total+1}">
+                            <form class="layui-form" action="" id="health_form">
+
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label"> 封面</label>
+                                    <div class="layui-input-block">
+                                        <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                                            <div class="layui-upload-list" id="demo2">
+                                                <if condition="$list['cover'] neq ''">
+                                                    <img style="width:150px;height:150px;margin-left:5px" src="{$list['cover']}">
+                                                </if>
+
+                                            </div>
+                                        </blockquote>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label"> 标题</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="title" required
+                                               value="{:(isset($list['title'])?$list['title']:'')}" lay-verify="required"
+                                               class="layui-input" disabled>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label"> 项目类型</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="class_name" required
+                                               value="{:(isset($list['item_type'])?($list['item_type']=='ART'?'文章':($list['item_type']=='RAD'?'视频':($list['item_type']=='SRAD'?'系列视频':($list['item_type']=='FILE'?'文件':($list['item_type']=='PIC'?'图片':''))))):'')}"
+                                               lay-verify="required"
+                                               class="layui-input" disabled>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label"> 发布人类型</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="subject_name" required
+                                               value="{:(isset($list['subject_name'])?($list['subject_name']=='COM'?'机构':($list['subject_name']=='TEA'?'老师':($list['subject_name']=='STU'?'学生':''))):'')}"
+                                               lay-verify="required"
+                                               class="layui-input" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="layui-form-item layui-form-text">
+                                    <label class="layui-form-label">简介</label>
+                                    <div class="layui-input-block">
+                    <textarea class="layui-textarea" id="editor" style="display: none">
+                    {:(isset($list['content'])?$list['content']:'')}
+                    </textarea>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label"> 收藏量</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="collect_num" required
+                                               value="{:(isset($list['collect_num'])?$list['collect_num']:'0')}" lay-verify="required"
+                                               class="layui-input" disabled>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label"> 分享量</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="share_num" required
+                                               value="{:(isset($list['share_num'])?$list['share_num']:'')}" lay-verify="required"
+                                               class="layui-input" disabled>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label"> 阅读量</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="read_num" required
+                                               value="{:(isset($list['read_num'])?$list['read_num']:'')}" lay-verify="required"
+                                               class="layui-input" disabled>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label"> 发布人</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="user_name" required
+                                               value="{:(isset($list['user_name'])?$list['user_name']:'')}" lay-verify="required"
+                                               class="layui-input" disabled>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label"> 发布时间</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="pub_time" required
+                                               value="{:(isset($list['pub_time'])?date('Y年m月d日 H:i:s',$list['pub_time']):'')}"
+                                               lay-verify="required"
+                                               class="layui-input" disabled>
+                                    </div>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+        </div>
+    </fieldset>
+</block>
+<block name="myScript">
+    <script>
+        layui.use(['layedit'], function () {
+            var layedit = layui.layedit;
+            layedit.set({
+                uploadImage: {
+                    url: '{:U("upload")}' //接口url
+                    ,type: 'post' //默认post
+                }
+            });
+            var index = layedit.build('editor');
+        });
+    </script>
+
+</block>
