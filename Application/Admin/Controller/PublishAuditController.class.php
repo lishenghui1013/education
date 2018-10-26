@@ -15,7 +15,7 @@ class PublishAuditController extends BaseController {
     }
 
     /**
-     * 列表页
+     * ajax列表页
      * @author: 李胜辉
      * @time: 2018/10/25 17:32
      */
@@ -25,19 +25,19 @@ class PublishAuditController extends BaseController {
         $curr = $getInfo['curr'] ? $getInfo['curr'] : 1;//当前页
         $limit = $getInfo['limit'] ? $getInfo['limit'] : 1;//每页显示条数
         $start = ($curr-1) * $limit;//开始
-        $com_name = $getInfo['com_name'] ? strtotime($getInfo['com_name']) : '';//查询关键字
+        $com_name = $getInfo['com_name'] ? $getInfo['com_name'] : '';//查询关键字
         $add_time = $getInfo['add_time'] ? strtotime($getInfo['add_time']) : '';//查询的时间
         $audit_status = $getInfo['audit_status'] ? $getInfo['audit_status'] : '';//查询的审核状态
         $where = array();
         if ($add_time != '') {
             $big_time = $add_time + 24 * 60 * 60;
-            $where['s.add_time'] = array(array('elt', $big_time),array('egt', $add_time));
+            $where['p.pub_time'] = array(array('elt', $big_time),array('egt', $add_time));
         }
         if ($audit_status != '') {
-            $where['s.audit_status'] = $audit_status;
+            $where['p.audit_status'] = $audit_status;
         }
         if ($com_name != '') {
-            $where['s.audit_status'] = array('like','%'.$com_name.'%');
+            $where['s.com_name'] = array('like','%'.$com_name.'%');
         }
         /*var_dump($where);exit;*/
         //查询总条数
@@ -125,10 +125,22 @@ class PublishAuditController extends BaseController {
     public function look()
     {
         $id = I('get.id');
-        $catalogList = D('api_publish_content as c')->join('left join api_publish as p on p.id=c.publish_id')->join('left join api_ct_users as s on s.id=c.pub_userid')->field('count(c.id) as total,c.title,c.id,p.id as pid,p.title as ptitle')->where(array('c.publish_id'=>$id))->select();
+        $catalogList = D('api_publish_content as c')->join('left join api_publish as p on p.id=c.publish_id')->join('left join api_ct_users as s on s.id=c.pub_userid')->field('c.title,c.id,p.id as pid,p.title as ptitle')->where(array('c.publish_id'=>$id))->select();
+        $total = count($catalogList);
         $this->assign('catalogList', $catalogList);
-        var_dump($catalogList);
-        exit;
+        $this->assign('total', $total);
+        $this->display();
+    }
+    /**
+     * ajax查看
+     * @author: 李胜辉
+     * @time: 2018/10/25 09:32
+     */
+    public function ajaxLook()
+    {
+        $id = I('get.id');
+        $list = D('api_publish as p')->join('left join api_publish_content as c on c.publish_id=p.id')->join('left join api_ct_users as s on s.id=p.pub_userid')->field('p.title,p.price,p.cover,p.read_num,p.collect_num,p.share_num,p.user_type,p.item_type,p.intro,c.id,c.title,s.user_name,p.pub_time')->where(array('p.id' => $id))->find();
+        $this->assign('list', $list);
         $this->display();
     }
     /**

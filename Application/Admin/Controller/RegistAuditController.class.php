@@ -9,6 +9,11 @@
 namespace Admin\Controller;
 class RegistAuditController extends BaseController
 {
+    /**
+     * 列表页
+     * @author: 李胜辉
+     * @time: 2018/10/17 17:32
+     */
     public function index()
     {
         $this->display();
