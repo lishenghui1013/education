@@ -47,15 +47,11 @@ class PublishAuditController extends BaseController
 
         $info = D('api_publish as p')->join('left join api_ct_users as s on s.id=p.pub_userid')->join('left join api_user as u on u.id=p.audit_userid')->field('p.id,s.com_name,p.title,p.intro,p.pub_time,u.username,p.audit_time,p.audit_status')->where($where)->order('p.id')->limit($start, $limit)->select();
         foreach ($info as $keys => $values) {
-
             foreach ($values as $key => $value) {
-
                 if ($values[$key] === null) {
                     $info[$keys][$key] = '';
-
                 }
             }
-
         }
         if ($info) {
             $data = array(

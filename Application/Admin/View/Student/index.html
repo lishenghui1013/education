@@ -1,39 +1,32 @@
 <extend name="Public/base"/>
-
 <block name="main">
-
-
     <fieldset class="layui-elem-field">
         <legend>学生列表</legend>
         <div class="layui-field-box">
-
-
             <form class="layui-form" action="" method="post">
                 <div class="layui-form-item">
-
                     <div class="layui-inline">
                         <label class="layui-form-label"> 姓名</label>
                         <div class="layui-input-inline" style="width: 300px;">
                             <input type="text" name="user_name" placeholder="请输入用户名" class="layui-input" value="{$user_name}">
                         </div>
                     </div>
-
                     <div class="layui-inline">
                         <label class="layui-form-label"> 手机号</label>
                         <div class="layui-input-inline" style="width: 300px;">
                             <input type="text" name="phone" placeholder="请输入手机号" class="layui-input" value="{$phone}">
                         </div>
                     </div>
-
-
                     <div class="layui-inline">
-                        <button class="layui-btn" lay-submit lay-filter="formDemo">
+                        <button class="layui-btn" lay-submit lay-filter="search">
                             查询
                         </button>
                     </div>
-
                 </div>
             </form>
+            <input type="hidden" name="limit" id="limit" value=""/>
+            <input type="hidden" name="curr" id="curr" value=""/>
+            <input type="hidden" name="total" id="total" value=""/>
             <table class="layui-table" lay-even>
                 <thead>
                 <tr>
@@ -46,46 +39,11 @@
                     <th>操作</th>
                 </tr>
                 </thead>
-                <tbody>
-                <volist name="list" id="vo">
-                    <tr>
-                        <td>{$vo['id']}</td>
-                        <td>{$vo['user_name']}</td>
-                        <td>{$vo['phone']}</td>
-                        <td>{$vo['balance']}</td>
-                        <td>{$vo['add_time']|date="Y-m-d H:i:s",###}</td>
-                        <if condition="$vo['use_status'] eq 1">
-                            <td style="color:green;">
-                                正常
-                            </td>
-                            <else/>
-                            <td style="color:red;">
-                                禁用
-                            </td>
-                        </if>
+                <tbody id="tbody">
 
-                        <td>
-                            <if condition="$vo['use_status'] eq 2">
-                                <span class="layui-btn confirm" data-info="你确定启用当前用户吗？" data-id="{$vo['id']}"
-                                      data-url="{:U('open')}">启用</span>
-                                <else/>
-                                <span class="layui-btn layui-btn-danger confirm" data-info="你确定禁用当前用户吗？"
-                                      data-id="{$vo['id']}" data-url="{:U('close')}">禁用</span>
-                            </if>
-                            <span data-url="{:U('addNotice', array('user_id' => $vo['id']))}"
-                                  class="layui-btn add layui-btn-normal">发通知</span>
-                            <a href="{:U('noticeList', array('user_id' => $vo['id']))}"><span class="layui-btn layui-btn-danger">通知记录</span></a>
-                        </td>
-                    </tr>
-                </volist>
                 </tbody>
             </table>
-            <link href="__VENDOR__/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" media="screen"
-                  type="text/css"/>
-
-            <ul class="pagination">
-                {$page}
-            </ul>
+            <div id="demo"></div>
         </div>
 
 
@@ -95,76 +53,157 @@
 
 
 <block name="myScript">
-
-
     <script>
+        Date.prototype.format = function (format) {
+            var o = {
+                "M+": this.getMonth() + 1, //month
+                "d+": this.getDate(), //day
+                "h+": this.getHours(), //hour
+                "m+": this.getMinutes(), //minute
+                "s+": this.getSeconds(), //second
+                "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
+                "S": this.getMilliseconds() //millisecond
+            }
 
-        layui.use(['layer','form','laypage'], function () {
-            var form = layui.form(),
-                layer = layui.layer;
-            //监听提交
-           /* form.on('submit(formDemo)', function(data){
-                layer.msg(JSON.stringify(data.field));
-                return true;
-            });*/
+            if (/(y+)/.test(format)) {
+                format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            }
 
+            for (var k in o) {
+                if (new RegExp("(" + k + ")").test(format)) {
+                    format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+                }
+            }
+            return format;
+        }
 
-            $('.add').on('click', function () {
-                var ownObj = $(this);
-                var index = layer.open({
-                    title: '发送通知',
-                    type: 2,
-                    area: ['60%', '100%'],
-                    maxmin: true,
-                    content: ownObj.attr('data-url')
-                });
+    </script>
+    <script>
+        function ajaxlist(object){
+            $.ajax({
+                type: "POST",
+                url: "{:U('ajaxGetIndex')}",
+                data: object,
+                async:false,
+                success: function (msg) {
+                    var html = '';
+                    var data = msg.data;
+                    if (msg.status == 'success') {
+                        for (var x in data) {
+                            var add_time = '';
+                            var audit_time = '';
 
-            });
-            $('.edit').on('click', function () {
-                var ownObj = $(this);
-                layer.open({
-                    title: '编辑',
-                    type: 2,
-                    area: ['80%', '80%'],
-                    maxmin: true,
-                    content: ownObj.attr('data-url')
-                });
-            });
-            /*//查看
-            $('.noticelist').on('click', function () {
-                var ownObj = $(this);
-                layer.open({
-                    title: '查看记录信息',
-                    type: 2,
-                    area: ['80%', '80%'],
-                    maxmin: true,
-                    content: ownObj.attr('data-url')
-                });
-            });*/
-            $('.confirm').on('click', function () {
-                var ownObj = $(this);
-                layer.confirm(ownObj.attr('data-info'), {
-                    btn: ['确定', '取消'] //按钮
-                }, function () {
-                    $.ajax({
-                        type: "POST",
-                        url: ownObj.attr('data-url'),
-                        data: {id: ownObj.attr('data-id')},
-                        success: function (msg) {
-                            if (msg.code == 1) {
-                                location.reload();
+                            if (data[x].add_time != '') {
+                                add_time = new Date(data[x].add_time * 1000).format("yyyy-MM-dd");
                             } else {
-                                layer.msg(msg.msg, {
-                                    icon: 5,
-                                    shade: [0.6, '#393D49'],
-                                    time: 1500
-                                });
+                                add_time = '--';
                             }
-                        }
-                    });
-                });
-            });
+                            if (data[x].audit_time != '') {
+                                audit_time = new Date(data[x].audit_time * 1000).format("yyyy-MM-dd");
+                            } else {
+                                audit_time = '--';
+                            }
 
+                            html += '<tr><td>' + data[x].id + '</td><td>' + data[x].user_name + '</td><td>' + data[x].phone + '</td><td>'
+                                + data[x].balance + '</td><td>' + add_time + '</td><td>正常</td><td>'
+                                + '<span class="layui-btn confirm" data-info="你确定要禁用该用户吗？" data-id="' + data[x].id + '"data-url="{:U(\'close\')}">禁用</span>' +
+                                '<span class="layui-btn add layui-btn-normal" data-id="' + data[x].id + '"data-url="{:U(\'addNotice\')}">发通知</span>' +
+                                '<a href="{:substr(U(\'Admin/Student/noticeList/\'),0,-5)}'+'/id/'+data[x].id+'" target="_self" class="layui-btn look layui-btn-normal">通知记录</a></td></tr>'
+                        }
+
+                    } else {
+                        html = '<tr><td colspan="7" style="text-align:center;">暂无数据</td></tr>'
+
+                    }
+                    $("#tbody").html(html);
+                    $("#curr").val(msg.curr);
+                    $("#limit").val(msg.limit);
+                    $("#total").val(msg.total);
+
+
+                    $('.add').on('click', function () {
+                        var ownObj = $(this);
+                        var url = ownObj.attr('data-url').slice(0,-5)+'/user_id/'+ownObj.attr('data-id');
+                        var index = layer.open({
+                            title: '发送通知',
+                            type: 2,
+                            area: ['60%', '100%'],
+                            maxmin: true,
+                            content: url
+                        });
+
+                    });
+
+                    $('.confirm').on('click', function () {
+                        var ownObj = $(this);
+                        layer.confirm(ownObj.attr('data-info'), {
+                            btn: ['确定', '取消'] //按钮
+                        }, function () {
+                            $.ajax({
+                                type: "POST",
+                                url: ownObj.attr('data-url'),
+                                data: {id: ownObj.attr('data-id')},
+                                success: function (msg) {
+                                    if (msg.code == 1) {
+                                        location.reload();
+                                    } else {
+                                        layer.msg(msg.msg, {
+                                            icon: 5,
+                                            shade: [0.6, '#393D49'],
+                                            time: 1500
+                                        });
+                                    }
+                                }
+                            });
+                        });
+                    });
+
+                }
+            });
+        }
+        function pagenum(){
+            var curr = $("#curr").attr('value'); //获取当前分页数
+            var limit = $("#limit").val(); //每页显示条数
+            var total = $("#total").val(); //总条数
+            var page = Math.ceil(total / limit);
+            var laypage = layui.laypage
+                , layer = layui.layer;
+
+            if (curr == '') { //为空时赋值1
+                curr = 1;
+            }
+
+            laypage({
+                cont: 'demo'
+                , curr: curr
+                , pages: page //控制器转过来的页数
+                ,groups:5
+                ,first:'首页'
+                , jump: function (obj, first) {
+                    if (!first) {  //跳转必须放在这个里边，不然无限刷新
+
+                        var object = new Object();
+                        object.curr = obj.curr;
+                        object.add_time = $("#add_time").val();
+                        ajaxlist(object);
+                    }
+                }
+            });
+        }
+
+        layui.use(['form', 'laypage', 'layer', 'laydate'], function () {
+            var form = layui.form(),
+                laydate = layui.laydate;
+            ajaxlist();
+            pagenum();
+
+            form.on('submit(search)', function (data) {
+                var object = data.field;
+                object.curr = 1;
+                ajaxlist(object);
+                pagenum();
+                return false;
+            });
 
 
         });
