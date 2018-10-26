@@ -1,7 +1,7 @@
 <extend name="Public/base"/>
 <block name="main">
     <fieldset class="layui-elem-field">
-        <legend>发布审核管理 - 查看发布内容</legend>
+        <legend>发布审核管理 - 查看发布内容目录详情</legend>
         <div class="layui-field-box">
             <style>
                 #demo2 {
@@ -36,7 +36,9 @@
                     opacity: .8
                 }
             </style>
-
+            <h3 style="text-align:center;"><span id="intro" data-id="{$list['id']}"
+                                                 style="cursor:pointer;color:blue;font-size:25px;">{$list['title']}</span>
+            </h3>
             <table class="layui-table" id="list-admin" lay-even>
                 <colgroup>
                     <col width="20%">
@@ -49,72 +51,6 @@
                 </tr>
                 </thead>
                 <tbody id="tbody">
-                <tr>
-                    <td><span id="intro" data-id="{$list['id']}"
-                              style="cursor:pointer;color:blue;">{$list['title']}</span></td>
-                    <td rowspan="{$total+1}" id="detail_content">
-                        <form class="layui-form" action="" id="health_form">
-
-                            <div class="layui-form-item">
-                                <label class="layui-form-label"> 封面</label>
-                                <div class="layui-input-block">
-                                    <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
-                                        <div class="layui-upload-list" id="demo2">
-                                            <if condition="$list['cover'] neq ''">
-                                                <img style="width:150px;height:150px;margin-left:5px"
-                                                     src="{$list['cover']}">
-                                            </if>
-
-                                        </div>
-                                    </blockquote>
-                                </div>
-                            </div>
-                            <div class="layui-form-item">
-                                <label class="layui-form-label"> 标题</label>
-                                <div class="layui-input-block">
-                                    <input type="text" name="title" required
-                                           value="{:(isset($list['title'])?$list['title']:'')}" lay-verify="required"
-                                           class="layui-input" disabled
-                                           style="outline:none;border:none;overflow: hidden">
-                                </div>
-                            </div>
-
-
-                            <div class="layui-form-item layui-form-text">
-                                <label class="layui-form-label">简介</label>
-                                <div class="layui-input-block">
-                    <textarea class="layui-textarea" id="editor" style="display: none">
-                    {:(isset($list['intro'])?$list['intro']:'')}
-                    </textarea>
-                                </div>
-                            </div>
-
-                            <div class="layui-form-item">
-                                <label class="layui-form-label"> 发布人</label>
-                                <div class="layui-input-inline">
-                                    <input type="text" name="user_name" required
-                                           value="{:(isset($list['user_name'])?$list['user_name']:'')}"
-                                           lay-verify="required"
-                                           class="layui-input" disabled
-                                           style="outline:none;border:none;overflow: hidden">
-                                </div>
-                                <div class="layui-inline" style="float:right;">
-                                    <label class="layui-form-label"> 发布时间</label>
-                                    <div class="layui-input-inline">
-
-                                        <input type="text" name="pub_time" required
-                                               value="{:(isset($list['pub_time'])?date('Y年m月d日 H:i:s',$list['pub_time']):'')}"
-                                               lay-verify="required"
-                                               class="layui-input" disabled
-                                               style="outline:none;border:none;overflow: hidden">
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        </form>
-                    </td>
-                </tr>
                 <foreach name="catalogList" item="vo" key="k">
                     <tr>
 
@@ -122,6 +58,97 @@
                             <span style="cursor:pointer;color:blue;">{$vo.title}</span>
 
                         </td>
+                        <if condition="$k eq 0">
+                            <td rowspan="{$total}" id="detail_content">
+                                <form class="layui-form" action="" id="health_form">
+
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label"> 标题</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="title" required
+                                                   value="{$vo.title}" lay-verify="required"
+                                                   class="layui-input" disabled
+                                                   style="outline:none;border:none;overflow: hidden">
+                                        </div>
+                                    </div>
+
+
+                                    <if condition="$vo['item_type'] eq 'PIC'">
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label"> 图片</label>
+                                            <div class="layui-input-block">
+                                                <blockquote class="layui-elem-quote layui-quote-nm"
+                                                            style="margin-top: 10px;">
+                                                    <div class="layui-upload-list">
+                                                        <img style="width:150px;height:150px;margin-left:5px"
+                                                             src="{$vo['content']}"/>
+                                                    </div>
+                                                </blockquote>
+                                            </div>
+                                        </div>
+                                    </if>
+                                    <if condition="$vo['item_type'] eq 'FILE'">
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label"> 文件</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" name="file" value="{$vo['content']}"
+                                                       class="layui-input" disabled
+                                                       style="outline:none;border:none;overflow: hidden"/>
+                                            </div>
+                                        </div>
+                                    </if>
+
+                                    <if condition="$vo['item_type'] eq 'ART'">
+                                        <div class="layui-form-item layui-form-text">
+                                            <label class="layui-form-label">内容</label>
+                                            <div class="layui-input-block">
+                                                          <textarea class="layui-textarea" id="editor"
+                                                                    style="display: none">
+                                {$vo['content']}
+                                                   </textarea>
+                                            </div>
+                                        </div>
+                                    </if>
+                                    <if condition="($vo['item_type'] eq 'RAD') or ($vo['item_type'] eq 'SRAD')">
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label">视频：</label>
+                                            <div class="layui-upload-list">
+                                                <video width="320" height="240" controls autoplay>
+                                                    <source src="{$vo['content']}" type="video/ogg">
+                                                    <source src="{$vo['content']}" type="video/mp4">
+                                                    <source src="{$vo['content']}" type="video/webm">
+                                                    <object data="{$vo['content']}" width="320" height="240">
+                                                        <embed width="320" height="240" src="{$vo['content']}">
+                                                    </object>
+                                                </video>
+                                            </div>
+                                        </div>
+                                    </if>
+
+
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label"> 发布人</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="user_name" required
+                                                   value="{$vo['user_name']}"
+                                                   lay-verify="required"
+                                                   class="layui-input" disabled
+                                                   style="outline:none;border:none;overflow: hidden">
+                                        </div>
+                                        <div class="layui-inline" style="float:right;">
+                                            <label class="layui-form-label"> 发布时间</label>
+                                            <div class="layui-input-inline">
+                                                <input type="text" name="pub_time" required
+                                                       value="{:(isset($vo['pub_time'])?(date('Y-m-d',$vo['pub_time'])):'')}"
+                                                       lay-verify="required"
+                                                       class="layui-input" disabled
+                                                       style="outline:none;border:none;overflow: hidden">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </td>
+                        </if>
 
                     </tr>
                 </foreach>
@@ -130,7 +157,7 @@
                 </tbody>
             </table>
 
-
+            <div id="demo"></div>
         </div>
     </fieldset>
 </block>
@@ -289,41 +316,41 @@
                                 '                            <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">\n' +
                                 '                            <div class="layui-upload-list">\n' +
                                 '                            <img style="width:150px;height:150px;margin-left:5px"\n' +
-                                '                        src="'+msg.content+'"/>\n' +
+                                '                        src="' + msg.content + '"/>\n' +
                                 '                            </div>\n' +
                                 '                            </blockquote>\n' +
                                 '                            </div>\n' +
                                 '                            </div>';
                         }
-                        if(msg.item_type == 'FILE'){
+                        if (msg.item_type == 'FILE') {
                             html += '                <div class="layui-form-item">\n' +
                                 '                    <label class="layui-form-label"> 文件</label>\n' +
                                 '                    <div class="layui-input-block">\n' +
-                                '                        <input type="text" name="file" value="'+msg.content+'" class="layui-input" disabled\n' +
+                                '                        <input type="text" name="file" value="' + msg.content + '" class="layui-input" disabled\n' +
                                 '                               style="outline:none;border:none;overflow: hidden"/>\n' +
                                 '                    </div>\n' +
                                 '                </div>\n';
                         }
-                        if(msg.item_type == 'ART'){
+                        if (msg.item_type == 'ART') {
                             html += '                <div class="layui-form-item layui-form-text">\n' +
                                 '                    <label class="layui-form-label">内容</label>\n' +
                                 '                    <div class="layui-input-block">\n' +
                                 '                    <textarea class="layui-textarea" id="editor" style="display: none">\n' +
-                                msg.content+
+                                msg.content +
                                 '                    </textarea>\n' +
                                 '                    </div>\n' +
                                 '                </div>\n';
                         }
-                        if(msg.item_type == 'RAD'||msg.item_type == 'SRAD'){
+                        if (msg.item_type == 'RAD' || msg.item_type == 'SRAD') {
                             html += '                <div class="layui-form-item">\n' +
                                 '                    <label class="layui-form-label">视频：</label>\n' +
                                 '                    <div class="layui-upload-list">\n' +
                                 '                            <video width="320" height="240" controls autoplay>\n' +
-                                '                                <source src="'+msg.content+'" type="video/ogg">\n' +
-                                '                                <source src="'+msg.content+'" type="video/mp4">\n' +
-                                '                                <source src="'+msg.content+'" type="video/webm">\n' +
-                                '                                <object data="'+msg.content+'" width="320" height="240">\n' +
-                                '                                    <embed width="320" height="240" src="'+msg.content+'">\n' +
+                                '                                <source src="' + msg.content + '" type="video/ogg">\n' +
+                                '                                <source src="' + msg.content + '" type="video/mp4">\n' +
+                                '                                <source src="' + msg.content + '" type="video/webm">\n' +
+                                '                                <object data="' + msg.content + '" width="320" height="240">\n' +
+                                '                                    <embed width="320" height="240" src="' + msg.content + '">\n' +
                                 '                                </object>\n' +
                                 '                            </video>\n' +
                                 '                    </div>\n' +
@@ -363,11 +390,9 @@
             });
         }
 
-        layui.use(['form', 'layer', 'laydate', 'layedit'], function () {
+        layui.use(['form', 'layer', 'laydate', 'layedit', 'laypage'], function () {
             var form = layui.form(),
                 laydate = layui.laydate;
-
-
             var layedit = layui.layedit;
             var index = layedit.build('editor', {
                 tool: []
@@ -383,12 +408,38 @@
             });
             $(".catalog").on('click', function () {
                 var id = $(this).attr('data-id');
-                console.log(id);
                 ajaxCatalogDetail(id);
                 var index = layedit.build('editor', {
                     tool: []
                     , hideTool: []
                 });
+            });
+            var curr = parseInt("{$curr}"); //获取当前分页数
+            var limit = parseInt("{$total}"); //每页显示条数
+            var total = parseInt("{$count}"); //总条数
+            var page = Math.ceil(total / limit);
+            var laypage = layui.laypage
+                , layer = layui.layer;
+
+            if (curr == '') { //为空时赋值1
+                curr = 1;
+            }
+
+            laypage({
+                cont: 'demo'
+                , curr: curr
+                , pages: page //控制器转过来的页数
+                , groups: 5
+                , first: '首页'
+                , jump: function (obj, first) {
+                    var url = "{:U('look')}";
+                    if (!first) {  //跳转必须放在这个里边，不然无限刷新
+                        var curr = obj.curr;
+                        var id = parseInt("{$list['id']}");
+                        url = url.slice(0, -5) + '/curr/' + curr + '/id/' + id;
+                        window.location.href = url;
+                    }
+                }
             });
 
         });

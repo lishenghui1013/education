@@ -127,14 +127,22 @@ class PublishAuditController extends BaseController
      */
     public function look()
     {
-        $id = I('get.id');//发布内容id
+        $getInfo = I('get.');
+        $id = $getInfo['id'];//发布内容id
+        $curr = $getInfo['curr'] ? $getInfo['curr'] : 1;//当前页
+        $limit = $getInfo['limit'] ? $getInfo['limit'] : 1;//每页显示条数
+        $start = ($curr - 1) * $limit;//开始
+        $count = D('api_publish_content as c')->join('left join api_publish as p on p.id=c.publish_id')->join('left join api_ct_users as s on s.id=c.pub_userid')->field('c.title,c.id')->where(array('c.publish_id' => $id))->count();
+
         //查询发布内容目录信息
-        $catalogList = D('api_publish_content as c')->join('left join api_publish as p on p.id=c.publish_id')->join('left join api_ct_users as s on s.id=c.pub_userid')->field('c.title,c.id')->where(array('c.publish_id' => $id))->select();
+        $catalogList = D('api_publish_content as c')->join('left join api_publish as p on p.id=c.publish_id')->join('left join api_ct_users as s on s.id=c.pub_userid')->field('c.title,c.id,c.pub_time,s.user_name,c.content,p.item_type')->where(array('c.publish_id' => $id))->order('c.id')->limit($start, $limit)->select();
         //查询发布内容信息
         $list = D('api_publish as p')->join('left join api_publish_content as c on c.publish_id=p.id')->join('left join api_ct_users as s on s.id=p.pub_userid')->field('p.title,p.id,p.cover,p.intro,s.user_name,p.pub_time')->where(array('p.id'=>$id))->find();
         $total = count($catalogList);
         $this->assign('catalogList', $catalogList);//发布内容目录信息
-        $this->assign('total', $total);//总条数
+        $this->assign('curr', $curr);//当前页
+        $this->assign('count', $count);//总条数
+        $this->assign('total', $total);//每页总条数
         $this->assign('list', $list);//发布内容信息
         $this->display();
     }
