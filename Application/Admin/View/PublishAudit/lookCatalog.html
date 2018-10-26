@@ -4,7 +4,7 @@
 
 
         <form class="layui-form" action="" id="health_form">
-            <if condition="$detail['pid'] neq ''">
+            <!--<if condition="$detail['pid'] neq ''">
                 <div class="layui-form-item">
                     <label class="layui-form-label"> 封面</label>
                     <div class="layui-input-block">
@@ -19,7 +19,7 @@
                         </blockquote>
                     </div>
                 </div>
-            </if>
+            </if>-->
             <div class="layui-form-item">
                 <label class="layui-form-label"> 标题</label>
                 <div class="layui-input-block">
@@ -66,25 +66,25 @@
                 </div>
             </if>
             <if condition="($detail['item_type'] eq 'RAD') or ($detail['item_type'] eq 'SRAD')">
-            <div class="layui-form-item">
-                <label class="layui-form-label">视频：</label>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">视频：</label>
 
-                <div class="layui-upload-list">
-                    <if condition="$detail['content'] neq ''">
+                    <div class="layui-upload-list">
+                        <if condition="$detail['content'] neq ''">
 
-                        <video width="320" height="240" controls autoplay>
-                            <source src="{$detail['content']}" type="video/ogg">
-                            <source src="{$detail['content']}" type="video/mp4">
-                            <source src="{$detail['content']}" type="video/webm">
-                            <object data="{$detail['content']}" width="320" height="240">
-                                <embed width="320" height="240" src="{$detail['video_url']}">
-                            </object>
-                        </video>
-                    </if>
+                            <video width="320" height="240" controls autoplay>
+                                <source src="{$detail['content']}" type="video/ogg">
+                                <source src="{$detail['content']}" type="video/mp4">
+                                <source src="{$detail['content']}" type="video/webm">
+                                <object data="{$detail['content']}" width="320" height="240">
+                                    <embed width="320" height="240" src="{$detail['video_url']}">
+                                </object>
+                            </video>
+                        </if>
+
+                    </div>
 
                 </div>
-
-            </div>
             </if>
 
             <style>
@@ -121,14 +121,14 @@
                 }
             </style>
             <if condition="$detail['pid'] neq ''">
-            <div class="layui-form-item layui-form-text">
-                <label class="layui-form-label">简介</label>
-                <div class="layui-input-block">
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">简介</label>
+                    <div class="layui-input-block">
                     <textarea class="layui-textarea" id="editor" style="display: none">
                     {:($detail($list['content'])?$detail['content']:'')}
                     </textarea>
+                    </div>
                 </div>
-            </div>
             </if>
             <div class="layui-form-item">
                 <label class="layui-form-label"> 发布人</label>
@@ -173,7 +173,7 @@
             //自定义工具栏
             layedit.build('editor', {
                 tool: []
-                ,hideTool:[]
+                , hideTool: []
             })
         });
     </script>

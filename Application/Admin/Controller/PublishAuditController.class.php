@@ -5,10 +5,12 @@
  * Date: 2018/10/17
  * Time: 17:32
  */
+
 namespace Admin\Controller;
 
 
-class PublishAuditController extends BaseController {
+class PublishAuditController extends BaseController
+{
     public function index()
     {
         $this->display();
@@ -24,54 +26,54 @@ class PublishAuditController extends BaseController {
         $getInfo = I('post.');
         $curr = $getInfo['curr'] ? $getInfo['curr'] : 1;//当前页
         $limit = $getInfo['limit'] ? $getInfo['limit'] : 1;//每页显示条数
-        $start = ($curr-1) * $limit;//开始
+        $start = ($curr - 1) * $limit;//开始
         $com_name = $getInfo['com_name'] ? $getInfo['com_name'] : '';//查询关键字
         $add_time = $getInfo['add_time'] ? strtotime($getInfo['add_time']) : '';//查询的时间
         $audit_status = $getInfo['audit_status'] ? $getInfo['audit_status'] : '';//查询的审核状态
         $where = array();
         if ($add_time != '') {
             $big_time = $add_time + 24 * 60 * 60;
-            $where['p.pub_time'] = array(array('elt', $big_time),array('egt', $add_time));
+            $where['p.pub_time'] = array(array('elt', $big_time), array('egt', $add_time));
         }
         if ($audit_status != '') {
             $where['p.audit_status'] = $audit_status;
         }
         if ($com_name != '') {
-            $where['s.com_name'] = array('like','%'.$com_name.'%');
+            $where['s.com_name'] = array('like', '%' . $com_name . '%');
         }
         /*var_dump($where);exit;*/
         //查询总条数
         $total = D('api_publish as p')->join('left join api_ct_users as s on s.id=p.pub_userid')->join('left join api_user as u on u.id=p.audit_userid')->where($where)->count();//查询满足要求的总记录数
 
         $info = D('api_publish as p')->join('left join api_ct_users as s on s.id=p.pub_userid')->join('left join api_user as u on u.id=p.audit_userid')->field('p.id,s.com_name,p.title,p.intro,p.pub_time,u.username,p.audit_time,p.audit_status')->where($where)->order('p.id')->limit($start, $limit)->select();
-        foreach($info as $keys=>$values){
+        foreach ($info as $keys => $values) {
 
-            foreach($values as $key=>$value){
+            foreach ($values as $key => $value) {
 
-                if($values[$key]===null){
+                if ($values[$key] === null) {
                     $info[$keys][$key] = '';
 
                 }
             }
 
         }
-        if($info){
+        if ($info) {
             $data = array(
-                'limit'=>$limit,
-                'curr'=>$curr,
-                'add_time'=>$getInfo['add_time'],
-                'audit_status'=>$audit_status,
-                'status'=>'success',//查询状态:成功为success,失败为fail
+                'limit' => $limit,
+                'curr' => $curr,
+                'add_time' => $getInfo['add_time'],
+                'audit_status' => $audit_status,
+                'status' => 'success',//查询状态:成功为success,失败为fail
                 'total' => $total,
                 'data' => $info
             );
-        }else{
+        } else {
             $data = array(
-                'limit'=>$limit,
-                'curr'=>$curr,
-                'add_time'=>$getInfo['add_time'],
-                'audit_status'=>$audit_status,
-                'status'=>'fail',
+                'limit' => $limit,
+                'curr' => $curr,
+                'add_time' => $getInfo['add_time'],
+                'audit_status' => $audit_status,
+                'status' => 'fail',
                 'total' => $total,
                 'data' => $info
             );
@@ -117,6 +119,7 @@ class PublishAuditController extends BaseController {
             $this->ajaxSuccess('添加成功');
         }
     }
+
     /**
      * 查看
      * @author: 李胜辉
@@ -124,13 +127,18 @@ class PublishAuditController extends BaseController {
      */
     public function look()
     {
-        $id = I('get.id');
-        $catalogList = D('api_publish_content as c')->join('left join api_publish as p on p.id=c.publish_id')->join('left join api_ct_users as s on s.id=c.pub_userid')->field('c.title,c.id,p.id as pid,p.title as ptitle')->where(array('c.publish_id'=>$id))->select();
+        $id = I('get.id');//发布内容id
+        //查询发布内容目录信息
+        $catalogList = D('api_publish_content as c')->join('left join api_publish as p on p.id=c.publish_id')->join('left join api_ct_users as s on s.id=c.pub_userid')->field('c.title,c.id')->where(array('c.publish_id' => $id))->select();
+        //查询发布内容信息
+        $list = D('api_publish as p')->join('left join api_publish_content as c on c.publish_id=p.id')->join('left join api_ct_users as s on s.id=p.pub_userid')->field('p.title,p.id,p.cover,p.intro,s.user_name,p.pub_time')->where(array('p.id'=>$id))->find();
         $total = count($catalogList);
-        $this->assign('catalogList', $catalogList);
-        $this->assign('total', $total);
+        $this->assign('catalogList', $catalogList);//发布内容目录信息
+        $this->assign('total', $total);//总条数
+        $this->assign('list', $list);//发布内容信息
         $this->display();
     }
+
     /**
      * ajax查看
      * @author: 李胜辉
@@ -138,24 +146,45 @@ class PublishAuditController extends BaseController {
      */
     public function ajaxLook()
     {
-        $id = I('get.id');
-        $list = D('api_publish as p')->join('left join api_publish_content as c on c.publish_id=p.id')->join('left join api_ct_users as s on s.id=p.pub_userid')->field('p.title,p.price,p.cover,p.read_num,p.collect_num,p.share_num,p.user_type,p.item_type,p.intro,c.id,c.title,s.user_name,p.pub_time')->where(array('p.id' => $id))->find();
-        $this->assign('list', $list);
-        $this->display();
+        $id = I('post.pid');
+        $list = D('api_publish as c')->join('left join api_ct_users as s on s.id=c.pub_userid')->field('c.title,c.cover,c.intro,s.user_name,c.pub_time')->where(array('c.id' => $id))->find();
+        foreach ($list as $key => $value) {
+
+            if ($list[$key] === null) {
+                $list[$key] = '';
+
+            }
+        }
+        if($list){
+            echo json_encode($list);
+        }else{
+            echo 0;
+        }
     }
+
     /**
      * ajax查看目录
      * @author: 李胜辉
      * @time: 2018/10/25 09:32
      */
-    public function ajaxLookCatalog()
+    public function ajaxCatalogLook()
     {
-        $id = I('get.id');
+        $id = I('post.id');
+        $detail = D('api_publish_content as c')->join('left join api_publish as p on p.id=c.publish_id')->join('left join api_ct_users as s on s.id=c.pub_userid')->field('c.title,c.id,c.pub_time,s.user_name,c.content,p.item_type')->where(array('c.id' => $id))->find();
+        foreach ($detail as $key => $value) {
 
-        $list = D('api_publish as p')->join('left join api_publish_content as c on c.publish_id=p.id')->join('left join api_ct_users as s on s.id=p.pub_userid')->field('p.title,p.price,p.cover,p.read_num,p.collect_num,p.share_num,p.user_type,p.item_type,p.intro,c.id,c.title,s.user_name,p.pub_time')->where(array('p.id' => $id))->find();
-        $this->assign('list', $list);
-        $this->display();
+            if ($detail[$key] === null) {
+                $detail[$key] = '';
+
+            }
+        }
+        if($detail){
+            echo json_encode($detail);
+        }else{
+            echo 0;
+        }
     }
+
     /**
      * 查看目录详情
      * @author: 李胜辉
@@ -169,6 +198,7 @@ class PublishAuditController extends BaseController {
         $this->assign('list', $list);
         $this->display();
     }
+
     /**
      * 图片上传
      * @author: 李胜辉

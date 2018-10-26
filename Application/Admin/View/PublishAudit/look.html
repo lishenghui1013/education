@@ -50,7 +50,8 @@
                 </thead>
                 <tbody id="tbody">
                 <tr>
-                    <td><span id="intro" data-id="{$catalogList[0]['pid']}">{$catalogList[0]['ptitle']}</span></td>
+                    <td><span id="intro" data-id="{$list['id']}"
+                              style="cursor:pointer;color:blue;">{$list['title']}</span></td>
                     <td rowspan="{$total+1}" id="detail_content">
                         <form class="layui-form" action="" id="health_form">
 
@@ -83,7 +84,7 @@
                                 <label class="layui-form-label">简介</label>
                                 <div class="layui-input-block">
                     <textarea class="layui-textarea" id="editor" style="display: none">
-                    {:(isset($list['content'])?$list['content']:'')}
+                    {:(isset($list['intro'])?$list['intro']:'')}
                     </textarea>
                                 </div>
                             </div>
@@ -117,8 +118,8 @@
                 <foreach name="catalogList" item="vo" key="k">
                     <tr>
 
-                        <td>
-                            {$vo.title}
+                        <td data-id="{$vo.id}" class="catalog">
+                            <span style="cursor:pointer;color:blue;">{$vo.title}</span>
 
                         </td>
 
@@ -134,16 +135,262 @@
     </fieldset>
 </block>
 <block name="myScript">
+
     <script>
-        layui.use(['layedit'], function () {
-            var layedit = layui.layedit;
-            layedit.set({
-                uploadImage: {
-                    url: '{:U("upload")}' //接口url
-                    , type: 'post' //默认post
+        Date.prototype.format = function (format) {
+            var o = {
+                "M+": this.getMonth() + 1, //month
+                "d+": this.getDate(), //day
+                "h+": this.getHours(), //hour
+                "m+": this.getMinutes(), //minute
+                "s+": this.getSeconds(), //second
+                "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
+                "S": this.getMilliseconds() //millisecond
+            }
+
+            if (/(y+)/.test(format)) {
+                format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            }
+
+            for (var k in o) {
+                if (new RegExp("(" + k + ")").test(format)) {
+                    format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+                }
+            }
+            return format;
+        }
+
+        /*//使用方法
+        var now = new Date();
+        var nowStr = now.format("yyyy-MM-dd hh:mm:ss");
+        //使用方法2:
+        var testDate = new Date();
+        var testStr = testDate.format("YYYY年MM月dd日hh小时mm分ss秒");
+        alert(testStr);
+        //示例：
+        alert(new Date().Format("yyyy年MM月dd日"));
+        alert(new Date().Format("MM/dd/yyyy"));
+        alert(new Date().Format("yyyyMMdd"));
+        alert(new Date().Format("yyyy-MM-dd hh:mm:ss"));*/
+    </script>
+    <script>
+        function ajaxLooklist(pid) {
+            var object = new Object();
+            object.pid = pid;
+            $.ajax({
+                type: "POST",
+                url: "{:U('ajaxLook')}",
+                data: object,
+                async: false,
+                success: function (msg) {
+                    var msg = eval('(' + msg + ')');
+                    var html = '';
+                    if (msg) {
+                        console.log(msg.title);
+                        var str_status = '';
+                        var add_time = '';
+                        var audit_time = '';
+
+                        if (msg.pub_time != '') {
+                            add_time = new Date(msg.pub_time * 1000).format("yyyy-MM-dd");
+                        }
+
+                        html += '<div class="layui-form-item">\n' +
+                            '                            <label class="layui-form-label"> 封面</label>\n' +
+                            '                            <div class="layui-input-block">\n' +
+                            '                                <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">\n' +
+                            '                                <div class="layui-upload-list" id="demo2">\n' +
+                            '                                    <img style="width:150px;height:150px;margin-left:5px"\n' +
+                            '                                src="' + msg.cover + '">\n' +
+                            '                                </div>\n' +
+                            '                                </blockquote>\n' +
+                            '                            </div>\n' +
+                            '                        </div>\n';
+                        html += '<div class="layui-form-item">\n' +
+                            '                                <label class="layui-form-label"> 标题</label>\n' +
+                            '                                <div class="layui-input-block">\n' +
+                            '                                    <input type="text" name="title" required\n' +
+                            '                                           value="' + msg.title + '" lay-verify="required"\n' +
+                            '                                           class="layui-input" disabled\n' +
+                            '                                           style="outline:none;border:none;overflow: hidden">\n' +
+                            '                                </div>\n' +
+                            '                            </div>\n';
+                        html += '<div class="layui-form-item layui-form-text">\n' +
+                            '                                <label class="layui-form-label">简介</label>\n' +
+                            '                                <div class="layui-input-block">\n' +
+                            '                    <textarea class="layui-textarea" id="editor" style="display: none">\n' +
+                            '                    ' + msg.intro + '\n' +
+                            '                    </textarea>\n' +
+                            '                                </div>\n' +
+                            '                            </div>\n';
+                        html += '<div class="layui-form-item">\n' +
+                            '                                <label class="layui-form-label"> 发布人</label>\n' +
+                            '                                <div class="layui-input-inline">\n' +
+                            '                                    <input type="text" name="user_name" required\n' +
+                            '                                           value="' + msg.user_name + '"\n' +
+                            '                                           lay-verify="required"\n' +
+                            '                                           class="layui-input" disabled\n' +
+                            '                                           style="outline:none;border:none;overflow: hidden">\n' +
+                            '                                </div>\n' +
+                            '                                <div class="layui-inline" style="float:right;">\n' +
+                            '                                    <label class="layui-form-label"> 发布时间</label>\n' +
+                            '                                    <div class="layui-input-inline">\n' +
+                            '                                        <input type="text" name="pub_time" required\n' +
+                            '                                               value="' + add_time + '"\n' +
+                            '                                               lay-verify="required"\n' +
+                            '                                               class="layui-input" disabled\n' +
+                            '                                               style="outline:none;border:none;overflow: hidden">\n' +
+                            '                                    </div>\n' +
+                            '                                </div>\n' +
+                            '                            </div>';
+
+
+                    } else {
+                        html = '<span style="text-align:center;">暂无数据</span>'
+
+                    }
+                    $("#health_form").html(html);
+
                 }
             });
-            var index = layedit.build('editor');
+        }
+
+        function ajaxCatalogDetail(id) {
+            var object = new Object();
+            object.id = id;
+            $.ajax({
+                type: "POST",
+                url: "{:U('ajaxCatalogLook')}",
+                data: object,
+                async: false,
+                success: function (msg) {
+                    var msg = eval('(' + msg + ')');
+                    var html = '';
+                    if (msg) {
+                        var add_time = '';
+                        if (msg.pub_time != '') {
+                            add_time = new Date(msg.pub_time * 1000).format("yyyy-MM-dd");
+                        }
+
+                        html += '<div class="layui-form-item">\n' +
+                            '                                <label class="layui-form-label"> 标题</label>\n' +
+                            '                                <div class="layui-input-block">\n' +
+                            '                                    <input type="text" name="title" required\n' +
+                            '                                           value="' + msg.title + '" lay-verify="required"\n' +
+                            '                                           class="layui-input" disabled\n' +
+                            '                                           style="outline:none;border:none;overflow: hidden">\n' +
+                            '                                </div>\n' +
+                            '                            </div>\n';
+
+                        if (msg.item_type == 'PIC') {
+                            html += '<div class="layui-form-item">\n' +
+                                '                            <label class="layui-form-label"> 图片</label>\n' +
+                                '                            <div class="layui-input-block">\n' +
+                                '                            <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">\n' +
+                                '                            <div class="layui-upload-list">\n' +
+                                '                            <img style="width:150px;height:150px;margin-left:5px"\n' +
+                                '                        src="'+msg.content+'"/>\n' +
+                                '                            </div>\n' +
+                                '                            </blockquote>\n' +
+                                '                            </div>\n' +
+                                '                            </div>';
+                        }
+                        if(msg.item_type == 'FILE'){
+                            html += '                <div class="layui-form-item">\n' +
+                                '                    <label class="layui-form-label"> 文件</label>\n' +
+                                '                    <div class="layui-input-block">\n' +
+                                '                        <input type="text" name="file" value="'+msg.content+'" class="layui-input" disabled\n' +
+                                '                               style="outline:none;border:none;overflow: hidden"/>\n' +
+                                '                    </div>\n' +
+                                '                </div>\n';
+                        }
+                        if(msg.item_type == 'ART'){
+                            html += '                <div class="layui-form-item layui-form-text">\n' +
+                                '                    <label class="layui-form-label">内容</label>\n' +
+                                '                    <div class="layui-input-block">\n' +
+                                '                    <textarea class="layui-textarea" id="editor" style="display: none">\n' +
+                                msg.content+
+                                '                    </textarea>\n' +
+                                '                    </div>\n' +
+                                '                </div>\n';
+                        }
+                        if(msg.item_type == 'RAD'||msg.item_type == 'SRAD'){
+                            html += '                <div class="layui-form-item">\n' +
+                                '                    <label class="layui-form-label">视频：</label>\n' +
+                                '                    <div class="layui-upload-list">\n' +
+                                '                            <video width="320" height="240" controls autoplay>\n' +
+                                '                                <source src="'+msg.content+'" type="video/ogg">\n' +
+                                '                                <source src="'+msg.content+'" type="video/mp4">\n' +
+                                '                                <source src="'+msg.content+'" type="video/webm">\n' +
+                                '                                <object data="'+msg.content+'" width="320" height="240">\n' +
+                                '                                    <embed width="320" height="240" src="'+msg.content+'">\n' +
+                                '                                </object>\n' +
+                                '                            </video>\n' +
+                                '                    </div>\n' +
+                                '                </div>\n';
+                        }
+
+
+                        html += '<div class="layui-form-item">\n' +
+                            '                                <label class="layui-form-label"> 发布人</label>\n' +
+                            '                                <div class="layui-input-inline">\n' +
+                            '                                    <input type="text" name="user_name" required\n' +
+                            '                                           value="' + msg.user_name + '"\n' +
+                            '                                           lay-verify="required"\n' +
+                            '                                           class="layui-input" disabled\n' +
+                            '                                           style="outline:none;border:none;overflow: hidden">\n' +
+                            '                                </div>\n' +
+                            '                                <div class="layui-inline" style="float:right;">\n' +
+                            '                                    <label class="layui-form-label"> 发布时间</label>\n' +
+                            '                                    <div class="layui-input-inline">\n' +
+                            '                                        <input type="text" name="pub_time" required\n' +
+                            '                                               value="' + add_time + '"\n' +
+                            '                                               lay-verify="required"\n' +
+                            '                                               class="layui-input" disabled\n' +
+                            '                                               style="outline:none;border:none;overflow: hidden">\n' +
+                            '                                    </div>\n' +
+                            '                                </div>\n' +
+                            '                            </div>';
+
+
+                    } else {
+                        html = '<span style="text-align:center;">暂无数据</span>'
+
+                    }
+                    $("#health_form").html(html);
+
+                }
+            });
+        }
+
+        layui.use(['form', 'layer', 'laydate', 'layedit'], function () {
+            var form = layui.form(),
+                laydate = layui.laydate;
+
+
+            var layedit = layui.layedit;
+            var index = layedit.build('editor', {
+                tool: []
+                , hideTool: []
+            });
+            $("#intro").on('click', function () {
+                var id = $(this).attr('data-id');
+                ajaxLooklist(id)
+                var index = layedit.build('editor', {
+                    tool: []
+                    , hideTool: []
+                });
+            });
+            $(".catalog").on('click', function () {
+                var id = $(this).attr('data-id');
+                console.log(id);
+                ajaxCatalogDetail(id);
+                var index = layedit.build('editor', {
+                    tool: []
+                    , hideTool: []
+                });
+            });
+
         });
     </script>
 
