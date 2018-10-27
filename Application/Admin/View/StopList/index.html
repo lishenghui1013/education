@@ -8,13 +8,15 @@
                     <div class="layui-inline">
                         <label class="layui-form-label"> 姓名</label>
                         <div class="layui-input-inline" style="width: 300px;">
-                            <input type="text" name="user_name" id="user_name" placeholder="请输入用户名" class="layui-input" value="">
+                            <input type="text" name="user_name" id="user_name" placeholder="请输入用户名" class="layui-input"
+                                   value="">
                         </div>
                     </div>
                     <div class="layui-inline">
                         <label class="layui-form-label"> 手机号</label>
                         <div class="layui-input-inline" style="width: 300px;">
-                            <input type="text" name="phone" id="phone" placeholder="请输入手机号" class="layui-input" value="">
+                            <input type="text" name="phone" id="phone" placeholder="请输入手机号" class="layui-input"
+                                   value="">
                         </div>
                     </div>
                     <div class="layui-inline">
@@ -108,12 +110,12 @@
 
     </script>
     <script>
-        function ajaxlist(object){
+        function ajaxlist(object) {
             $.ajax({
                 type: "POST",
                 url: "{:U('ajaxGetIndex')}",
                 data: object,
-                async:false,
+                async: false,
                 success: function (msg) {
                     var html = '';
                     var data = msg.data;
@@ -169,7 +171,8 @@
                 }
             });
         }
-        function pagenum(){
+
+        function pagenum() {
             var curr = $("#curr").attr('value'); //获取当前分页数
             var limit = $("#limit").val(); //每页显示条数
             var total = $("#total").val(); //总条数
@@ -185,8 +188,8 @@
                 cont: 'demo'
                 , curr: curr
                 , pages: page //控制器转过来的页数
-                ,groups:5
-                ,first:'首页'
+                , groups: 5
+                , first: '首页'
                 , jump: function (obj, first) {
                     if (!first) {  //跳转必须放在这个里边，不然无限刷新
 
