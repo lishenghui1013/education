@@ -1,7 +1,7 @@
 <extend name="Public/base"/>
 <block name="main">
     <fieldset class="layui-elem-field">
-        <legend>学生列表</legend>
+        <legend>学生管理 - 学生列表</legend>
         <div class="layui-field-box">
             <form class="layui-form" action="" method="post">
                 <div class="layui-form-item">
@@ -108,7 +108,7 @@
                                 + data[x].balance + '</td><td>' + add_time + '</td><td>正常</td><td>'
                                 + '<span class="layui-btn confirm" data-info="你确定要禁用该用户吗？" data-id="' + data[x].id + '"data-url="{:U(\'close\')}">禁用</span>' +
                                 '<span class="layui-btn add layui-btn-normal" data-id="' + data[x].id + '"data-url="{:U(\'addNotice\')}">发通知</span>' +
-                                '<a href="{:substr(U(\'Admin/Student/noticeList/\'),0,-5)}'+'/id/'+data[x].id+'" target="_self" class="layui-btn look layui-btn-normal">通知记录</a></td></tr>'
+                                '<a href="{:substr(U(\'Admin/Student/noticeList/\'),0,-5)}'+'/user_id/'+data[x].id+'" target="_self" class="layui-btn look layui-btn-normal">通知记录</a></td></tr>'
                         }
 
                     } else {

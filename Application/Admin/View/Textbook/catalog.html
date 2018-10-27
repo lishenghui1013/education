@@ -1,13 +1,9 @@
 <extend name="Public/base"/>
 
-<!--<script type="text/javascript" src="__PUBLIC__/dataTable/jquery.dataTables.min.js"></script>-->
-
 <block name="main">
-    <!--<link rel="stylesheet" href="__PUBLIC__/css/dataTable.css">-->
-    <!--<link href="__VENDOR__/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" media="screen" type="text/css"/>-->
 
     <fieldset class="layui-elem-field">
-        <legend>课本目录列表</legend>
+        <legend>内容管理 - <a href="{:U('index')}" target="_self" style="color:blue;cursor:pointer;">课本列表</a> - 课本目录列表</legend>
         <span class="layui-btn layui-btn-normal api-add" style="margin-left:15px;" data-url="{:U('addCatalog', array('textbook_id' => $textbook_id))}"><i class="layui-icon">&#xe608;</i> 新增</span>
         <span class="layui-btn layui-btn-normal api-add" style="margin-left:30px;"><i class="layui-icon">&#xe608;</i> 批量添加</span>
         <div class="layui-field-box">

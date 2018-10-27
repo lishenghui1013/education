@@ -16,53 +16,61 @@ class StopListController extends BaseController {
      */
     public function index()
     {
+        $this->display();
+    }
+    /**
+     * ajax列表页
+     * @author: 李胜辉
+     * @time: 2018/10/22 17:32
+     */
+    public function ajaxGetIndex()
+    {
+        $getInfo = I('post.');
+        $curr = $getInfo['curr'] ? $getInfo['curr'] : 1;//当前页
+        $limit = $getInfo['limit'] ? $getInfo['limit'] : 1;//每页显示条数
+        $start = ($curr - 1) * $limit;//开始
+        $user_name = $getInfo['user_name'] ? $getInfo['user_name'] : '';//查询关键字
+        $phone = $getInfo['phone'] ? $getInfo['phone']: '';//查询手机号
 
-        $pagenum = I('post.pagenum/d', 1);//每页显示条数
-        $currentpage = I('get.p/d', 1);//当前页码
-        $user_name = I('post.user_name')!==''?I('post.user_name'):(I('get.user_name')!==''?I('get.user_name'):'');//用户名
-        $phone = I('post.phone')!==''?I('post.phone'):(I('get.phone')!==''?I('get.phone'):'');//电话
-        $map['use_status'] = 2;//禁用状态
+        $where['use_status'] = 2;//禁用状态
         if ($user_name != '') {
-            $map['user_name'] = $user_name;
+            $where['user_name'] = $user_name;
         }
         if ($phone != '') {
-            $map['phone'] = $phone;
+            $where['phone'] = $phone;
         }
+
         //查询总条数
-        $count = D('api_users')->where($map)->count();//查询满足要求的总记录数
-
-        $list = D('api_users')->field('id,user_name,phone,balance,add_time,use_status')->where($map)->order('id')->page($currentpage . ',' . $pagenum)->select();
-
-        $Page = new \Think\Page($count, $pagenum);// 实例化分页类 传入总记录数和每页显示的记录数
-        $Page->lastSuffix = false;//最后一页不显示为总页数
-        $Page->setConfig('header', '<li class="disabled hwh-page-info"><a>共<em>%TOTAL_ROW%</em>条  <em>%NOW_PAGE%</em>/%TOTAL_PAGE%页</a></li>');
-        $Page->setConfig('prev', '上一页');
-        $Page->setConfig('next', '下一页');
-        $Page->setConfig('last', '末页');
-        $Page->setConfig('first', '首页');
-        $Page->setConfig('theme', '%HEADER% %FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END%');
-        //分页跳转的时候保证查询条件
-        foreach ($map as $key => $val) {
-            $key = implode(explode('.',$key));
-            if($key=='_string'){
-
-                $temp_arr = explode(' ',$map[$key]);
-                foreach($temp_arr as $k=>$v){
-                    $temp_arr[$key] = trim($v);
+        $total = D('api_users')->where($where)->count();//查询满足要求的总记录数
+        $info = D('api_users')->field('id,user_name,phone,balance,add_time,use_status')->where($where)->order('id')->limit($start, $limit)->select();
+        foreach ($info as $keys => $values) {
+            foreach ($values as $key => $value) {
+                if ($values[$key] === null) {
+                    $info[$keys][$key] = '';
                 }
-                $key = implode(explode('.',$temp_arr['0']));
-                $val = substr($temp_arr['2'],2,-2);
-
             }
-            $Page->parameter[$key] = urlencode($val);
-
         }
-        $show = $Page->show();// 分页显示输出
-        $this->assign('list', $list);//查询到的数据
-        $this->assign('page', $show);// 赋值分页输出
-        $this->assign('user_name', $user_name);//查询姓名
-        $this->assign('phone', $phone);// 查询手机号
-        $this->display();
+        if ($info) {
+            $data = array(
+                'limit' => $limit,
+                'curr' => $curr,
+                'add_time' => $getInfo['add_time'],
+                'status' => 'success',//查询状态:成功为success,失败为fail
+                'total' => $total,
+                'data' => $info
+            );
+        } else {
+            $data = array(
+                'limit' => $limit,
+                'curr' => $curr,
+                'add_time' => $getInfo['add_time'],
+                'status' => 'fail',
+                'total' => $total,
+                'data' => $info
+            );
+        }
+
+        $this->ajaxReturn($data, 'json');
     }
 
     /**

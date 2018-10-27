@@ -101,7 +101,6 @@ class StudentController extends BaseController {
             $this->ajaxSuccess('添加成功');
         }
     }
-
     /**
      * 通知列表页
      * @author: 李胜辉
@@ -109,30 +108,52 @@ class StudentController extends BaseController {
      */
     public function noticeList()
     {
-
-        $pagenum = I('post.pagenum/d', 1);//每页显示条数
-        $currentpage = I('get.p/d', 1);//当前页码
-        $map['n.to_userid'] = I('get.user_id');
-        $map['n.del_status'] = 2;
+        $this->display();
+    }
+    /**
+     * ajax获取通知列表页
+     * @author: 李胜辉
+     * @time: 2018/10/22 17:32
+     */
+    public function ajaxNoticeList()
+    {
+        $getInfo = I('post.');
+        $curr = $getInfo['curr'] ? $getInfo['curr'] : 1;//当前页
+        $limit = $getInfo['limit'] ? $getInfo['limit'] : 1;//每页显示条数
+        $start = ($curr - 1) * $limit;//开始
+        $where = array('n.del_status'=>2);
 
         //查询总条数
-        $count = D('api_notice as n')->join('left join api_users as u on u.id=n.to_userid')->join('left join api_user as a on a.id=n.send_userid')->where($map)->count();//查询满足要求的总记录数
+        $total = D('api_notice as n')->join('left join api_users as u on u.id=n.to_userid')->join('left join api_user as a on a.id=n.send_userid')->where($where)->count();//查询满足要求的总记录数
+        $info = D('api_notice as n')->join('left join api_users as u on u.id=n.to_userid')->join('left join api_user as a on a.id=n.send_userid')->field('n.id,u.user_name,n.to_userid,n.title,n.content,n.del_status,n.read_status,n.read_time,n.send_userid,n.add_time,a.username')->where($where)->order('id desc')->order('n.id')->limit($start, $limit)->select();
+       foreach ($info as $keys => $values) {
+            foreach ($values as $key => $value) {
+                if ($values[$key] === null) {
+                    $info[$keys][$key] = '';
+                }
+            }
+        }
+        if ($info) {
+            $data = array(
+                'limit' => $limit,
+                'curr' => $curr,
+                'add_time' => $getInfo['add_time'],
+                'status' => 'success',//查询状态:成功为success,失败为fail
+                'total' => $total,
+                'data' => $info
+            );
+        } else {
+            $data = array(
+                'limit' => $limit,
+                'curr' => $curr,
+                'add_time' => $getInfo['add_time'],
+                'status' => 'fail',
+                'total' => $total,
+                'data' => $info
+            );
+        }
 
-        $list = D('api_notice as n')->join('left join api_users as u on u.id=n.to_userid')->join('left join api_user as a on a.id=n.send_userid')->field('n.id,u.user_name,n.to_userid,n.title,n.content,n.del_status,n.read_status,n.read_time,n.send_userid,n.add_time,a.username')->where($map)->order('id desc')->page($currentpage . ',' . $pagenum)->select();
-
-        $Page = new \Think\Page($count, $pagenum);// 实例化分页类 传入总记录数和每页显示的记录数
-        $Page->lastSuffix = false;//最后一页不显示为总页数
-        $Page->setConfig('header', '<li class="disabled hwh-page-info"><a>共<em>%TOTAL_ROW%</em>条  <em>%NOW_PAGE%</em>/%TOTAL_PAGE%页</a></li>');
-        $Page->setConfig('prev', '上一页');
-        $Page->setConfig('next', '下一页');
-        $Page->setConfig('last', '末页');
-        $Page->setConfig('first', '首页');
-        $Page->setConfig('theme', '%HEADER% %FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END%');
-
-        $show = $Page->show();// 分页显示输出
-        $this->assign('list', $list);//查询到的数据
-        $this->assign('page', $show);// 赋值分页输出
-        $this->display();
+        $this->ajaxReturn($data, 'json');
     }
 
 
