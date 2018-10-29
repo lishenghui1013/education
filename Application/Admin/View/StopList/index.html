@@ -26,6 +26,8 @@
                     </div>
                 </div>
             </form>
+            <input type="hidden" name="user_names" id="user_names" value=""/>
+            <input type="hidden" name="phones" id="phones" value=""/>
             <input type="hidden" name="limit" id="limit" value=""/>
             <input type="hidden" name="curr" id="curr" value=""/>
             <input type="hidden" name="total" id="total" value=""/>
@@ -41,7 +43,7 @@
                     <th>操作</th>
                 </tr>
                 </thead>
-                <tbody>
+                <!--<tbody>
                 <volist name="list" id="vo">
                     <tr>
                         <td>{$vo['id']}</td>
@@ -70,7 +72,7 @@
                         </td>
                     </tr>
                 </volist>
-                </tbody>
+                </tbody>-->
 
                 <tbody id="tbody">
 
@@ -195,8 +197,8 @@
 
                         var object = new Object();
                         object.curr = obj.curr;
-                        object.user_name = $("#user_name").val();
-                        object.phone = $("#phone").val();
+                        object.user_name = $("#user_names").val();
+                        object.phone = $("#phones").val();
                         ajaxlist(object);
                     }
                 }
@@ -210,10 +212,10 @@
             pagenum();
 
             form.on('submit(search)', function (data) {
+                $("#user_names").val($("#user_name").val());
+                $("#phones").val($("#phone").val());
                 var object = data.field;
                 object.curr = 1;
-                object.user_name = $("#user_name").val();
-                object.phone = $("#phone").val();
                 ajaxlist(object);
                 pagenum();
                 return false;
