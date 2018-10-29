@@ -40,6 +40,9 @@
                     </div>
                 </div>
             </form>
+            <input type="hidden" name="titles" id="titles" value=""/>
+            <input type="hidden" name="add_times" id="add_times" value=""/>
+            <input type="hidden" name="audit_statuss" id="audit_statuss" value=""/>
             <input type="hidden" name="limit" id="limit" value=""/>
             <input type="hidden" name="curr" id="curr" value=""/>
             <input type="hidden" name="total" id="total" value=""/>
@@ -203,8 +206,9 @@
 
                         var object = new Object();
                         object.curr = obj.curr;
-                        object.add_time = $("#add_time").val();
-                        object.audit_status = $("#audit_status").val();
+                        object.title = $("#titles").val();
+                        object.add_time = $("#add_times").val();
+                        object.audit_status = $("#audit_statuss").val();
                         ajaxlist(object);
                     }
                 }
@@ -218,7 +222,9 @@
             pagenum();
 
             form.on('submit(search)', function (data) {
-                console.log('dianji');
+                $("#titles").val($("#title").val());
+                $("#add_times").val($("#add_time").val());
+                $("#audit_statuss").val($("#audit_status").val());
                 var object = data.field;
                 object.curr = 1;
                 ajaxlist(object);

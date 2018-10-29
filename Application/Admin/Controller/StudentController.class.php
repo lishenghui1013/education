@@ -108,6 +108,9 @@ class StudentController extends BaseController {
      */
     public function noticeList()
     {
+        $user_id = I('get.user_id');
+        $list = D('api_users')->where(array('id'=>$user_id))->getField('user_name');
+        $this->assign('user_name',$list);
         $this->display();
     }
     /**
@@ -121,7 +124,17 @@ class StudentController extends BaseController {
         $curr = $getInfo['curr'] ? $getInfo['curr'] : 1;//当前页
         $limit = $getInfo['limit'] ? $getInfo['limit'] : 1;//每页显示条数
         $start = ($curr - 1) * $limit;//开始
-        $where = array('n.del_status'=>2);
+        $add_time = $getInfo['add_time'] ? strtotime($getInfo['add_time']) : '';//查询的时间
+        $read_status = $getInfo['read_status'] ? $getInfo['read_status'] : '';//查询的阅读状态
+
+        $where = array('to_userid'=>I('post.user_id'));
+        if ($add_time != '') {
+            $big_time = $add_time + 24 * 60 * 60;
+            $where['n.add_time'] = array(array('elt', $big_time),array('egt', $add_time));
+        }
+        if ($read_status != '') {
+            $where['n.read_status'] = $read_status;
+        }
 
         //查询总条数
         $total = D('api_notice as n')->join('left join api_users as u on u.id=n.to_userid')->join('left join api_user as a on a.id=n.send_userid')->where($where)->count();//查询满足要求的总记录数

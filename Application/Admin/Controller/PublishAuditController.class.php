@@ -11,6 +11,11 @@ namespace Admin\Controller;
 
 class PublishAuditController extends BaseController
 {
+    /**
+     * 列表页
+     * @author: 李胜辉
+     * @time: 2018/10/29 08:32
+     */
     public function index()
     {
         $this->display();

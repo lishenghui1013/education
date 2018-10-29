@@ -180,12 +180,6 @@ class KnowledgeController extends BaseController
      */
     public function update()
     {
-        //获取网站根目录$url
-        $PHP_SELF = $_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_NAME'];
-        $str = substr($PHP_SELF, 1);
-        $url = 'http://' . $_SERVER['HTTP_HOST'] . '/' . substr($str, 0, strpos($str, '/') + 1);
-        //拼接图片url地址
-
         if (IS_GET) {
             $id = I('get.id');
             $listInfo = D('api_article_publish')->where("id='$id'")->find();
@@ -198,7 +192,6 @@ class KnowledgeController extends BaseController
             $this->assign('class_list', $class_list);
             $this->assign('versions_list', $versions_list);
             $this->assign('subject_list', $subject_list);
-            //print_r($img);
             $this->assign('detail', $listInfo);
             $this->display('add');
         } elseif (IS_POST) {
