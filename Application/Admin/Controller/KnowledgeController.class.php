@@ -19,79 +19,83 @@ class KnowledgeController extends BaseController
      */
     public function index()
     {
-
-        $pagenum = I('post.pagenum/d', 1);//每页显示条数
-        $currentpage = I('get.p/d', 1);//当前页码
-        $start = ($currentpage - 1) * $pagenum;//开始查询项
-        $class = I('post.class_id')!==''?I('post.class_id'):(I('get.cid')!==''?I('get.cid'):'');//级别
-        $subject = I('post.subject_id')!==''?I('post.subject_id'):(I('get.sid')!==''?I('get.sid'):'');//科目
-        $versions = I('post.versions_id')!==''?I('post.versions_id'):(I('get.vid')!==''?I('get.vid'):'');//版本
-        $title = I('post.title')!==''?I('post.title'):(I('get.atitle')!==''?I('get.atitle'):'');//标题
-
-
-        $map['article_type'] = 'POINT';
-        if ($class != '') {
-            $map['c.id'] = $class;
-        }
-        if ($subject != '') {
-            $map['s.id'] = $subject;
-        }
-        if ($versions != '') {
-            $map['v.id'] = $versions;
-        }
-        if ($title != '') {
-            $map['_string'] = 'a.title like "%' . $title . '%"';
-        }
-        //查询总条数
-        $count = D('api_article_publish as a')->join('left join api_class as c on c.id=a.class_id')->join('left join api_subject as s on s.id=a.subject_id')->join('left join api_versions as v on v.id=a.versions_id')->join('left join api_user as u on u.id=a.pub_userid')->where($map)->count();//查询满足要求的总记录数
-
-        $list = D('api_article_publish as a')->join('left join api_class as c on c.id=a.class_id')->join('left join api_subject as s on s.id=a.subject_id')->join('left join api_versions as v on v.id=a.versions_id')->join('left join api_user as u on u.id=a.pub_userid')->field('a.id,a.title,a.content,a.versions_id,a.class_id,a.subject_id,a.pub_time,a.show_status,a.read_num,a.collect_num,a.share_num,u.username,v.versions_name,c.class_name,s.subject_name')->where($map)->order('a.id desc')->page($currentpage . ',' . $pagenum)->select();
-
         //查询级别列表
         $class_list = D('api_class')->field('id,class_name')->order('id asc')->select();
         //查询版本列表
         $versions_list = D('api_versions')->field('id,versions_name')->order('id asc')->select();
         //查询科目列表
         $subject_list = D('api_subject')->field('id,subject_name')->order('id asc')->select();
-
-        $Page = new \Think\Page($count, $pagenum);// 实例化分页类 传入总记录数和每页显示的记录数
-        $Page->lastSuffix = false;//最后一页不显示为总页数
-        $Page->setConfig('header', '<li class="disabled hwh-page-info"><a>共<em>%TOTAL_ROW%</em>条  <em>%NOW_PAGE%</em>/%TOTAL_PAGE%页</a></li>');
-        $Page->setConfig('prev', '上一页');
-        $Page->setConfig('next', '下一页');
-        $Page->setConfig('last', '末页');
-        $Page->setConfig('first', '首页');
-        $Page->setConfig('theme', '%HEADER% %FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END%');
-//分页跳转的时候保证查询条件
-        foreach ($map as $key => $val) {
-            $key = implode(explode('.',$key));
-            if($key=='_string'){
-
-                $temp_arr = explode(' ',$map[$key]);
-                foreach($temp_arr as $k=>$v){
-                    $temp_arr[$key] = trim($v);
-                }
-                $key = implode(explode('.',$temp_arr['0']));
-                $val = substr($temp_arr['2'],2,-2);
-
-            }
-            $Page->parameter[$key] = urlencode($val);
-
-        }
-        $show = $Page->show();// 分页显示输出
         $this->assign('class_list', $class_list);//级别列表
         $this->assign('versions_list', $versions_list);//版本列表
         $this->assign('subject_list', $subject_list);//科目列表
-        $this->assign('class', $class);//级别id
-        $this->assign('versions', $versions);//版本id
-        $this->assign('subject', $subject);//科目id
-        $this->assign('title', $title);//查询题目关键字
-        /*$this->assign('pagenum',$pagenum);//每页显示条数
-        $this->assign('pages',$count);//总条数*/
-        $this->assign('list', $list);//查询到的数据
-        $this->assign('page', $show);// 赋值分页输出
-        /*$this->assign('parameter', $Page->parameter);// 赋值分页输出*/
         $this->display();
+    }
+    /**
+     * ajax列表页
+     * @author: 李胜辉
+     * @time: 2018/10/17 17:32
+     */
+    public function ajaxGetIndex()
+    {
+        $getInfo = I('post.');
+        $curr = $getInfo['curr'] ? $getInfo['curr'] : 1;//当前页
+        $limit = $getInfo['limit'] ? $getInfo['limit'] : 1;//每页显示条数
+        $start = ($curr-1) * $limit;//开始
+
+        $class = $getInfo['class_id'] ? $getInfo['class_id'] : '';//查询的时间
+        $subject = $getInfo['subject_id'] ? $getInfo['subject_id'] : '';//查询的审核状态
+        $versions = $getInfo['versions_id'] ? $getInfo['versions_id'] : '';//查询的时间
+        $title = $getInfo['title'] ? $getInfo['title'] : '';//查询的审核状态
+        $where = array();
+
+        $where['article_type'] = 'POINT';
+        if ($class != '') {
+            $where['c.id'] = $class;
+        }
+        if ($subject != '') {
+            $where['s.id'] = $subject;
+        }
+        if ($versions != '') {
+            $where['v.id'] = $versions;
+        }
+        if ($title != '') {
+            $where['a.title'] = array('like','%' . $title . '%');
+        }
+        //查询总条数
+        $total = D('api_article_publish as a')->join('left join api_class as c on c.id=a.class_id')->join('left join api_subject as s on s.id=a.subject_id')->join('left join api_versions as v on v.id=a.versions_id')->join('left join api_user as u on u.id=a.pub_userid')->where($where)->count();//查询满足要求的总记录数
+        $info = D('api_article_publish as a')->join('left join api_class as c on c.id=a.class_id')->join('left join api_subject as s on s.id=a.subject_id')->join('left join api_versions as v on v.id=a.versions_id')->join('left join api_user as u on u.id=a.pub_userid')->field('a.id,a.title,a.content,a.versions_id,a.class_id,a.subject_id,a.pub_time,a.show_status,a.read_num,a.collect_num,a.share_num,u.username,v.versions_name,c.class_name,s.subject_name')->where($where)->order('a.id desc')->limit($start, $limit)->select();
+        foreach($info as $keys=>$values){
+
+            foreach($values as $key=>$value){
+
+                if($values[$key]===null){
+                    $info[$keys][$key] = '';
+
+                }
+            }
+
+        }
+        if($info){
+            $data = array(
+                'limit'=>$limit,
+                'curr'=>$curr,
+                'add_time'=>$getInfo['add_time'],
+                'status'=>'success',
+                'total' => $total,
+                'data' => $info
+            );
+        }else{
+            $data = array(
+                'limit'=>$limit,
+                'curr'=>$curr,
+                'add_time'=>$getInfo['add_time'],
+                'status'=>'fail',
+                'total' => $total,
+                'data' => $info
+            );
+        }
+
+        $this->ajaxReturn($data, 'json');
     }
 
     /**
@@ -149,8 +153,7 @@ class KnowledgeController extends BaseController
         if (IS_POST) {
             $data = I('post.');
             $data['pub_userid'] = session('uid');
-            /*print_r($data);die;*/
-            $data['show_status'] = $data['show_status'] == 1 ? 1 : 2;
+            $data['show_status'] = $data['show_status'] == 'on' ? 1 : 2;
             $data['pub_time'] = time();
             $res = D('api_article_publish')->add($data);
             if ($res === false) {
@@ -224,7 +227,7 @@ class KnowledgeController extends BaseController
             $upload->exts = array('jpg', 'gif', 'png', 'jpeg'); // 设置附件上传类型
             $upload->rootPath = THINK_PATH;          // 设置附件上传根目录
             $upload->savePath = '../Public/';    // 设置附件上传（子）目录
-            $upload->subName = 'uploads/articlePublish/knowledge/';  //子文件夹
+            $upload->subName = 'uploads/articlePublish/knowledge';  //子文件夹
             $upload->replace = true;  //同名文件是否覆盖
             // 上传文件
             $images = $upload->upload();
@@ -241,6 +244,49 @@ class KnowledgeController extends BaseController
             }
         } else {
             echo json_encode(2);
+        }
+    }
+
+    /**
+     * layui编辑器图片上传
+     * @author: 李胜辉
+     * @time: 2018/10/29 17:32
+     */
+    public function uploads()
+    {
+        //获取网站根目录地址$url
+        $PHP_SELF = $_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_NAME'];
+        $str = substr($PHP_SELF, 1);
+        $url = 'http://' . $_SERVER['HTTP_HOST'] . '/' . substr($str, 0, strpos($str, '/') + 1);
+        if (!empty($_FILES)) {
+            $upload = new \Think\Upload();   // 实例化上传类
+            $upload->maxSize = 3145728;    // 设置附件上传大小
+            $upload->exts = array('jpg', 'gif', 'png', 'jpeg'); // 设置附件上传类型
+            $upload->rootPath = THINK_PATH;          // 设置附件上传根目录
+            $upload->savePath = '../Public/';    // 设置附件上传（子）目录
+            $upload->subName = 'uploads/articlePublish/knowledge/editor';  //子文件夹
+            $upload->replace = true;  //同名文件是否覆盖
+            // 上传文件
+            $images = $upload->upload();
+            //return $images;
+            //Log::record('$images', Log::DEBUG);die;
+            //判断是否有图
+            if ($images) {
+                $info['code'] = 0;
+                $info['data']['src'] = $url . substr($images['file']['savepath'], 3) . $images['file']['savename'];//拼接图片地址
+                $info['msg'] = '上传成功';
+                echo json_encode($info);
+            } else {
+                $info['code'] = 1;
+                $info['data']['src'] = '';
+                $info['msg'] = '上传失败';
+                echo json_encode($info);
+            }
+        } else {
+            $info['code'] = 2;
+            $info['data']['src'] = '';
+            $info['msg'] = '没有选择上传的图片';
+            echo json_encode($info);
         }
     }
 

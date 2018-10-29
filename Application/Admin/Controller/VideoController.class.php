@@ -145,7 +145,7 @@ class VideoController extends BaseController {
             $data = I('post.');
             $data['pub_userid'] = session('uid');
             /*print_r($data);die;*/
-            $data['show_status'] = $data['show_status'] == 1 ? 1 : 2;
+            $data['show_status'] = $data['show_status'] == 'on' ? 1 : 2;
             $data['pub_time'] = time();
             $res = D('api_video')->add($data);
             if ($res === false) {

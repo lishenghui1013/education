@@ -1,17 +1,14 @@
 <extend name="Public/base"/>
 <block name="main">
-
     <fieldset class="layui-elem-field">
-        <legend>知识点列表</legend>
+        <legend>内容管理 - 知识点列表</legend>
         <span class="layui-btn layui-btn-normal api-add" style="margin-left:15px;"><i class="layui-icon">&#xe608;</i> 新增</span>
         <span class="layui-btn layui-btn-normal api-add" style="margin-left:30px;"><i class="layui-icon">&#xe608;</i> 批量添加</span>
         <div class="layui-field-box">
-
-
             <form class="layui-form" action="" method="post">
                 <div class="layui-form-item">
                     <div class="layui-inline">
-                        <select name="class_id">
+                        <select name="class_id" id="class_id">
                             <option value="">请选择级别</option>
                             <foreach name="class_list" item="vo" key="k">
                                 <if condition="$vo.id eq $class">
@@ -26,7 +23,7 @@
                         </select>
                     </div>
                     <div class="layui-inline">
-                        <select name="subject_id">
+                        <select name="subject_id" id="subject_id">
                             <option value="">请选择科目</option>
                             <foreach name="subject_list" item="vo" key="k">
                                 <if condition="$vo['id'] eq $subject">
@@ -38,7 +35,7 @@
                         </select>
                     </div>
                     <div class="layui-inline">
-                        <select name="versions_id">
+                        <select name="versions_id" id="versions_id">
                             <option value="">请选择版本</option>
                             <foreach name="versions_list" item="vo" key="k">
                                 <if condition="$vo['id'] eq $versions">
@@ -52,22 +49,25 @@
 
                     <div class="layui-inline">
                         <div class="layui-input-inline" style="width: 300px;">
-                            <input type="text" name="title" placeholder="请输入标题关键词" class="layui-input" value="{$title}">
+                            <input type="text" name="title" placeholder="请输入标题关键词" class="layui-input" value="" id="title">
                         </div>
                     </div>
-
-                    <!--<div class="layui-inline">
-                        <span class="layui-btn sub">查询</span>
-                    </div>-->
-
                     <div class="layui-inline">
-                        <button class="layui-btn" lay-submit lay-filter="formDemo">
+                        <button class="layui-btn" lay-submit lay-filter="search">
                             查询
                         </button>
                     </div>
 
                 </div>
             </form>
+            <input type="hidden" name="class_ids" id="class_ids" value=""/>
+            <input type="hidden" name="subject_ids" id="subject_ids" value=""/>
+            <input type="hidden" name="versions_ids" id="versions_ids" value=""/>
+            <input type="hidden" name="titles" id="titles" value=""/>
+            <input type="hidden" name="limit" id="limit" value=""/>
+            <input type="hidden" name="curr" id="curr" value=""/>
+            <input type="hidden" name="total" id="total" value=""/>
+
             <table class="layui-table" lay-even>
                 <thead>
                 <tr>
@@ -86,52 +86,12 @@
                     <th>操作</th>
                 </tr>
                 </thead>
-                <tbody>
-                <volist name="list" id="vo">
-                    <tr>
-                        <td>{$vo['id']}</td>
-                        <td>{$vo['title']}</td>
-                        <td>{$vo['content']}</td>
-                        <td>{$vo['class_name']}</td>
-                        <td>{$vo['subject_name']}</td>
-                        <td>{$vo['versions_name']}</td>
-                        <td>{$vo['pub_time']|date="Y-m-d H:i:s",###}</td>
-                        <td>{$vo['username']}</td>
-                        <td>{$vo['read_num']}</td>
-                        <td>{$vo['collect_num']}</td>
-                        <td>{$vo['share_num']}</td>
-                        <if condition="$vo['show_status'] eq 1">
-                            <td style="color:green;">
-                                上线
-                            </td>
-                            <else/>
-                            <td style="color:red;">
-                                下线
-                            </td>
-                        </if>
 
-                        <td>
-                            <if condition="$vo['show_status'] eq 2">
-                                <span class="layui-btn confirm" data-info="你确定上线当前项么？" data-id="{$vo['id']}"
-                                      data-url="{:U('open')}">上线</span>
-                                <else/>
-                                <span class="layui-btn layui-btn-danger confirm" data-info="你确定下线当前项么？"
-                                      data-id="{$vo['id']}" data-url="{:U('close')}">下线</span>
-                            </if>
-                            <span data-url="{:U('update', array('id' => $vo['id']))}"
-                                  class="layui-btn edit layui-btn-normal">编辑</span>
-                            <span class="layui-btn layui-btn-danger look" data-url="{:U('look', array('id' => $vo['id']))}">查看</span>
-                        </td>
-                    </tr>
-                </volist>
+                <tbody id="tbody">
+
                 </tbody>
             </table>
-            <link href="__VENDOR__/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" media="screen"
-                  type="text/css"/>
-
-            <ul class="pagination">
-                {$page}
-            </ul>
+            <div id="demo"></div>
         </div>
 
 
@@ -141,75 +101,189 @@
 
 
 <block name="myScript">
-
-
     <script>
+        Date.prototype.format = function (format) {
+            var o = {
+                "M+": this.getMonth() + 1, //month
+                "d+": this.getDate(), //day
+                "h+": this.getHours(), //hour
+                "m+": this.getMinutes(), //minute
+                "s+": this.getSeconds(), //second
+                "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
+                "S": this.getMilliseconds() //millisecond
+            }
 
-        layui.use(['layer','form','laypage'], function () {
-            var form = layui.form(),
-                layer = layui.layer;
-            //监听提交
-           /* form.on('submit(formDemo)', function(data){
-                layer.msg(JSON.stringify(data.field));
-                return true;
-            });*/
+            if (/(y+)/.test(format)) {
+                format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            }
 
+            for (var k in o) {
+                if (new RegExp("(" + k + ")").test(format)) {
+                    format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+                }
+            }
+            return format;
+        }
 
-            $('.api-add').on('click', function () {
-                var index = layer.open({
-                    title: '添加记录',
-                    type: 2,
-                    area: ['60%', '100%'],
-                    maxmin: true,
-                    content: '{:U("add")}'
-                });
-
-            });
-            $('.edit').on('click', function () {
-                var ownObj = $(this);
-                layer.open({
-                    title: '编辑',
-                    type: 2,
-                    area: ['80%', '80%'],
-                    maxmin: true,
-                    content: ownObj.attr('data-url')
-                });
-            });
-            //查看
-            $('.look').on('click', function () {
-                var ownObj = $(this);
-                layer.open({
-                    title: '查看记录信息',
-                    type: 2,
-                    area: ['80%', '80%'],
-                    maxmin: true,
-                    content: ownObj.attr('data-url')
-                });
-            });
-            $('.confirm').on('click', function () {
-                var ownObj = $(this);
-                layer.confirm(ownObj.attr('data-info'), {
-                    btn: ['确定', '取消'] //按钮
-                }, function () {
-                    $.ajax({
-                        type: "POST",
-                        url: ownObj.attr('data-url'),
-                        data: {id: ownObj.attr('data-id')},
-                        success: function (msg) {
-                            if (msg.code == 1) {
-                                location.reload();
+    </script>
+    <script>
+        function ajaxlist(object){
+            $.ajax({
+                type: "POST",
+                url: "{:U('ajaxGetIndex')}",
+                data: object,
+                async:false,
+                success: function (msg) {
+                    var html = '';
+                    var data = msg.data;
+                    if (msg.status == 'success') {
+                        for (var x in data) {
+                            var str_status = '';
+                            var add_time = '';
+                            var audit_time = '';
+                            var button = '';
+                            if (data[x].show_status == 1) {
+                                button = '<span class="layui-btn layui-btn-danger confirm" data-info="你确定下线当前项么？"\n' +
+                                    '                            data-id="'+data[x].id+'" data-url="{:U(\'close\')}">下线</span>';
+                                str_status = '<span style="color:green;">上线</span>'
+                            } else if (data[x].show_status == 2) {
+                                button = '<span class="layui-btn confirm" data-info="你确定上线当前项么？" data-id="'+data[x].id+'"\n' +
+                                    '                            data-url="{:U(\'open\')}">上线</span>';
+                                str_status = '<span style="color:red;">下线</span>'
                             } else {
-                                layer.msg(msg.msg, {
-                                    icon: 5,
-                                    shade: [0.6, '#393D49'],
-                                    time: 1500
-                                });
+                                str_status = '<span style="color:#0000FF;">未知</span>'
                             }
-                        }
-                    });
-                });
-            });
+                            if (data[x].pub_time != '') {
+                                add_time = new Date(data[x].pub_time * 1000).format("yyyy-MM-dd");
+                            } else {
+                                add_time = '--';
+                            }
 
+                            html += '<tr><td>' + data[x].id + '</td><td>' + data[x].title + '</td><td>' + data[x].content + '</td><td>'
+                                + data[x].class_name + '</td><td>' + data[x].subject_name + '</td><td>'+ data[x].versions_name + '</td><td>' + add_time + '</td><td>'
+                                + data[x].username + '</td><td>' + data[x].read_num + '</td><td>' + data[x].collect_num + '</td><td>'+ data[x].share_num + '</td><td>'+ str_status + '</td><td>'
+                                +button+ '<span class="layui-btn edit" data-id="' + data[x].id + '"data-url="{:U(\'update\')}">编辑</span>' +
+                                '<span class="layui-btn layui-btn-danger look" data-id="' + data[x].id + '"data-url="{:U(\'look\')}">查看</span>' + '</td></tr>'
+                        }
+
+                    } else {
+                        html = '<tr><td colspan="13" style="text-align:center;">暂无数据</td></tr>'
+
+                    }
+                    $("#tbody").html(html);
+                    $("#curr").val(msg.curr);
+                    $("#limit").val(msg.limit);
+                    $("#total").val(msg.total);
+
+                    $('.api-add').on('click', function () {
+                        var index = layer.open({
+                            title: '添加记录',
+                            type: 2,
+                            area: ['60%', '100%'],
+                            maxmin: true,
+                            content: '{:U("add")}'
+                        });
+
+                    });
+                    $('.edit').on('click', function () {
+                        var ownObj = $(this);
+                        var url = ownObj.attr('data-url').slice(0,-5)+'/id/'+ownObj.attr('data-id');
+                        layer.open({
+                            title: '编辑',
+                            type: 2,
+                            area: ['80%', '80%'],
+                            maxmin: true,
+                            content: url
+                        });
+                    });
+                    $('.look').on('click', function () {
+                        var ownObj = $(this);
+                        var url = ownObj.attr('data-url').slice(0,-5)+'/id/'+ownObj.attr('data-id');
+                        layer.open({
+                            title: '编辑',
+                            type: 2,
+                            area: ['80%', '80%'],
+                            maxmin: true,
+                            content: url
+                        });
+                    });
+                    $('.confirm').on('click', function () {
+                        var ownObj = $(this);
+                        layer.confirm(ownObj.attr('data-info'), {
+                            btn: ['确定', '取消'] //按钮
+                        }, function () {
+                            $.ajax({
+                                type: "POST",
+                                url: ownObj.attr('data-url'),
+                                data: {id: ownObj.attr('data-id')},
+                                success: function (msg) {
+                                    if (msg.code == 1) {
+                                        location.reload();
+                                    } else {
+                                        layer.msg(msg.msg, {
+                                            icon: 5,
+                                            shade: [0.6, '#393D49'],
+                                            time: 1500
+                                        });
+                                    }
+                                }
+                            });
+                        });
+                    });
+
+                }
+            });
+        }
+        function pagenum(){
+            var curr = $("#curr").attr('value'); //获取当前分页数
+            var limit = $("#limit").val(); //每页显示条数
+            var total = $("#total").val(); //总条数
+            var page = Math.ceil(total / limit);
+            var laypage = layui.laypage
+                , layer = layui.layer;
+
+            if (curr == '') { //为空时赋值1
+                curr = 1;
+            }
+
+            laypage({
+                cont: 'demo'
+                , curr: curr
+                , pages: page //控制器转过来的页数
+                ,groups:5
+                ,first:'首页'
+                , jump: function (obj, first) {
+                    if (!first) {  //跳转必须放在这个里边，不然无限刷新
+
+                        var object = new Object();
+                        object.curr = obj.curr;
+                        object.class_id = $("#class_ids").val();
+                        object.subject_id = $("#subject_ids").val();
+                        object.versions_id = $("#versions_ids").val();
+                        object.title = $("#titles").val();
+                        ajaxlist(object);
+                    }
+                }
+            });
+        }
+
+        layui.use(['form', 'laypage', 'layer', 'laydate'], function () {
+            var form = layui.form(),
+                laydate = layui.laydate;
+            ajaxlist();
+            pagenum();
+
+            form.on('submit(search)', function (data) {
+                $("#class_ids").val($("#class_id").val());
+                $("#subject_ids").val($("#subject_id").val());
+                $("#versions_ids").val($("#versions_id").val());
+                $("#titles").val($("#title").val());
+                var object = data.field;
+                object.curr = 1;
+                ajaxlist(object);
+                pagenum();
+                return false;
+            });
 
 
         });

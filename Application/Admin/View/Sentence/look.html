@@ -53,17 +53,6 @@
                         </blockquote>
                     </div>
                 </div>
-                <!--<div class="layui-form-item">
-                    <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
-                        封面：
-                        <div class="layui-upload-list" id="demo2">
-                            <if condition="$list['cover'] neq ''">
-                                <img style="width:150px;height:150px;margin-left:5px" src="{$list['cover']}">
-                            </if>
-
-                        </div>
-                    </blockquote>
-                </div>-->
                 <style>
                     #demo2 {
                         margin: 10px 0 0 0
@@ -106,31 +95,16 @@
                                class="layui-input" disabled>
                     </div>
                 </div>
-                <!--<div class="layui-form-item layui-form-text">
-                    <label class="layui-form-label">价格</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="price"
-                               value="{:(isset($list['price'])?$list['price']:'')}" placeholder="请输入价格"
-                               class="layui-input">
-                    </div>
-                </div>-->
 
                 <div class="layui-form-item layui-form-text">
                     <label class="layui-form-label">内容</label>
-
-                    <!-- 加载编辑器的容器 -->
-                    <div class="layui-input-block" contenteditable="true">
-                        <script id="container" name="content" type="text/plain">{:(isset($list['content'])?$list['content']:'')} </script>
-                        <!-- 配置文件 -->
+                    <div class="layui-input-block">
+                        <textarea id="editor"
+                                  name="content">{:(isset($list['content'])?$list['content']:'')}</textarea>
                         <script type="text/javascript" src="__PUBLIC__/ueditor/ueditor.config.js"></script>
-                        <!-- 编辑器源码文件 -->
                         <script type="text/javascript" src="__PUBLIC__/ueditor/ueditor.all.min.js"></script>
-                        <!-- 实例化编辑器 -->
-                        <script type="text/javascript">
-                            var ue = UE.getEditor('container',{
-                                readonly:true
-                            });
-
+                        <script>
+                            var ue = UE.getEditor("editor");
                         </script>
                     </div>
                 </div>
