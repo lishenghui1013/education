@@ -42,10 +42,10 @@ class TextbookController extends BaseController
         $limit = $getInfo['limit'] ? $getInfo['limit'] : 1;//每页显示条数
         $start = ($curr - 1) * $limit;//开始
 
-        $class = $getInfo['class_id'] ? $getInfo['class_id'] : '';//查询的时间
-        $subject = $getInfo['subject_id'] ? $getInfo['subject_id'] : '';//查询的审核状态
-        $versions = $getInfo['versions_id'] ? $getInfo['versions_id'] : '';//查询的时间
-        $title = $getInfo['title'] ? $getInfo['title'] : '';//查询的审核状态
+        $class = $getInfo['class_id'] ? $getInfo['class_id'] : '';//级别id
+        $subject = $getInfo['subject_id'] ? $getInfo['subject_id'] : '';//科目id
+        $versions = $getInfo['versions_id'] ? $getInfo['versions_id'] : '';//版本id
+        $title = $getInfo['title'] ? $getInfo['title'] : '';//标题
         $where = array();
         if ($class != '') {
             $where['c.id'] = $class;
@@ -252,52 +252,65 @@ class TextbookController extends BaseController
      */
     public function catalog()
     {
-
-        $pagenum = I('post.pagenum/d', 1);//每页显示条数
-        $currentpage = I('get.p/d', 1);//当前页码
-        $start = ($currentpage - 1) * $pagenum;//开始查询项
-        $title = I('post.title') !== '' ? I('post.title') : (I('get.ctitle') !== '' ? I('get.ctitle') : '');//标题
-        $map['textbook_id'] = I('post.textbook_id') !== '' ? I('post.textbook_id') : (I('get.textbook_id') !== '' ? I('get.textbook_id') : '');//课本id
-        if ($title != '') {
-            $map['_string'] = 'c.title like "%' . $title . '%"';
-        }
-        //查询总条数
-        $count = D('api_textbook_content as c')->join('left join api_textbook as t on t.id=c.textbook_id')->join('left join api_user as u on u.id=c.pub_userid')->where($map)->count();//查询满足要求的总记录数
-
-        $list = D('api_textbook_content as c')->join('left join api_textbook as t on t.id=c.textbook_id')->join('left join api_user as u on u.id=c.pub_userid')->field('c.id,c.textbook_id,c.title,c.content,c.sort,c.price,c.pub_time,c.show_status,c.read_num,c.collect_num,c.share_num,u.username')->where($map)->order('c.sort')->page($currentpage . ',' . $pagenum)->select();
-
-
-        $Page = new \Think\Page($count, $pagenum);// 实例化分页类 传入总记录数和每页显示的记录数
-        $Page->lastSuffix = false;//最后一页不显示为总页数
-        $Page->setConfig('header', '<li class="disabled hwh-page-info"><a>共<em>%TOTAL_ROW%</em>条  <em>%NOW_PAGE%</em>/%TOTAL_PAGE%页</a></li>');
-        $Page->setConfig('prev', '上一页');
-        $Page->setConfig('next', '下一页');
-        $Page->setConfig('last', '末页');
-        $Page->setConfig('first', '首页');
-        $Page->setConfig('theme', '%HEADER% %FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END%');
-//分页跳转的时候保证查询条件
-        foreach ($map as $key => $val) {
-            $key = implode(explode('.', $key));
-            if ($key == '_string') {
-
-                $temp_arr = explode(' ', $map[$key]);
-                foreach ($temp_arr as $k => $v) {
-                    $temp_arr[$key] = trim($v);
-                }
-                $key = implode(explode('.', $temp_arr['0']));
-                $val = substr($temp_arr['2'], 2, -2);
-
-            }
-            $Page->parameter[$key] = urlencode($val);
-
-        }
-        $show = $Page->show();// 分页显示输出
-        $this->assign('title', $title);//查询题目关键字
-        $this->assign('list', $list);//查询到的数据
-        $this->assign('page', $show);// 赋值分页输出
-        $this->assign('textbook_id', $map['textbook_id']);// 赋值分页输出
-
+        $textbook_id = I('get.textbook_id');
+        $this->assign('textbook_id',$textbook_id);
         $this->display();
+    }
+
+    /**
+     * ajax获取目录列表
+     * @author: 李胜辉
+     * @time: 2018/10/30 08:44
+     */
+    public function ajaxGetCatalog()
+    {
+        $getInfo = I('post.');
+        $curr = $getInfo['curr'] ? $getInfo['curr'] : 1;//当前页
+        $limit = $getInfo['limit'] ? $getInfo['limit'] : 2;//每页显示条数
+        $start = ($curr - 1) * $limit;//开始
+        $title = $getInfo['title'] ? $getInfo['title'] : '';//查询的审核状态
+        $textbook_id = $getInfo['textbook_id'];
+        $where = array();
+        $where['textbook_id'] = $textbook_id;
+        if ($title != '') {
+            $where['c.title'] = array('like', '%' . $title . '%');
+        }
+
+        //查询总条数
+        $total = D('api_textbook_content as c')->join('left join api_textbook as t on t.id=c.textbook_id')->join('left join api_user as u on u.id=c.pub_userid')->where($where)->count();//查询满足要求的总记录数
+        $info = D('api_textbook_content as c')->join('left join api_textbook as t on t.id=c.textbook_id')->join('left join api_user as u on u.id=c.pub_userid')->field('c.id,c.textbook_id,c.title,c.content,c.sort,c.price,c.pub_time,c.show_status,c.read_num,c.collect_num,c.share_num,u.username')->where($where)->order('c.sort asc')->limit($start, $limit)->select();
+        foreach ($info as $keys => $values) {
+
+            foreach ($values as $key => $value) {
+
+                if ($values[$key] === null) {
+                    $info[$keys][$key] = '';
+
+                }
+            }
+
+        }
+        if ($info) {
+            $data = array(
+                'limit' => $limit,
+                'curr' => $curr,
+                'add_time' => $getInfo['add_time'],
+                'status' => 'success',
+                'total' => $total,
+                'data' => $info
+            );
+        } else {
+            $data = array(
+                'limit' => $limit,
+                'curr' => $curr,
+                'add_time' => $getInfo['add_time'],
+                'status' => 'fail',
+                'total' => $total,
+                'data' => $info
+            );
+        }
+
+        $this->ajaxReturn($data, 'json');
     }
 
     /**
@@ -308,7 +321,7 @@ class TextbookController extends BaseController
     public function lookCatalog()
     {
         $id = I('get.id');//获取数据
-        $list = D('api_textbook_content as c')->join('left join api_textbook as t on t.id=c.textbook_id')->join('left join api_user as u on u.id=c.pub_userid')->field('c.id,c.title,c.content,c.sort,c.price,c.pub_time,c.show_status,c.read_num,c.collect_num,c.share_num,u.username')->where(array('t.id' => $id))->find();
+        $list = D('api_textbook_content as c')->join('left join api_textbook as t on t.id=c.textbook_id')->join('left join api_user as u on u.id=c.pub_userid')->field('c.id,c.title,c.content,c.sort,c.price,c.pub_time,c.show_status,c.read_num,c.collect_num,c.share_num,u.username')->where(array('c.id' => $id))->find();
         $this->assign('list', $list);
         $this->display();
     }
@@ -355,8 +368,7 @@ class TextbookController extends BaseController
         if (IS_POST) {
             $data = I('post.');
             $data['pub_userid'] = session('uid');
-            /*print_r($data);die;*/
-            $data['show_status'] = $data['show_status'] == 1 ? 1 : 2;
+            $data['show_status'] = $data['show_status'] == 'on' ? 1 : 2;
             $data['pub_time'] = time();
             $res = D('api_textbook_content')->add($data);
             if ($res === false) {

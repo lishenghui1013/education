@@ -234,7 +234,7 @@ class PublishAuditController extends BaseController
             //判断是否有图
             if ($images) {
                 $info['code'] = 0;//成功
-                $info['msg'] = "";//信息
+                $info['msg'] = "success";//信息
                 $info['data']['src'] = $url . substr($images['file']['savepath'], 3) . $images['file']['savename'];//拼接图片地址
                 echo json_encode($info);
             } else {

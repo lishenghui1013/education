@@ -1,7 +1,7 @@
 <extend name="Public/base"/>
 <block name="main">
     <fieldset class="layui-elem-field">
-        <legend>视频管理 - 查看视频目录</legend>
+        <legend>视频管理 - 查看视频详情</legend>
         <div class="layui-field-box">
             <form class="layui-form" action="" id="health_form">
                 <if condition="isset($list['id'])">
@@ -19,7 +19,7 @@
                     <label class="layui-form-label"><span style="color:red">*</span> 排序</label>
                     <div class="layui-input-block">
                         <input type="text" name="sort" required
-                               value="{:(isset($detail['sort'])?$detail['sort']:0)}" lay-verify="required"
+                               value="{:(isset($list['sort'])?$list['sort']:0)}" lay-verify="required"
                                class="layui-input" disabled>
                     </div>
                 </div>
@@ -28,14 +28,14 @@
                     <label class="layui-form-label">视频：</label>
 
                     <div class="layui-upload-list" id="demo2">
-                        <if condition="$detail['video_url'] neq ''">
+                        <if condition="$list['video_url'] neq ''">
 
                             <video width="320" height="240" controls autoplay>
-                                <source src="{$detail['video_url']}" type="video/ogg">
-                                <source src="{$detail['video_url']}" type="video/mp4">
-                                <source src="{$detail['video_url']}" type="video/webm">
-                                <object data="{$detail['video_url']}" width="320" height="240">
-                                    <embed width="320" height="240" src="{$detail['video_url']}">
+                                <source src="{$list['video_url']}" type="video/ogg">
+                                <source src="{$list['video_url']}" type="video/mp4">
+                                <source src="{$list['video_url']}" type="video/webm">
+                                <object data="{$list['video_url']}" width="320" height="240">
+                                    <embed width="320" height="240" src="{$list['video_url']}">
                                 </object>
                             </video>
                         </if>

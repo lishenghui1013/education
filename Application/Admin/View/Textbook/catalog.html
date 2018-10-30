@@ -2,7 +2,7 @@
 <block name="main">
     <fieldset class="layui-elem-field">
         <legend>内容管理 - <a href="{:U('index')}" target="_self" style="color:blue;cursor:pointer;">课本列表</a> - 课本目录列表</legend>
-        <span class="layui-btn layui-btn-normal api-add" style="margin-left:15px;" data-url="{:U('addCatalog', array('textbook_id' => $textbook_id))}"><i class="layui-icon">&#xe608;</i> 新增</span>
+        <span class="layui-btn layui-btn-normal api-add" style="margin-left:15px;" data-url="{:U('addCatalog')}" data-id="{$textbook_id}"><i class="layui-icon">&#xe608;</i> 新增</span>
         <span class="layui-btn layui-btn-normal api-add" style="margin-left:30px;"><i class="layui-icon">&#xe608;</i> 批量添加</span>
         <div class="layui-field-box">
             <form class="layui-form" action="" method="post">
@@ -12,7 +12,7 @@
                             <input type="text" name="title" placeholder="请输入标题关键词" class="layui-input" value="" id="title">
                         </div>
                     </div>
-                    <input type="hidden" name="textbook_id" value="{$textbook_id}"/>
+                    <input type="hidden" name="textbook_id" value="{$textbook_id}" id="textbook_id"/>
                     <div class="layui-inline">
                         <button class="layui-btn" lay-submit lay-filter="search">
                             查询
@@ -21,6 +21,7 @@
 
                 </div>
             </form>
+            <input type="hidden" name="textbook_ids" value="{$textbook_id}" id="textbook_ids"/>
             <input type="hidden" name="titles" id="titles" value=""/>
             <input type="hidden" name="limit" id="limit" value=""/>
             <input type="hidden" name="curr" id="curr" value=""/>
@@ -84,7 +85,7 @@
         function ajaxlist(object){
             $.ajax({
                 type: "POST",
-                url: "{:U('ajaxGetIndex')}",
+                url: "{:U('ajaxGetCatalog')}",
                 data: object,
                 async:false,
                 success: function (msg) {
@@ -94,15 +95,14 @@
                         for (var x in data) {
                             var str_status = '';
                             var add_time = '';
-                            var audit_time = '';
                             var button = '';
                             if (data[x].show_status == 1) {
                                 button = '<span class="layui-btn layui-btn-danger confirm" data-info="你确定下线当前项么？"\n' +
-                                    '                            data-id="'+data[x].id+'" data-url="{:U(\'close\')}">下线</span>';
+                                    '                            data-id="'+data[x].id+'" data-url="{:U(\'closeCatalog\')}">下线</span>';
                                 str_status = '<span style="color:green;">上线</span>'
                             } else if (data[x].show_status == 2) {
                                 button = '<span class="layui-btn confirm" data-info="你确定上线当前项么？" data-id="'+data[x].id+'"\n' +
-                                    '                            data-url="{:U(\'open\')}">上线</span>';
+                                    '                            data-url="{:U(\'openCatalog\')}">上线</span>';
                                 str_status = '<span style="color:red;">下线</span>'
                             } else {
                                 str_status = '<span style="color:#0000FF;">未知</span>'
@@ -116,8 +116,8 @@
                             html += '<tr><td>' + data[x].sort + '</td><td>' + data[x].title + '</td><td>' + data[x].content + '</td><td>'
                                  + add_time + '</td><td>'
                                 + data[x].username + '</td><td>' + data[x].read_num + '</td><td>' + data[x].collect_num + '</td><td>'+ data[x].share_num + '</td><td>'+ str_status + '</td><td>'
-                                +button+ '<span class="layui-btn edit" data-id="' + data[x].id + '"data-url="{:U(\'update\')}">编辑</span>' +
-                                '<span class="layui-btn layui-btn-danger look" data-id="' + data[x].id + '"data-url="{:U(\'look\')}">查看</span>' + '</td></tr>'
+                                +button+ '<span class="layui-btn edit" data-id="' + data[x].id + '"data-url="{:U(\'updateCatalog\')}">编辑</span>' +
+                                '<span class="layui-btn layui-btn-danger look" data-id="' + data[x].id + '" data-url="{:U(\'lookCatalog\')}">查看</span>' + '</td></tr>'
                         }
 
                     } else {
@@ -130,12 +130,14 @@
                     $("#total").val(msg.total);
 
                     $('.api-add').on('click', function () {
+                        var ownObj = $(this);
+                        var url = ownObj.attr('data-url').slice(0,-5)+'/textbook_id/'+ownObj.attr('data-id');
                         var index = layer.open({
                             title: '添加记录',
                             type: 2,
                             area: ['60%', '100%'],
                             maxmin: true,
-                            content: '{:U("add")}'
+                            content: url
                         });
 
                     });
@@ -154,7 +156,7 @@
                         var ownObj = $(this);
                         var url = ownObj.attr('data-url').slice(0,-5)+'/id/'+ownObj.attr('data-id');
                         layer.open({
-                            title: '编辑',
+                            title: '查看详情',
                             type: 2,
                             area: ['80%', '80%'],
                             maxmin: true,
@@ -212,6 +214,7 @@
                         var object = new Object();
                         object.curr = obj.curr;
                         object.title = $("#titles").val();
+                        object.textbook_id = $("#textbook_ids").val();
                         ajaxlist(object);
                     }
                 }
@@ -221,11 +224,14 @@
         layui.use(['form', 'laypage', 'layer', 'laydate'], function () {
             var form = layui.form(),
                 laydate = layui.laydate;
-            ajaxlist();
+            var object = new Object();
+            object.textbook_id = $("#textbook_id").val();
+            ajaxlist(object);
             pagenum();
 
             form.on('submit(search)', function (data) {
                 $("#titles").val($("#title").val());
+                $("#textbook_ids").val($("#textbook_id").val());
                 var object = data.field;
                 object.curr = 1;
                 ajaxlist(object);
