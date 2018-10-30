@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50723
 File Encoding         : 65001
 
-Date: 2018-10-30 11:33:22
+Date: 2018-10-30 18:14:40
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -3948,7 +3948,7 @@ CREATE TABLE `api_menu` (
   `icon` varchar(50) NOT NULL DEFAULT '' COMMENT '菜单图标',
   `level` tinyint(2) NOT NULL DEFAULT '0' COMMENT '菜单认证等级',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=191 DEFAULT CHARSET=utf8 COMMENT='目录信息';
+) ENGINE=InnoDB AUTO_INCREMENT=193 DEFAULT CHARSET=utf8 COMMENT='目录信息';
 
 -- ----------------------------
 -- Records of api_menu
@@ -4138,6 +4138,8 @@ INSERT INTO `api_menu` VALUES ('187', 'ajax查询课本列表', '79', 'Textbook/
 INSERT INTO `api_menu` VALUES ('188', 'ajax查询目录列表', '122', 'Textbook/ajaxGetCatalog', '0', '13', '0', '', '0');
 INSERT INTO `api_menu` VALUES ('189', 'ajax查询视频列表', '80', 'Video/ajaxGetIndex', '0', '13', '0', '', '0');
 INSERT INTO `api_menu` VALUES ('190', 'ajax查询视频目录列表', '80', 'Video/ajaxGetCatalog', '0', '14', '0', '', '0');
+INSERT INTO `api_menu` VALUES ('191', '批量上传课本', '79', 'Textbook/batchAdd', '0', '15', '0', '', '0');
+INSERT INTO `api_menu` VALUES ('192', '课本批量添加导入excel', '79', 'Textbook/imports', '0', '16', '0', '', '0');
 
 -- ----------------------------
 -- Table structure for api_new_words
@@ -4407,7 +4409,7 @@ CREATE TABLE `api_textbook` (
   `pub_userid` int(11) NOT NULL COMMENT '发布人id',
   `pub_time` varchar(11) NOT NULL COMMENT '发布时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of api_textbook
@@ -4416,6 +4418,8 @@ INSERT INTO `api_textbook` VALUES ('1', '年后', 'http://localhost/education/Pu
 INSERT INTO `api_textbook` VALUES ('2', '我的第二本书年', 'http://localhost/education/Public/uploads/articlePublish/textbook//5bd6e34f0452b.jpg', '&lt;p&gt;诶啊&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;http://localhost/Public/ueditor/php/upload/image/20181029/1540809562512176.jpg&quot; title=&quot;1540809562512176.jpg&quot; alt=&quot;8ea76356d561818cbbe920d7861e7b40.jpg&quot;/&gt;&lt;/p&gt;', null, '1', null, '1', '1', '2', '0', '0', '0', '1', '1540809564');
 INSERT INTO `api_textbook` VALUES ('3', '第三个课本英文', 'http://localhost/education/Public/uploads/articlePublish/textbook//5bd7b550d748c.jpg', '&lt;p&gt;hello,world!&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;http://localhost/education/Public/ueditor/php/upload/image/20181030/1540863295509765.jpg&quot; title=&quot;1540863295509765.jpg&quot; alt=&quot;3e34d8f8bd7647e4ea8d6c4602d6b22a.jpg&quot;/&gt;&lt;/p&gt;', null, '1', null, '2', '1', '1', '0', '0', '0', '1', '1540863298');
 INSERT INTO `api_textbook` VALUES ('4', '随便', 'http://localhost/education/Public/uploads/articlePublish/textbook//5bd7beb5e229d.jpg', '&lt;p&gt;测试图片&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;http://localhost/education/Public/ueditor/php/upload/image/20181030/1540865737770202.jpg&quot; title=&quot;1540865737770202.jpg&quot; alt=&quot;6754affdf82745c973ea5300f10d3349.jpg&quot;/&gt;&lt;/p&gt;', null, '1', null, '1', '1', '1', '0', '0', '0', '1', '1540865739');
+INSERT INTO `api_textbook` VALUES ('5', 'nihao', '2', '测试中', '5.60', '1', '京华版权所有', '1', '1', '1', '0', '0', '0', '1', '1540893394');
+INSERT INTO `api_textbook` VALUES ('6', '不知道', '2', '测试中', '5.60', '1', '京华版权所有', '1', '1', '1', '0', '0', '0', '1', '1540893460');
 
 -- ----------------------------
 -- Table structure for api_textbook_content
@@ -4532,7 +4536,7 @@ CREATE TABLE `api_user_action` (
   `data` text COMMENT '用户提交的数据',
   `url` varchar(200) NOT NULL DEFAULT '' COMMENT '操作URL',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6718 DEFAULT CHARSET=utf8 COMMENT='用户操作日志';
+) ENGINE=InnoDB AUTO_INCREMENT=7023 DEFAULT CHARSET=utf8 COMMENT='用户操作日志';
 
 -- ----------------------------
 -- Records of api_user_action
@@ -11254,6 +11258,311 @@ INSERT INTO `api_user_action` VALUES ('6714', '添加课本目录', '1', 'root',
 INSERT INTO `api_user_action` VALUES ('6715', '课本目录列表', '1', 'root', '1540870078', '{\"textbook_id\":\"4\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/catalog');
 INSERT INTO `api_user_action` VALUES ('6716', 'ajax查询目录列表', '1', 'root', '1540870078', '{\"textbook_id\":\"4\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetCatalog');
 INSERT INTO `api_user_action` VALUES ('6717', 'ajax查询目录列表', '1', 'root', '1540870080', '{\"curr\":\"2\",\"title\":\"\",\"textbook_id\":\"4\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetCatalog');
+INSERT INTO `api_user_action` VALUES ('6718', '课本列表', '1', 'root', '1540876031', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6719', 'ajax查询课本列表', '1', 'root', '1540876031', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6720', '首页', '1', 'root', '1540876954', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6721', '欢迎页', '1', 'root', '1540876954', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6722', '课本列表', '1', 'root', '1540876956', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6723', 'ajax查询课本列表', '1', 'root', '1540876956', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6724', '欢迎页', '1', 'root', '1540876962', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6725', '新增菜单', '1', 'root', '1540876978', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Menu/add');
+INSERT INTO `api_user_action` VALUES ('6726', '新增菜单', '1', 'root', '1540877029', '{\"name\":\"\\u6279\\u91cf\\u4e0a\\u4f20\\u8bfe\\u672c\",\"fid\":\"79\",\"url\":\"Textbook\\/batchAdd\",\"sort\":\"15\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Menu/add');
+INSERT INTO `api_user_action` VALUES ('6727', '菜单维护', '1', 'root', '1540877029', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Menu/index');
+INSERT INTO `api_user_action` VALUES ('6728', '课本列表', '1', 'root', '1540877044', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6729', 'ajax查询课本列表', '1', 'root', '1540877044', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6730', '批量上传课本', '1', 'root', '1540877045', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6731', '首页', '1', 'root', '1540877153', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6732', '欢迎页', '1', 'root', '1540877153', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6733', '课本列表', '1', 'root', '1540877158', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6734', 'ajax查询课本列表', '1', 'root', '1540877158', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6735', '批量上传课本', '1', 'root', '1540877159', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6736', '首页', '1', 'root', '1540877226', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6737', '欢迎页', '1', 'root', '1540877226', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6738', '课本列表', '1', 'root', '1540877232', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6739', 'ajax查询课本列表', '1', 'root', '1540877232', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6740', '批量上传课本', '1', 'root', '1540877234', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6741', '首页', '1', 'root', '1540877565', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6742', '欢迎页', '1', 'root', '1540877565', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6743', '课本列表', '1', 'root', '1540877570', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6744', 'ajax查询课本列表', '1', 'root', '1540877570', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6745', '批量上传课本', '1', 'root', '1540877571', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6746', '首页', '1', 'root', '1540877619', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6747', '欢迎页', '1', 'root', '1540877620', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6748', '课本列表', '1', 'root', '1540877623', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6749', 'ajax查询课本列表', '1', 'root', '1540877623', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6750', '批量上传课本', '1', 'root', '1540877624', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6751', '首页', '1', 'root', '1540877663', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6752', '欢迎页', '1', 'root', '1540877663', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6753', '课本列表', '1', 'root', '1540877665', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6754', 'ajax查询课本列表', '1', 'root', '1540877665', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6755', '批量上传课本', '1', 'root', '1540877666', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6756', '首页', '1', 'root', '1540877704', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6757', '欢迎页', '1', 'root', '1540877704', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6758', '课本列表', '1', 'root', '1540877706', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6759', 'ajax查询课本列表', '1', 'root', '1540877706', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6760', '批量上传课本', '1', 'root', '1540877707', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6761', '首页', '1', 'root', '1540879978', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6762', '欢迎页', '1', 'root', '1540879978', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6763', '课本列表', '1', 'root', '1540879980', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6764', 'ajax查询课本列表', '1', 'root', '1540879980', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6765', '批量上传课本', '1', 'root', '1540879981', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6766', '首页', '1', 'root', '1540880085', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6767', '欢迎页', '1', 'root', '1540880085', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6768', '课本列表', '1', 'root', '1540880088', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6769', 'ajax查询课本列表', '1', 'root', '1540880088', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6770', '批量上传课本', '1', 'root', '1540880089', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6771', '首页', '1', 'root', '1540880104', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6772', '欢迎页', '1', 'root', '1540880104', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6773', '课本列表', '1', 'root', '1540880108', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6774', 'ajax查询课本列表', '1', 'root', '1540880108', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6775', '批量上传课本', '1', 'root', '1540880109', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6776', '课本添加', '1', 'root', '1540880124', '{\"excel_file\":\"\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/add');
+INSERT INTO `api_user_action` VALUES ('6777', '课本添加', '1', 'root', '1540880125', '{\"excel_file\":\"\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/add');
+INSERT INTO `api_user_action` VALUES ('6778', '课本添加', '1', 'root', '1540880126', '{\"excel_file\":\"\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/add');
+INSERT INTO `api_user_action` VALUES ('6779', '课本添加', '1', 'root', '1540880136', '{\"excel_file\":\"\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/add');
+INSERT INTO `api_user_action` VALUES ('6780', '新增菜单', '1', 'root', '1540884257', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Menu/add');
+INSERT INTO `api_user_action` VALUES ('6781', '新增菜单', '1', 'root', '1540884301', '{\"name\":\"\\u8bfe\\u672c\\u6279\\u91cf\\u6dfb\\u52a0\\u5bfc\\u5165excel\",\"fid\":\"79\",\"url\":\"Textbook\\/imports\",\"sort\":\"16\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Menu/add');
+INSERT INTO `api_user_action` VALUES ('6782', '菜单维护', '1', 'root', '1540884301', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Menu/index');
+INSERT INTO `api_user_action` VALUES ('6783', '首页', '1', 'root', '1540884472', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6784', '欢迎页', '1', 'root', '1540884472', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6785', '首页', '1', 'root', '1540884498', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6786', '欢迎页', '1', 'root', '1540884498', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6787', '课本列表', '1', 'root', '1540884503', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6788', 'ajax查询课本列表', '1', 'root', '1540884503', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6789', '批量上传课本', '1', 'root', '1540884505', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6790', '课本添加', '1', 'root', '1540884507', '{\"excel_file\":\"\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/add');
+INSERT INTO `api_user_action` VALUES ('6791', '课本添加', '1', 'root', '1540884512', '{\"excel_file\":\"\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/add');
+INSERT INTO `api_user_action` VALUES ('6792', '首页', '1', 'root', '1540884560', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6793', '欢迎页', '1', 'root', '1540884560', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6794', '课本列表', '1', 'root', '1540884565', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6795', 'ajax查询课本列表', '1', 'root', '1540884565', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6796', '批量上传课本', '1', 'root', '1540884566', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6797', '课本添加', '1', 'root', '1540884569', '{\"excel_file\":\"\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/add');
+INSERT INTO `api_user_action` VALUES ('6798', '首页', '1', 'root', '1540884939', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6799', '欢迎页', '1', 'root', '1540884939', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6800', '课本列表', '1', 'root', '1540884942', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6801', 'ajax查询课本列表', '1', 'root', '1540884943', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6802', '批量上传课本', '1', 'root', '1540884944', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6803', '首页', '1', 'root', '1540885178', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6804', '欢迎页', '1', 'root', '1540885178', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6805', '课本列表', '1', 'root', '1540885182', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6806', 'ajax查询课本列表', '1', 'root', '1540885182', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6807', '批量上传课本', '1', 'root', '1540885183', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6808', '首页', '1', 'root', '1540885279', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6809', '欢迎页', '1', 'root', '1540885279', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6810', '课本列表', '1', 'root', '1540885282', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6811', 'ajax查询课本列表', '1', 'root', '1540885282', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6812', '批量上传课本', '1', 'root', '1540885283', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6813', '首页', '1', 'root', '1540885448', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6814', '欢迎页', '1', 'root', '1540885448', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6815', '课本列表', '1', 'root', '1540885451', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6816', 'ajax查询课本列表', '1', 'root', '1540885451', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6817', '批量上传课本', '1', 'root', '1540885454', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6818', '首页', '1', 'root', '1540885501', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6819', '欢迎页', '1', 'root', '1540885501', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6820', '课本列表', '1', 'root', '1540885506', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6821', 'ajax查询课本列表', '1', 'root', '1540885507', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6822', '批量上传课本', '1', 'root', '1540885507', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6823', '首页', '1', 'root', '1540885625', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6824', '欢迎页', '1', 'root', '1540885625', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6825', '课本列表', '1', 'root', '1540885628', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6826', 'ajax查询课本列表', '1', 'root', '1540885628', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6827', '批量上传课本', '1', 'root', '1540885629', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6828', '首页', '1', 'root', '1540885687', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6829', '欢迎页', '1', 'root', '1540885687', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6830', '课本列表', '1', 'root', '1540885691', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6831', 'ajax查询课本列表', '1', 'root', '1540885691', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6832', '批量上传课本', '1', 'root', '1540885692', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6833', '首页', '1', 'root', '1540885733', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6834', '欢迎页', '1', 'root', '1540885734', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6835', '课本列表', '1', 'root', '1540885741', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6836', 'ajax查询课本列表', '1', 'root', '1540885741', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6837', '批量上传课本', '1', 'root', '1540885742', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6838', '首页', '1', 'root', '1540885838', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6839', '欢迎页', '1', 'root', '1540885838', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6840', '首页', '1', 'root', '1540885840', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6841', '欢迎页', '1', 'root', '1540885840', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6842', '课本列表', '1', 'root', '1540885844', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6843', 'ajax查询课本列表', '1', 'root', '1540885844', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6844', '批量上传课本', '1', 'root', '1540885845', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6845', '首页', '1', 'root', '1540885903', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6846', '欢迎页', '1', 'root', '1540885903', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6847', '课本列表', '1', 'root', '1540885907', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6848', 'ajax查询课本列表', '1', 'root', '1540885907', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6849', '批量上传课本', '1', 'root', '1540885908', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6850', '欢迎页', '1', 'root', '1540886050', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6851', '课本列表', '1', 'root', '1540886054', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6852', 'ajax查询课本列表', '1', 'root', '1540886054', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6853', '批量上传课本', '1', 'root', '1540886055', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6854', '课本添加', '1', 'root', '1540886079', '{\"excel_file\":\"\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/add');
+INSERT INTO `api_user_action` VALUES ('6855', '首页', '1', 'root', '1540886101', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6856', '欢迎页', '1', 'root', '1540886101', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6857', '课本列表', '1', 'root', '1540886106', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6858', 'ajax查询课本列表', '1', 'root', '1540886106', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6859', '批量上传课本', '1', 'root', '1540886107', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6860', '首页', '1', 'root', '1540886320', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6861', '欢迎页', '1', 'root', '1540886320', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6862', '课本列表', '1', 'root', '1540886327', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6863', 'ajax查询课本列表', '1', 'root', '1540886327', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6864', '批量上传课本', '1', 'root', '1540886328', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6865', '课本批量添加导入excel', '1', 'root', '1540886336', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6866', '首页', '1', 'root', '1540886442', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6867', '欢迎页', '1', 'root', '1540886442', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6868', '课本列表', '1', 'root', '1540886444', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6869', 'ajax查询课本列表', '1', 'root', '1540886444', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6870', '批量上传课本', '1', 'root', '1540886445', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6871', '课本批量添加导入excel', '1', 'root', '1540886451', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6872', '课本添加', '1', 'root', '1540886459', '{\"excel_file\":\"\",\"file_root\":\"undefined\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/add');
+INSERT INTO `api_user_action` VALUES ('6873', '首页', '1', 'root', '1540886730', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6874', '欢迎页', '1', 'root', '1540886730', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6875', '课本列表', '1', 'root', '1540886733', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6876', 'ajax查询课本列表', '1', 'root', '1540886733', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6877', '批量上传课本', '1', 'root', '1540886734', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6878', '课本批量添加导入excel', '1', 'root', '1540886739', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6879', '课本批量添加导入excel', '1', 'root', '1540886764', '{\"file_root\":\"undefined\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6880', '课本批量添加导入excel', '1', 'root', '1540886791', '{\"file_root\":\"undefined\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6881', '首页', '1', 'root', '1540886827', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6882', '欢迎页', '1', 'root', '1540886827', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6883', '课本列表', '1', 'root', '1540886830', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6884', 'ajax查询课本列表', '1', 'root', '1540886830', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6885', '批量上传课本', '1', 'root', '1540886831', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6886', '课本批量添加导入excel', '1', 'root', '1540886835', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6887', '课本批量添加导入excel', '1', 'root', '1540886999', '{\"file_root\":\"undefined\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6888', '课本批量添加导入excel', '1', 'root', '1540887026', '{\"file_root\":\"undefined\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6889', '课本批量添加导入excel', '1', 'root', '1540887059', '{\"file_root\":\"undefined\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6890', '首页', '1', 'root', '1540887371', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6891', '欢迎页', '1', 'root', '1540887371', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6892', '课本列表', '1', 'root', '1540887374', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6893', 'ajax查询课本列表', '1', 'root', '1540887374', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6894', '批量上传课本', '1', 'root', '1540887375', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6895', '课本批量添加导入excel', '1', 'root', '1540887383', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6896', '首页', '1', 'root', '1540887995', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6897', '欢迎页', '1', 'root', '1540887995', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6898', '课本列表', '1', 'root', '1540887997', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6899', 'ajax查询课本列表', '1', 'root', '1540887998', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6900', '批量上传课本', '1', 'root', '1540887999', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6901', '课本批量添加导入excel', '1', 'root', '1540888012', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6902', '课本批量添加导入excel', '1', 'root', '1540888097', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6903', '首页', '1', 'root', '1540888167', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6904', '欢迎页', '1', 'root', '1540888167', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6905', '课本列表', '1', 'root', '1540888170', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6906', 'ajax查询课本列表', '1', 'root', '1540888170', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6907', '批量上传课本', '1', 'root', '1540888170', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6908', '课本批量添加导入excel', '1', 'root', '1540888174', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6909', '首页', '1', 'root', '1540888399', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6910', '欢迎页', '1', 'root', '1540888399', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6911', '课本列表', '1', 'root', '1540888404', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6912', 'ajax查询课本列表', '1', 'root', '1540888404', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6913', '批量上传课本', '1', 'root', '1540888405', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6914', '课本批量添加导入excel', '1', 'root', '1540888412', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6915', '首页', '1', 'root', '1540889895', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6916', '欢迎页', '1', 'root', '1540889895', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6917', '课本列表', '1', 'root', '1540889902', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6918', 'ajax查询课本列表', '1', 'root', '1540889902', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6919', '批量上传课本', '1', 'root', '1540889905', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6920', '课本批量添加导入excel', '1', 'root', '1540889909', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6921', '课本批量添加导入excel', '1', 'root', '1540890155', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6922', '首页', '1', 'root', '1540890186', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6923', '欢迎页', '1', 'root', '1540890186', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6924', '课本列表', '1', 'root', '1540890189', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6925', 'ajax查询课本列表', '1', 'root', '1540890189', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6926', '批量上传课本', '1', 'root', '1540890190', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6927', '课本批量添加导入excel', '1', 'root', '1540890200', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6928', '课本批量添加导入excel', '1', 'root', '1540890232', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6929', '课本批量添加导入excel', '1', 'root', '1540890274', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6930', '课本批量添加导入excel', '1', 'root', '1540890320', '{\"file_root\":\"undefined\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6931', '课本批量添加导入excel', '1', 'root', '1540890437', '{\"file_root\":\"undefined\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6932', '首页', '1', 'root', '1540890586', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6933', '欢迎页', '1', 'root', '1540890587', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6934', '课本列表', '1', 'root', '1540890589', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6935', 'ajax查询课本列表', '1', 'root', '1540890590', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6936', '批量上传课本', '1', 'root', '1540890591', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6937', '课本批量添加导入excel', '1', 'root', '1540890600', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6938', '首页', '1', 'root', '1540890620', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6939', '欢迎页', '1', 'root', '1540890620', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6940', '课本列表', '1', 'root', '1540890623', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6941', 'ajax查询课本列表', '1', 'root', '1540890623', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6942', '批量上传课本', '1', 'root', '1540890625', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6943', '课本批量添加导入excel', '1', 'root', '1540890630', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6944', '课本批量添加导入excel', '1', 'root', '1540890919', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6945', '首页', '1', 'root', '1540891529', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6946', '欢迎页', '1', 'root', '1540891529', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6947', '课本列表', '1', 'root', '1540891534', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6948', 'ajax查询课本列表', '1', 'root', '1540891534', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6949', '批量上传课本', '1', 'root', '1540891535', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6950', '课本批量添加导入excel', '1', 'root', '1540891547', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6951', '课本批量添加导入excel', '1', 'root', '1540891583', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6952', '首页', '1', 'root', '1540892066', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6953', '欢迎页', '1', 'root', '1540892066', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6954', '课本列表', '1', 'root', '1540892072', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6955', 'ajax查询课本列表', '1', 'root', '1540892072', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6956', '批量上传课本', '1', 'root', '1540892073', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6957', '课本批量添加导入excel', '1', 'root', '1540892080', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6958', '首页', '1', 'root', '1540892188', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6959', '欢迎页', '1', 'root', '1540892188', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6960', '课本列表', '1', 'root', '1540892191', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6961', 'ajax查询课本列表', '1', 'root', '1540892191', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6962', '批量上传课本', '1', 'root', '1540892192', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6963', '课本批量添加导入excel', '1', 'root', '1540892196', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6964', '首页', '1', 'root', '1540892283', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6965', '欢迎页', '1', 'root', '1540892284', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6966', '课本列表', '1', 'root', '1540892286', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6967', 'ajax查询课本列表', '1', 'root', '1540892287', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6968', '批量上传课本', '1', 'root', '1540892288', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6969', '课本批量添加导入excel', '1', 'root', '1540892294', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6970', '首页', '1', 'root', '1540892401', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6971', '欢迎页', '1', 'root', '1540892401', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6972', '课本列表', '1', 'root', '1540892404', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6973', 'ajax查询课本列表', '1', 'root', '1540892404', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6974', '批量上传课本', '1', 'root', '1540892405', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6975', '课本批量添加导入excel', '1', 'root', '1540892411', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6976', '首页', '1', 'root', '1540892486', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6977', '欢迎页', '1', 'root', '1540892486', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6978', '课本列表', '1', 'root', '1540892490', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6979', 'ajax查询课本列表', '1', 'root', '1540892490', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6980', '批量上传课本', '1', 'root', '1540892491', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6981', '课本批量添加导入excel', '1', 'root', '1540892500', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6982', '首页', '1', 'root', '1540892684', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6983', '欢迎页', '1', 'root', '1540892684', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6984', '知识点', '1', 'root', '1540892686', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Knowledge/index');
+INSERT INTO `api_user_action` VALUES ('6985', 'ajax查询知识点列表', '1', 'root', '1540892686', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Knowledge/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6986', '课本列表', '1', 'root', '1540892689', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6987', 'ajax查询课本列表', '1', 'root', '1540892689', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6988', '批量上传课本', '1', 'root', '1540892690', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6989', '课本批量添加导入excel', '1', 'root', '1540892695', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6990', '首页', '1', 'root', '1540892831', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6991', '欢迎页', '1', 'root', '1540892831', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6992', '课本列表', '1', 'root', '1540892835', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6993', 'ajax查询课本列表', '1', 'root', '1540892835', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('6994', '批量上传课本', '1', 'root', '1540892836', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('6995', '课本批量添加导入excel', '1', 'root', '1540892843', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('6996', '首页', '1', 'root', '1540893073', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('6997', '欢迎页', '1', 'root', '1540893074', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('6998', '课本列表', '1', 'root', '1540893076', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('6999', 'ajax查询课本列表', '1', 'root', '1540893076', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('7000', '批量上传课本', '1', 'root', '1540893077', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('7001', '课本批量添加导入excel', '1', 'root', '1540893085', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('7002', '欢迎页', '1', 'root', '1540893090', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('7003', '课本列表', '1', 'root', '1540893137', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('7004', 'ajax查询课本列表', '1', 'root', '1540893137', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('7005', '批量上传课本', '1', 'root', '1540893138', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('7006', '课本批量添加导入excel', '1', 'root', '1540893152', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('7007', '首页', '1', 'root', '1540893378', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('7008', '欢迎页', '1', 'root', '1540893378', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('7009', '课本列表', '1', 'root', '1540893385', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('7010', 'ajax查询课本列表', '1', 'root', '1540893386', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('7011', '批量上传课本', '1', 'root', '1540893388', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('7012', '课本批量添加导入excel', '1', 'root', '1540893394', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('7013', '批量上传课本', '1', 'root', '1540893396', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('7014', '课本批量添加导入excel', '1', 'root', '1540893460', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('7015', '批量上传课本', '1', 'root', '1540893462', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('7016', '首页', '1', 'root', '1540893569', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('7017', '欢迎页', '1', 'root', '1540893569', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('7018', '课本列表', '1', 'root', '1540893572', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('7019', 'ajax查询课本列表', '1', 'root', '1540893572', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('7020', '批量上传课本', '1', 'root', '1540893574', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/batchAdd');
+INSERT INTO `api_user_action` VALUES ('7021', '课本批量添加导入excel', '1', 'root', '1540893586', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
+INSERT INTO `api_user_action` VALUES ('7022', '课本批量添加导入excel', '1', 'root', '1540893903', '{\"file_root\":\"undefined\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"h5uk15cpdqbnplkjdm77tqtlh7\"}', 'Textbook/imports');
 
 -- ----------------------------
 -- Table structure for api_user_data
