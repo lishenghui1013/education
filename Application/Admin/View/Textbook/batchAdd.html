@@ -1,0 +1,106 @@
+<extend name="Public/base"/>
+<block name="main">
+    <fieldset class="layui-elem-field">
+        <legend>课本管理 - 批量添加课本</legend>
+        <form class="layui-form" action="{:U('imports')}" id="health_form" method="post" enctype="multipart/form-data">
+            <!--<div class="layui-field-box">
+                <div class="layui-form-item" style="margin:10px;border:solid 1px #2e3133;">
+                    <div class="layui-input-block" style="margin:10px;">
+                        <button class="layui-btn" lay-filter="admin-form" style="margin-right:20px;">
+                            <input type="file" name="excel_file" class="layui-upload-file" lay-title="选择EXCEL文件" id="excel_file">
+                        </button>
+                        <a href="__PUBLIC__/templates/textbook.xlsx" target="_blank" style="color:blue;">下载Excel模板</a>
+                    </div>
+                </div>
+
+            </div>-->
+            <div class="layui-form-item" style="margin:10px;border:solid 1px #2e3133;">
+                <input type="file" name="excel_file" class="layui-upload-file" lay-title="选择EXCEL文件" id="excel_file" lay-type="file">
+
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="admin-form">立即提交</button>
+                </div>
+            </div>
+        </form>
+    </fieldset>
+</block>
+<block name="myScript">
+    <script>
+        layui.use('upload', function () {
+            layui.upload({
+                url: '{:U(\'imports\')}' //上传接口
+                , success: function (res) { //上传成功后的回调
+                    console.log(res);
+                    img = res;
+
+                    var html = '<input type="hidden" name="file_root" value="' + img.url + '">';
+
+                    $('#excel_file').append(html);
+                }
+            });
+
+
+        });
+
+    </script>
+    <if condition="isset($detail['id'])">
+        <script>
+            layui.use('form', function () {
+                var form = layui.form();
+                form.on('submit(admin-form)', function (data) {
+                    //alert(data.field);
+                    $.ajax({
+                        type: "POST",
+                        url: '{:U("update")}',
+                        data: data.field,
+                        success: function (msg) {
+                            //alert(msg);return false;
+                            if (msg.code == 1) {
+                                parent.location.reload();
+                            } else {
+                                parent.layer.msg(msg.msg, {
+                                    icon: 5,
+                                    shade: [0.6, '#393D49'],
+                                    time: 1500
+                                });
+                            }
+                        }
+                    });
+                    return false;
+                });
+
+            });
+        </script>
+        <else/>
+        <script>
+            layui.use('form', function () {
+                var form = layui.form();
+                form.on('submit(admin-form)', function (data) {
+                    $.ajax({
+                        type: "POST",
+                        url: '{:U("add")}',
+                        data: data.field,
+                        success: function (msg) {
+                            console.log('helll');
+                            if (msg.code == 1) {
+                                console.log('suss');
+                                parent.location.reload();
+                            } else {
+                                console.log('fail');
+                                parent.layer.msg(msg.msg, {
+                                    icon: 5,
+                                    shade: [0.6, '#393D49'],
+                                    time: 1500
+                                });
+                            }
+                        }
+                    });
+                    return false;
+                });
+
+            });
+        </script>
+    </if>
+</block>

@@ -3,7 +3,7 @@
     <fieldset class="layui-elem-field">
         <legend>课本列表</legend>
         <span class="layui-btn layui-btn-normal api-add" style="margin-left:15px;"><i class="layui-icon">&#xe608;</i> 新增</span>
-        <span class="layui-btn layui-btn-normal api-add" style="margin-left:30px;"><i class="layui-icon">&#xe608;</i> 批量添加</span>
+        <span class="layui-btn layui-btn-normal batch-add" style="margin-left:30px;"><i class="layui-icon">&#xe608;</i> 批量添加</span>
         <div class="layui-field-box">
             <form class="layui-form" action="" method="post">
                 <div class="layui-form-item">
@@ -173,16 +173,7 @@
                     $("#limit").val(msg.limit);
                     $("#total").val(msg.total);
 
-                    $('.api-add').on('click', function () {
-                        var index = layer.open({
-                            title: '添加记录',
-                            type: 2,
-                            area: ['60%', '100%'],
-                            maxmin: true,
-                            content: '{:U("add")}'
-                        });
 
-                    });
                     $('.edit').on('click', function () {
                         var ownObj = $(this);
                         var url = ownObj.attr('data-url').slice(0,-5)+'/id/'+ownObj.attr('data-id');
@@ -271,6 +262,7 @@
             ajaxlist();
             pagenum();
 
+
             form.on('submit(search)', function (data) {
                 $("#class_ids").val($("#class_id").val());
                 $("#subject_ids").val($("#subject_id").val());
@@ -281,6 +273,26 @@
                 ajaxlist(object);
                 pagenum();
                 return false;
+            });
+            $('.api-add').on('click', function () {
+                var index = layer.open({
+                    title: '添加记录',
+                    type: 2,
+                    area: ['60%', '100%'],
+                    maxmin: true,
+                    content: '{:U("add")}'
+                });
+
+            });
+            $('.batch-add').on('click', function () {
+                var index = layer.open({
+                    title: '批量添加记录',
+                    type: 2,
+                    area: ['40%', '40%'],
+                    maxmin: true,
+                    content: '{:U("batchAdd")}'
+                });
+
             });
 
 
