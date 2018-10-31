@@ -3,7 +3,7 @@
     <fieldset class="layui-elem-field">
         <legend>内容管理 - <a href="{:U('index')}" target="_self" style="color:blue;cursor:pointer;">课本列表</a> - 课本目录列表</legend>
         <span class="layui-btn layui-btn-normal api-add" style="margin-left:15px;" data-url="{:U('addCatalog')}" data-id="{$textbook_id}"><i class="layui-icon">&#xe608;</i> 新增</span>
-        <span class="layui-btn layui-btn-normal api-add" style="margin-left:30px;"><i class="layui-icon">&#xe608;</i> 批量添加</span>
+        <span class="layui-btn layui-btn-normal batch-add" style="margin-left:30px;" data-url="{:U('catalogBatchAdd')}" data-id="{$textbook_id}"><i class="layui-icon">&#xe608;</i> 批量添加</span>
         <div class="layui-field-box">
             <form class="layui-form" action="" method="post">
                 <div class="layui-form-item">
@@ -129,18 +129,7 @@
                     $("#limit").val(msg.limit);
                     $("#total").val(msg.total);
 
-                    $('.api-add').on('click', function () {
-                        var ownObj = $(this);
-                        var url = ownObj.attr('data-url').slice(0,-5)+'/textbook_id/'+ownObj.attr('data-id');
-                        var index = layer.open({
-                            title: '添加记录',
-                            type: 2,
-                            area: ['60%', '100%'],
-                            maxmin: true,
-                            content: url
-                        });
 
-                    });
                     $('.edit').on('click', function () {
                         var ownObj = $(this);
                         var url = ownObj.attr('data-url').slice(0,-5)+'/id/'+ownObj.attr('data-id');
@@ -237,6 +226,30 @@
                 ajaxlist(object);
                 pagenum();
                 return false;
+            });
+            $('.api-add').on('click', function () {
+                var ownObj = $(this);
+                var url = ownObj.attr('data-url').slice(0,-5)+'/textbook_id/'+ownObj.attr('data-id');
+                var index = layer.open({
+                    title: '添加记录',
+                    type: 2,
+                    area: ['60%', '100%'],
+                    maxmin: true,
+                    content: url
+                });
+
+            });
+            $('.batch-add').on('click', function () {
+                var ownObj = $(this);
+                var url = ownObj.attr('data-url').slice(0,-5)+'/textbook_id/'+ownObj.attr('data-id');
+                var index = layer.open({
+                    title: '批量添加记录',
+                    type: 2,
+                    area: ['40%', '40%'],
+                    maxmin: true,
+                    content: url
+                });
+
             });
 
 

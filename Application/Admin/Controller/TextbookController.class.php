@@ -175,133 +175,9 @@ class TextbookController extends BaseController
         }
     }
 
-    /**
-     * 导入数据
-     * @author: 李胜辉
-     * @time: 2018/10/30 17:32
-     * @param $filename
-     * @param string $exts
-     * @param $or
-     *
-     */
-    /*public function dataImport($filename, $exts = 'xls', $or)
-    {
-
-
-        //导入PHPExcel类库，因为PHPExcel没有用命名空间，只能inport导入
-        vendor('PHPExcel.PHPExcel');
-        //创建PHPExcel对象，注意，不能少了\
-        $PHPExcel = new \PHPExcel();
-        //如果excel文件后缀名为.xls，导入这个类
-        if ($exts == 'xls') {
-            Vendor('PHPExcel.PHPExcel.Reader.Excel5');
-            $PHPReader = new \PHPExcel_Reader_Excel5();
-        } else if ($exts == 'xlsx') {
-            Vendor('PHPExcel.PHPExcel.Reader.Excel2007');
-            $PHPReader = new \PHPExcel_Reader_Excel2007();
-        }
-
-
-        //载入文件
-        $PHPExcel = $PHPReader->load($filename);
-        //获取表中的第一个工作表，如果要获取第二个，把0改为1，依次类推
-        $currentSheet = $PHPExcel->getSheet(0);
-        //获取总列数
-        $allColumn = $currentSheet->getHighestColumn();
-        //获取总行数
-        $allRow = $currentSheet->getHighestRow();
-            //循环获取表中的数据，$currentRow表示当前行，从哪行开始读取数据，索引值从0开始
-        for ($currentRow = 2; $currentRow <= $allRow; $currentRow++) {
-            //从哪列开始，A表示第一列
-            for ($currentColumn = 'A'; $currentColumn <= $allColumn; $currentColumn++) {
-                //数据坐标
-                $address = $currentColumn . $currentRow;
-                //读取到的数据，保存到数组$data中
-                $cell = $currentSheet->getCell($address)->getValue();
-
-                if ($cell instanceof PHPExcel_RichText) {
-                    $cell = $cell->__toString();
-                }
-                $data[$currentRow - 1][$currentColumn] = $cell;
-            //  print_r($cell);
-            }
-
-        }
-        // 写入数据库操作
-        $this->insertData($data);
-
-    }
-
 
     /**
-     * 写入数据库操作
-     * @author: 李胜辉
-     * @time: 2018/10/30 17:32
-     * @param $data
-     *
-     */
-    /* public function insertData($data)
-     {
-         $created_time = date('Y-m-d H:i:s');
-         $apinfo = A('apinfo');
-         foreach ($data as $k => $v) {
-
-             if ($k != 0) {
-                 print_r($v);exit;
-                 //shop信息
-                 $info['shop_name'] = $v['C'];
-                 $info['address'] = $v['D'];
-                 $info['contact_name'] = $v['I'];
-                 $info['contact_phone'] = $v['J'];
-                 $info['lng'] = $v['G'];
-                 $info['lat'] = $v['H'];
-
-                 $info['shop_code'] = time() . $k;
-                 $type_explain = $v['K'];
-                 $where['type_explain'] = array('like', "%$type_explain%");
-
-                 $info['type_code'] = 5;
-
-                 $info['wa_area'] = $v['L'];
-
-                 $id = M('shop')->add($info);//shop_id
-                 $info['insert_time'] = date('Y-m-d H:i:s');
-
-                 //开始添加device信息
-
-
-                 $infos['dev_no'] = $info['shop_code'];
-                 $infos['dev_code'] = $v['B'];
-                 $infos['dev_mac'] = strtolower(str_replace('-', '', $v['B']));
-                 $infos['device_name'] = $v['C'];
-                 $infos['device_ip'] = $v['F'];
-                 $infos['location_id'] = '3397';
-                 $infos['area_code'] = $v['L'];
-                 $infos['address'] = $v['D'];
-                 $infos['device_address'] = $v['D'];
-
-                 $infos['agent_id'] = 1;
-                 $infos['customer_id'] = 1;
-                 $infos['shop_id'] = $id;
-                 $infos['lng'] = $v['G'];
-                 $infos['lat'] = $v['H'];
-                 $infos['pss'] = $v['M'];
-                 $infos['site_code'] = $apinfo->setWanganCode($v['L'], 3, $info['type_code'], $id);
-
-                 $result = M('device')->add($infos);
-                 $apinfo->insertdevice($info, $infos, $id);
-                 $apinfo->apinfo_defaultoption($infos['dev_mac']);
-             }
-
-         }
-
-         $this->success('添加成功', U('index'), 1);
-
-     }*/
-
-
-    /**
-     * 导入excel
+     * 课本导入excel
      * @author: 李胜辉
      * @time: 2018/10/30 17:32
      *
@@ -309,10 +185,7 @@ class TextbookController extends BaseController
     public function imports()
     {
         header("Content-Type:text/html;charset = utf-8");
-        /* //获取网站根目录地址$url
-         $PHP_SELF = $_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_NAME'];
-         $str = substr($PHP_SELF, 1);
-         $url = 'http://' . $_SERVER['HTTP_HOST'] . '/' . substr($str, 0, strpos($str, '/') + 1);*/
+
         if (!empty($_FILES)) {
 
             $upload = new \Think\Upload();   // 实例化上传类
@@ -344,30 +217,27 @@ class TextbookController extends BaseController
                 $highestColumn = $sheet->getHighestColumn();//取得总列数
                 for ($i = 2; $i <= $highestRow; $i++) {
                     $data['title'] = $objPHPExcel->getActiveSheet()->getCell("A" . $i)->getValue();
-                    $data['cover'] = $objPHPExcel->getActiveSheet()->getCell("B" . $i)->getValue();
-                    echo json_encode($data['cover']);
-                    exit;
                     $data['pub_userid'] = session('uid');
                     $data['pub_time'] = time();
-                    $data['intro'] = $objPHPExcel->getActiveSheet()->getCell("C" . $i)->getValue();
-                    $data['price'] = $objPHPExcel->getActiveSheet()->getCell("D" . $i)->getValue();
-                    $data['show_status'] = $objPHPExcel->getActiveSheet()->getCell("E" . $i)->getValue();
-                    $data['copyright'] = $objPHPExcel->getActiveSheet()->getCell("F" . $i)->getValue();
-                    $data['class_id'] = $objPHPExcel->getActiveSheet()->getCell("G" . $i)->getValue();
+                    $data['intro'] = $objPHPExcel->getActiveSheet()->getCell("B" . $i)->getValue();
+                    $data['price'] = $objPHPExcel->getActiveSheet()->getCell("C" . $i)->getValue();
+                    $data['show_status'] = $objPHPExcel->getActiveSheet()->getCell("D" . $i)->getValue();
+                    $data['copyright'] = $objPHPExcel->getActiveSheet()->getCell("E" . $i)->getValue();
+                    $data['class_id'] = $objPHPExcel->getActiveSheet()->getCell("F" . $i)->getValue();
                     $class_id = D('api_class')->where(array('class_name' => $data['class_id']))->getField('id');
-                    $data['class_id'] = $class_id;
-                    $data['subject_id'] = $objPHPExcel->getActiveSheet()->getCell("H" . $i)->getValue();
+                    $data['class_id'] = $class_id?$class_id:0;
+                    $data['subject_id'] = $objPHPExcel->getActiveSheet()->getCell("G" . $i)->getValue();
                     $subject_id = D('api_subject')->where(array('subject_name' => $data['subject_id']))->getField('id');
-                    $data['subject_id'] = $subject_id;
-                    $data['versions_id'] = $objPHPExcel->getActiveSheet()->getCell("I" . $i)->getValue();
+                    $data['subject_id'] = $subject_id?$subject_id:0;
+                    $data['versions_id'] = $objPHPExcel->getActiveSheet()->getCell("H" . $i)->getValue();
                     $versions_id = D('api_versions')->where(array('versions_name' => $data['versions_id']))->getField('id');
-                    $data['versions_id'] = $versions_id;
+                    $data['versions_id'] = $versions_id?$versions_id:0;
                 }
                 $res = D('api_textbook')->add($data);
                 if ($res) {
-                    $this->success('导入成功!');
+                    echo 1;//成功
                 } else {
-                    $this->error('导入失败!');
+                    echo 2;//失败
                 }
 
             } else {
@@ -375,9 +245,8 @@ class TextbookController extends BaseController
                 echo json_encode($a);
             }
         } else {
-            echo json_encode(2);
+            echo json_encode(3);
         }
-
 
     }
 
@@ -389,14 +258,86 @@ class TextbookController extends BaseController
      */
     public function batchAdd()
     {
-        if (IS_POST) {
-
-        } else {
             $this->display();
+
+    }
+    /**
+     * 目录批量添加页
+     * @author: 李胜辉
+     * @time: 2018/10/31 10:32
+     */
+    public function catalogBatchAdd()
+    {
+        $textbook_id = I('get.textbook_id');
+        session('textbook_id',$textbook_id);
+        $this->display();
+
+    }
+    /**
+     * 课本导入excel
+     * @author: 李胜辉
+     * @time: 2018/10/31 10:32
+     *
+     */
+    public function catalogImports()
+    {
+        header("Content-Type:text/html;charset = utf-8");
+
+        if (!empty($_FILES)) {
+
+            $upload = new \Think\Upload();   // 实例化上传类
+            $upload->maxSize = 3145728;    // 设置附件上传大小
+            $upload->exts = array('xls', 'xlsx'); // 设置附件上传类型
+            $upload->rootPath = THINK_PATH;          // 设置附件上传根目录
+            $upload->savePath = '../Public/';    // 设置附件上传（子）目录
+            $upload->subName = 'uploads/articlePublish/textbook';  //子文件夹
+            $upload->replace = true;  //同名文件是否覆盖
+            // 上传文件
+            $info = $upload->upload();
+
+            if ($info) {
+
+                $file_name = substr($info['excel_file']['savepath'], 3) . $info['excel_file']['savename'];//拼接图片地址
+                $exts = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));//判断导入表格后缀格式
+
+                vendor("PHPExcel.PHPExcel");
+                if ($exts == 'xlsx') {
+                    $objReader = \PHPExcel_IOFactory::createReader('Excel2007');
+                    $objPHPExcel = $objReader->load($file_name, $encode = 'utf-8');
+
+                } else if ($exts == 'xls') {
+                    $objReader = \PHPExcel_IOFactory::createReader('Excel15');
+                    $objPHPExcel = $objReader->load($file_name, $encode = 'utf-8');
+                }
+                $sheet = $objPHPExcel->getSheet(0);
+                $highestRow = $sheet->getHighestRow();//获取总行数
+                $highestColumn = $sheet->getHighestColumn();//取得总列数
+                for ($i = 2; $i <= $highestRow; $i++) {
+                    $data['title'] = $objPHPExcel->getActiveSheet()->getCell("A" . $i)->getValue();
+                    $data['pub_userid'] = session('uid');
+                    $data['textbook_id'] = session('textbook_id');
+                    $data['pub_time'] = time();
+                    $data['content'] = $objPHPExcel->getActiveSheet()->getCell("B" . $i)->getValue();
+                    $data['sort'] = $objPHPExcel->getActiveSheet()->getCell("C" . $i)->getValue();
+                    $data['price'] = $objPHPExcel->getActiveSheet()->getCell("D" . $i)->getValue();
+                    $data['show_status'] = $objPHPExcel->getActiveSheet()->getCell("E" . $i)->getValue();
+                }
+                $res = D('api_textbook_content')->add($data);
+                if ($res) {
+                    session('textbook_id',null);
+                    echo 1;//成功
+                } else {
+                    echo 2;//失败
+                }
+
+            } else {
+                echo 4;
+            }
+        } else {
+            echo json_encode(3);
         }
 
     }
-
     /**
      * 修改页
      * @author: 李胜辉

@@ -9,7 +9,7 @@ return array(
     'USER_ADMINISTRATOR' => array(1,2),
     'AUTH_KEY' => 'I&TC{pft>L,C`wFQ>&#ROW>k{Kxlt1>ryW(>r<#R',
 
-    'COMPANY_NAME' => 'ApiAdmin开发维护团队',
+    'COMPANY_NAME' => '石家庄兴诺信息技术有限公司开发维护团队',
 
     'URL_ROUTER_ON'   => true,
     'URL_ROUTE_RULES' => array(
