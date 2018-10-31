@@ -244,6 +244,7 @@ class VideoController extends BaseController
             echo json_encode(2);
         }
     }
+
     /**
      * 目录列表
      * @author: 李胜辉
@@ -252,9 +253,10 @@ class VideoController extends BaseController
     public function catalog()
     {
         $video_id = I('get.video_id');
-        $this->assign('video_id',$video_id);
+        $this->assign('video_id', $video_id);
         $this->display();
     }
+
     /**
      * ajax获取视频目录列表
      * @author: 李胜辉
@@ -444,4 +446,165 @@ class VideoController extends BaseController
             echo json_encode(2);
         }
     }
+
+    /**
+     * 批量添加页
+     * @author: 李胜辉
+     * @time: 2018/10/31 11:32
+     */
+    public function batchAdd()
+    {
+        $this->display();
+
+    }
+
+    /**
+     * 课本导入excel
+     * @author: 李胜辉
+     * @time: 2018/10/31 11:32
+     *
+     */
+    public function imports()
+    {
+        header("Content-Type:text/html;charset = utf-8");
+
+        if (!empty($_FILES)) {
+
+            $upload = new \Think\Upload();   // 实例化上传类
+            $upload->maxSize = 3145728;    // 设置附件上传大小
+            $upload->exts = array('xls', 'xlsx'); // 设置附件上传类型
+            $upload->rootPath = THINK_PATH;          // 设置附件上传根目录
+            $upload->savePath = '../Public/';    // 设置附件上传（子）目录
+            $upload->subName = 'uploads/video/cover';  //子文件夹
+            $upload->replace = true;  //同名文件是否覆盖
+            // 上传文件
+            $info = $upload->upload();
+
+            if ($info) {
+
+                $file_name = substr($info['excel_file']['savepath'], 3) . $info['excel_file']['savename'];//拼接图片地址
+                $exts = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));//判断导入表格后缀格式
+
+                vendor("PHPExcel.PHPExcel");
+                if ($exts == 'xlsx') {
+                    $objReader = \PHPExcel_IOFactory::createReader('Excel2007');
+                    $objPHPExcel = $objReader->load($file_name, $encode = 'utf-8');
+
+                } else if ($exts == 'xls') {
+                    $objReader = \PHPExcel_IOFactory::createReader('Excel15');
+                    $objPHPExcel = $objReader->load($file_name, $encode = 'utf-8');
+                }
+                $sheet = $objPHPExcel->getSheet(0);
+                $highestRow = $sheet->getHighestRow();//获取总行数
+                $highestColumn = $sheet->getHighestColumn();//取得总列数
+                for ($i = 1; $i <= $highestRow; $i++) {
+                    $data['title'] = $objPHPExcel->getActiveSheet()->getCell("A" . $i)->getValue();
+                    $data['pub_userid'] = session('uid');
+                    $data['pub_time'] = time();
+                    $data['intro'] = $objPHPExcel->getActiveSheet()->getCell("B" . $i)->getValue();
+                    $data['price'] = $objPHPExcel->getActiveSheet()->getCell("C" . $i)->getValue();
+
+                    $data['show_status'] = $objPHPExcel->getActiveSheet()->getCell("D" . $i)->getValue();
+
+                    $data['class_id'] = $objPHPExcel->getActiveSheet()->getCell("E" . $i)->getValue();
+                    $class_id = D('api_class')->where(array('class_name' => $data['class_id']))->getField('id');
+                    $data['class_id'] = $class_id ? $class_id : 0;
+                    $data['subject_id'] = $objPHPExcel->getActiveSheet()->getCell("F" . $i)->getValue();
+                    $subject_id = D('api_subject')->where(array('subject_name' => $data['subject_id']))->getField('id');
+                    $data['subject_id'] = $subject_id ? $subject_id : 0;
+                    $data['versions_id'] = $objPHPExcel->getActiveSheet()->getCell("G" . $i)->getValue();
+                    $versions_id = D('api_versions')->where(array('versions_name' => $data['versions_id']))->getField('id');
+                    $data['versions_id'] = $versions_id?$versions_id:0;
+
+                    $data['video_type'] = $objPHPExcel->getActiveSheet()->getCell("H" . $i)->getValue();
+
+                }
+                $res = D('api_video')->add($data);
+                if ($res) {
+                    echo 1;//存储成功
+                } else {
+                    echo 2;//保存失败
+                }
+
+            } else {
+                echo 4;//上传失败
+            }
+        } else {
+            echo 3;//没有选择文件
+        }
+
+    }
+
+    /**
+     * 目录批量添加页
+     * @author: 李胜辉
+     * @time: 2018/10/31 10:32
+     */
+    public function catalogBatchAdd()
+    {
+        $video_id = I('get.video_id');
+        session('video_id', $video_id);
+        $this->display();
+
+    }
+
+    /**
+     * 课本导入excel
+     * @author: 李胜辉
+     * @time: 2018/10/31 10:32
+     *
+     */
+    public function catalogImports()
+    {
+        header("Content-Type:text/html;charset = utf-8");
+        //获取网站根目录地址$url
+        $PHP_SELF = $_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_NAME'];
+        $str = substr($PHP_SELF, 1);
+        $url = 'http://' . $_SERVER['HTTP_HOST'] . '/' . substr($str, 0, strpos($str, '/') + 1);
+
+        if (!empty($_FILES)) {
+
+            $upload = new \Think\Upload();   // 实例化上传类
+            $upload->maxSize = 3145728;    // 设置附件上传大小
+            $upload->exts = array('mp4', 'ogg', 'webm'); // 设置附件上传类型
+            $upload->rootPath = THINK_PATH;          // 设置附件上传根目录
+            $upload->savePath = '../Public/';    // 设置附件上传（子）目录
+            $upload->subName = 'uploads/video/content';  //子文件夹
+            $upload->replace = true;  //同名文件是否覆盖
+            // 上传文件
+            $info = $upload->upload();
+
+            if ($info) {
+                $sql = 'insert into api_video_content(title,video_id,video_url,pub_userid,pub_time) values';
+                $str_values = '';
+                foreach ($info as $key => $value) {
+                    $video_url = $url . substr($value['savepath'], 3) . $value['savename'];//拼接图片地址
+                    $title = $_FILES['excel_file']['name'][$key];
+                    $title = substr($title, 0, strrpos($title, '.'));
+                    $video_id = session('video_id');
+                    $pub_userid = session('uid');
+                    $pub_time = time();
+                    $str_values .= '("' . $title . '","' . $video_id . '","' . $video_url . '","' . $pub_userid . '","' . $pub_time . '"),';
+                }
+                unset($key, $value);
+                $str_values = substr($str_values, 0, -1);
+                $sql = $sql . $str_values;
+                $table = M('api_video_content');
+                $res = $table->execute($sql);
+                if ($res) {
+                    session('video_id', null);
+                    echo 1;//保存成功
+                } else {
+                    echo 2;//保存失败
+                }
+            } else {
+                echo 4;//上传失败
+            }
+        } else {
+            echo 3;//没有选择上传文件
+        }
+
+    }
+
+
 }
