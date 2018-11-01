@@ -10,9 +10,11 @@
                     <div class="layui-input-block">
                         <volist name="allGroup" id="vo">
                             <if condition="in_array($vo['id'], $groupAccess)">
-                                <input type="checkbox" name="groupAccess[{$vo['id']}]" value="{$vo['id']}" title="{$vo['name']}" checked>
+                                <!--<input type="checkbox" name="groupAccess[{$vo['id']}]" value="{$vo['id']}" title="{$vo['name']}" checked>-->
+                                <input type="radio" name="groupAccess" value="{$vo['id']}" title="{$vo['name']}" checked>
                                 <else />
-                                <input type="checkbox" name="groupAccess[{$vo['id']}]" value="{$vo['id']}" title="{$vo['name']}">
+                                <!--<input type="checkbox" name="groupAccess[{$vo['id']}]" value="{$vo['id']}" title="{$vo['name']}">-->
+                                <input type="radio" name="groupAccess" value="{$vo['id']}" title="{$vo['name']}">
                             </if>
                         </volist>
                     </div>
@@ -20,7 +22,7 @@
                 <div class="layui-form-item">
                     <div class="layui-input-block">
                         <button class="layui-btn" lay-submit lay-filter="admin-form">立即提交</button>
-                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        <!--<button type="reset" class="layui-btn layui-btn-primary">重置</button>-->
                     </div>
                 </div>
             </form>

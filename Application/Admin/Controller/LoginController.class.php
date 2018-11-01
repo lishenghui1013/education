@@ -7,19 +7,22 @@ namespace Admin\Controller;
  * @since   2016-01-16
  * @author  zhaoxiang <zhaoxiang051405@outlook.com>
  */
-class LoginController extends BaseController {
+class LoginController extends BaseController
+{
 
-    public function index() {
+    public function index()
+    {
         $this->display();
     }
 
-    public function login() {
+    public function login()
+    {
         $pass = user_md5(I('post.password'));
         $user = I('post.username');
 
         $challenge = I('post.geetest_challenge');
         $validate = I('post.geetest_validate');
-        if(!$challenge || md5($challenge) != $validate){
+        if (!$challenge || md5($challenge) != $validate) {
             $this->ajaxError('请先通过验证！');
         }
 
@@ -55,33 +58,36 @@ class LoginController extends BaseController {
         }
     }
 
-    public function logOut() {
+    public function logOut()
+    {
         S(session('uid'), null);
         session('[destroy]');
         $this->success('退出成功', U('Login/index'));
     }
 
-    public function changeUser() {
+    public function changeUser()
+    {
         if (IS_POST) {
+
             $data = I('post.');
-            $newData = array();
-            if (!empty($data['nickname'])) {
-                $newData['nickname'] = $data['nickname'];
-            }
-            if (!empty($data['password'])) {
-                $newData['password'] = user_md5($data['password']);
-                $newData['updateTime'] = time();
-            }
-            $res = D('ApiUser')->where(array('id' => session('uid')))->save($newData);
+            //去除多余的
+            $info['phone'] = $data['phone'];
+            $info['sex'] = $data['sex'];
+            unset($data['phone'], $data['sex']);
+            $res = D('ApiUser')->where(array('id' => session('uid')))->save($data);
             if ($res === false) {
-                $this->ajaxError('修改失败');
+                $this->ajaxError('操作失败');
             } else {
-                $this->ajaxSuccess('修改成功');
+                $res = D('api_user_info')->where(array('user_id' => session('uid')))->save($info);
+                $this->ajaxSuccess('编辑成功');
+
+
             }
         } else {
-            $userInfo = D('ApiUser')->where(array('id' => session('uid')))->find();
-            $this->assign('uname', $userInfo['username']);
+            $detail = D('api_user as u')->join('api_user_info as i on i.user_id=u.id')->field('u.id,u.username,u.nickname,i.phone,i.sex')->where(array('u.id' => session('uid')))->find();
+            $this->assign('detail', $detail);
             $this->display('add');
+
         }
     }
 

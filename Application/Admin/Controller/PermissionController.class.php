@@ -80,15 +80,37 @@ class PermissionController extends BaseController {
             $this->ajaxSuccess(L('_OPERATION_SUCCESS_'));
         }
     }
+    /**
+     * 判断是否为超级管理员
+     * @author: 李胜辉
+     * @time: 2018/11/01 14:32
+     *
+     */
+    public function isAdministrator()
+    {
+        $uid = I('post.uid');
+        $isAdmin = isAdministrator($uid);
+        if ($isAdmin) {
+            $this->ajaxError('超级管理员不可以被操作');
+        }else{
+            $this->ajaxSuccess('可以操作');
+        }
+    }
 
     /**
      * 将管理员加入组的组列表显示
      */
     public function group() {
+
         if (IS_POST) {
             $data = I('post.');
-            $groupAccess = array_keys($data['groupAccess']);
-            $groupAccess = implode(',', $groupAccess);
+            if(is_array($data['groupAccess'])){
+                $groupAccess = array_keys($data['groupAccess']);
+                $groupAccess = implode(',', $groupAccess);
+            }else{
+                $groupAccess = $data['groupAccess'];
+            }
+
             $oldArr = D('ApiAuthGroupAccess')->where(array('uid' => $data['uid']))->find();
             if ($oldArr) {
                 $insert = D('ApiAuthGroupAccess')->where(array('uid' => $data['uid']))->save(array('groupId' => $groupAccess));
