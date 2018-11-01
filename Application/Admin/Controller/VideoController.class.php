@@ -229,8 +229,6 @@ class VideoController extends BaseController
             $upload->replace = true;  //同名文件是否覆盖
             // 上传文件
             $images = $upload->upload();
-            //return $images;
-            //Log::record('$images', Log::DEBUG);die;
             //判断是否有图
             if ($images) {
                 $info['url'] = $url . substr($images['file']['savepath'], 3) . $images['file']['savename'];//拼接图片地址
@@ -431,8 +429,6 @@ class VideoController extends BaseController
             $upload->replace = true;  //同名文件是否覆盖
             // 上传文件
             $images = $upload->upload();
-            //return $images;
-            //Log::record('$images', Log::DEBUG);die;
             //判断是否有图
             if ($images) {
                 $info['url'] = $url . substr($images['file']['savepath'], 3) . $images['file']['savename'];//拼接视频地址
@@ -459,7 +455,7 @@ class VideoController extends BaseController
     }
 
     /**
-     * 课本导入excel
+     * 视频导入excel
      * @author: 李胜辉
      * @time: 2018/10/31 11:32
      *
@@ -467,21 +463,17 @@ class VideoController extends BaseController
     public function imports()
     {
         header("Content-Type:text/html;charset = utf-8");
-
         if (!empty($_FILES)) {
-
             $upload = new \Think\Upload();   // 实例化上传类
             $upload->maxSize = 3145728;    // 设置附件上传大小
             $upload->exts = array('xls', 'xlsx'); // 设置附件上传类型
             $upload->rootPath = THINK_PATH;          // 设置附件上传根目录
             $upload->savePath = '../Public/';    // 设置附件上传（子）目录
-            $upload->subName = 'uploads/video/cover';  //子文件夹
+            $upload->subName = 'uploads/video/video';  //子文件夹
             $upload->replace = true;  //同名文件是否覆盖
             // 上传文件
             $info = $upload->upload();
-
             if ($info) {
-
                 $file_name = substr($info['excel_file']['savepath'], 3) . $info['excel_file']['savename'];//拼接图片地址
                 $exts = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));//判断导入表格后缀格式
 
@@ -489,7 +481,6 @@ class VideoController extends BaseController
                 if ($exts == 'xlsx') {
                     $objReader = \PHPExcel_IOFactory::createReader('Excel2007');
                     $objPHPExcel = $objReader->load($file_name, $encode = 'utf-8');
-
                 } else if ($exts == 'xls') {
                     $objReader = \PHPExcel_IOFactory::createReader('Excel15');
                     $objPHPExcel = $objReader->load($file_name, $encode = 'utf-8');
@@ -497,30 +488,29 @@ class VideoController extends BaseController
                 $sheet = $objPHPExcel->getSheet(0);
                 $highestRow = $sheet->getHighestRow();//获取总行数
                 $highestColumn = $sheet->getHighestColumn();//取得总列数
-                for ($i = 1; $i <= $highestRow; $i++) {
+                $datas = array();
+                for ($i = 3; $i <= $highestRow; $i++) {
                     $data['title'] = $objPHPExcel->getActiveSheet()->getCell("A" . $i)->getValue();
                     $data['pub_userid'] = session('uid');
                     $data['pub_time'] = time();
                     $data['intro'] = $objPHPExcel->getActiveSheet()->getCell("B" . $i)->getValue();
                     $data['price'] = $objPHPExcel->getActiveSheet()->getCell("C" . $i)->getValue();
-
                     $data['show_status'] = $objPHPExcel->getActiveSheet()->getCell("D" . $i)->getValue();
-
-                    $data['class_id'] = $objPHPExcel->getActiveSheet()->getCell("E" . $i)->getValue();
-                    $class_id = D('api_class')->where(array('class_name' => $data['class_id']))->getField('id');
+                    $class_name = $objPHPExcel->getActiveSheet()->getCell("E" . $i)->getValue();
+                    $class_id = D('api_class')->where(array('class_name' => $class_name))->getField('id');
                     $data['class_id'] = $class_id ? $class_id : 0;
-                    $data['subject_id'] = $objPHPExcel->getActiveSheet()->getCell("F" . $i)->getValue();
-                    $subject_id = D('api_subject')->where(array('subject_name' => $data['subject_id']))->getField('id');
+                    $subject_name = $objPHPExcel->getActiveSheet()->getCell("F" . $i)->getValue();
+                    $subject_id = D('api_subject')->where(array('subject_name' => $subject_name))->getField('id');
                     $data['subject_id'] = $subject_id ? $subject_id : 0;
-                    $data['versions_id'] = $objPHPExcel->getActiveSheet()->getCell("G" . $i)->getValue();
-                    $versions_id = D('api_versions')->where(array('versions_name' => $data['versions_id']))->getField('id');
+                    $versions_name = $objPHPExcel->getActiveSheet()->getCell("G" . $i)->getValue();
+                    $versions_id = D('api_versions')->where(array('versions_name' => $versions_name))->getField('id');
                     $data['versions_id'] = $versions_id?$versions_id:0;
-
                     $data['video_type'] = $objPHPExcel->getActiveSheet()->getCell("H" . $i)->getValue();
-
+                    $datas[] = $data;
                 }
-                $res = D('api_video')->add($data);
+                $res = D('api_video')->addAll($datas);
                 if ($res) {
+                    unlink($file_name);
                     echo 1;//存储成功
                 } else {
                     echo 2;//保存失败
@@ -549,7 +539,7 @@ class VideoController extends BaseController
     }
 
     /**
-     * 课本导入excel
+     * 视频目录批量导入
      * @author: 李胜辉
      * @time: 2018/10/31 10:32
      *
@@ -569,7 +559,7 @@ class VideoController extends BaseController
             $upload->exts = array('mp4', 'ogg', 'webm'); // 设置附件上传类型
             $upload->rootPath = THINK_PATH;          // 设置附件上传根目录
             $upload->savePath = '../Public/';    // 设置附件上传（子）目录
-            $upload->subName = 'uploads/video/content';  //子文件夹
+            $upload->subName = 'uploads/video/catalog';  //子文件夹
             $upload->replace = true;  //同名文件是否覆盖
             // 上传文件
             $info = $upload->upload();

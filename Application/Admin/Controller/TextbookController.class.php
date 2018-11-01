@@ -193,16 +193,13 @@ class TextbookController extends BaseController
             $upload->exts = array('xls', 'xlsx'); // 设置附件上传类型
             $upload->rootPath = THINK_PATH;          // 设置附件上传根目录
             $upload->savePath = '../Public/';    // 设置附件上传（子）目录
-            $upload->subName = 'uploads/articlePublish/textbook';  //子文件夹
+            $upload->subName = 'uploads/textbook/book';  //子文件夹
             $upload->replace = true;  //同名文件是否覆盖
             // 上传文件
             $info = $upload->upload();
-
             if ($info) {
-
                 $file_name = substr($info['excel_file']['savepath'], 3) . $info['excel_file']['savename'];//拼接图片地址
                 $exts = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));//判断导入表格后缀格式
-
                 vendor("PHPExcel.PHPExcel");
                 if ($exts == 'xlsx') {
                     $objReader = \PHPExcel_IOFactory::createReader('Excel2007');
@@ -215,7 +212,8 @@ class TextbookController extends BaseController
                 $sheet = $objPHPExcel->getSheet(0);
                 $highestRow = $sheet->getHighestRow();//获取总行数
                 $highestColumn = $sheet->getHighestColumn();//取得总列数
-                for ($i = 2; $i <= $highestRow; $i++) {
+                $datas = array();
+                for ($i = 3; $i <= $highestRow; $i++) {
                     $data['title'] = $objPHPExcel->getActiveSheet()->getCell("A" . $i)->getValue();
                     $data['pub_userid'] = session('uid');
                     $data['pub_time'] = time();
@@ -232,9 +230,11 @@ class TextbookController extends BaseController
                     $data['versions_id'] = $objPHPExcel->getActiveSheet()->getCell("H" . $i)->getValue();
                     $versions_id = D('api_versions')->where(array('versions_name' => $data['versions_id']))->getField('id');
                     $data['versions_id'] = $versions_id?$versions_id:0;
+                    $datas[] = $data;
                 }
-                $res = D('api_textbook')->add($data);
+                $res = D('api_textbook')->addAll($datas);
                 if ($res) {
+                    unlink($file_name);
                     echo 1;//成功
                 } else {
                     echo 2;//失败
@@ -274,7 +274,7 @@ class TextbookController extends BaseController
 
     }
     /**
-     * 课本导入excel
+     * 课本目录导入excel
      * @author: 李胜辉
      * @time: 2018/10/31 10:32
      *
@@ -290,7 +290,7 @@ class TextbookController extends BaseController
             $upload->exts = array('xls', 'xlsx'); // 设置附件上传类型
             $upload->rootPath = THINK_PATH;          // 设置附件上传根目录
             $upload->savePath = '../Public/';    // 设置附件上传（子）目录
-            $upload->subName = 'uploads/articlePublish/textbook';  //子文件夹
+            $upload->subName = 'uploads/textbook/catalog';  //子文件夹
             $upload->replace = true;  //同名文件是否覆盖
             // 上传文件
             $info = $upload->upload();
@@ -299,7 +299,6 @@ class TextbookController extends BaseController
 
                 $file_name = substr($info['excel_file']['savepath'], 3) . $info['excel_file']['savename'];//拼接图片地址
                 $exts = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));//判断导入表格后缀格式
-
                 vendor("PHPExcel.PHPExcel");
                 if ($exts == 'xlsx') {
                     $objReader = \PHPExcel_IOFactory::createReader('Excel2007');
@@ -312,7 +311,8 @@ class TextbookController extends BaseController
                 $sheet = $objPHPExcel->getSheet(0);
                 $highestRow = $sheet->getHighestRow();//获取总行数
                 $highestColumn = $sheet->getHighestColumn();//取得总列数
-                for ($i = 2; $i <= $highestRow; $i++) {
+                $datas = array();
+                for ($i = 3; $i <= $highestRow; $i++) {
                     $data['title'] = $objPHPExcel->getActiveSheet()->getCell("A" . $i)->getValue();
                     $data['pub_userid'] = session('uid');
                     $data['textbook_id'] = session('textbook_id');
@@ -321,10 +321,12 @@ class TextbookController extends BaseController
                     $data['sort'] = $objPHPExcel->getActiveSheet()->getCell("C" . $i)->getValue();
                     $data['price'] = $objPHPExcel->getActiveSheet()->getCell("D" . $i)->getValue();
                     $data['show_status'] = $objPHPExcel->getActiveSheet()->getCell("E" . $i)->getValue();
+                    $datas[] = $data;
                 }
-                $res = D('api_textbook_content')->add($data);
+                $res = D('api_textbook_content')->addAll($datas);
                 if ($res) {
                     session('textbook_id',null);
+                    unlink($file_name);
                     echo 1;//成功
                 } else {
                     echo 2;//失败
@@ -391,7 +393,7 @@ class TextbookController extends BaseController
             $upload->exts = array('jpg', 'gif', 'png', 'jpeg'); // 设置附件上传类型
             $upload->rootPath = THINK_PATH;          // 设置附件上传根目录
             $upload->savePath = '../Public/';    // 设置附件上传（子）目录
-            $upload->subName = 'uploads/articlePublish/textbook';  //子文件夹
+            $upload->subName = 'uploads/textbook/cover';  //子文件夹
             $upload->replace = true;  //同名文件是否覆盖
             // 上传文件
             $images = $upload->upload();
