@@ -2,15 +2,15 @@
 <block name="main">
 
     <fieldset class="layui-elem-field">
-        <legend>基础设置 - 科目管理</legend>
+        <legend>基础设置 - 分类管理</legend>
         <span class="layui-btn layui-btn-normal api-add" style="margin-left:15px;"><i class="layui-icon">&#xe608;</i> 新增</span>
         <div class="layui-field-box">
             <form class="layui-form" id="form-admin-add" action="">
                 <div class="layui-form-item">
                     <div class="layui-inline">
-                        <label class="layui-form-label"> 科目名称</label>
+                        <label class="layui-form-label"> 分类名称</label>
                         <div class="layui-input-inline" style="width: 300px;">
-                            <input type="text" name="subject_name" placeholder="请输入科目名称" class="layui-input" value="" id="subject_name">
+                            <input type="text" name="category_name" placeholder="请输入分类名称" class="layui-input" value="" id="category_name">
                         </div>
                     </div>
                     <div class="layui-inline" id="search">
@@ -18,7 +18,7 @@
                     </div>
                 </div>
             </form>
-            <input type="hidden" name="subject_names" id="subject_names" value=""/>
+            <input type="hidden" name="category_names" id="category_names" value=""/>
             <input type="hidden" name="limit" id="limit" value=""/>
             <input type="hidden" name="curr" id="curr" value=""/>
             <input type="hidden" name="total" id="total" value=""/>
@@ -26,7 +26,7 @@
                 <thead>
                 <tr>
                     <th>ID</th>
-                    <th>科目名称</th>
+                    <th>分类名称</th>
                     <th>添加人</th>
                     <th>添加时间</th>
                     <th>状态</th>
@@ -98,7 +98,7 @@
                                 add_time = '--';
                             }
 
-                            html += '<tr><td>' + data[x].id + '</td><td>' + data[x].subject_name + '</td><td>' + data[x].username + '</td><td>'
+                            html += '<tr><td>' + data[x].id + '</td><td>' + data[x].category_name + '</td><td>' + data[x].username + '</td><td>'
                                 + add_time + '</td><td>'
                                 + str_status + '</td><td>'
                                 + '<span class="layui-btn edit" data-id="' + data[x].id + '"data-url="{:U(\'update\')}">编辑</span>' +
@@ -175,7 +175,7 @@
 
                         var object = new Object();
                         object.curr = obj.curr;
-                        object.subject_name = $("#subject_names").val();
+                        object.category_name = $("#category_names").val();
                         ajaxlist(object);
                     }
                 }
@@ -189,15 +189,14 @@
             pagenum();
 
             form.on('submit(search)', function (data) {
-                $("#subject_names").val($("#subject_name").val());
+                $("#category_names").val($("#category_name").val());
                 var object = data.field;
                 object.curr = 1;
-                object.subject_name = $("#subject_names").val();
+                object.category_name = $("#category_names").val();
                 ajaxlist(object);
                 pagenum();
                 return false;
             });
-
             $('.api-add').on('click', function () {
                 var index = layer.open({
                     title: '添加记录',
@@ -208,6 +207,7 @@
                 });
 
             });
+
         });
     </script>
 </block>

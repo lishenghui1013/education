@@ -164,16 +164,7 @@
                     $("#limit").val(msg.limit);
                     $("#total").val(msg.total);
 
-                    $('.api-add').on('click', function () {
-                        var index = layer.open({
-                            title: '添加记录',
-                            type: 2,
-                            area: ['60%', '100%'],
-                            maxmin: true,
-                            content: '{:U("add")}'
-                        });
 
-                    });
                     $('.edit').on('click', function () {
                         var ownObj = $(this);
                         var url = ownObj.attr('data-url').slice(0,-5)+'/id/'+ownObj.attr('data-id');
@@ -274,7 +265,16 @@
                 return false;
             });
 
+            $('.api-add').on('click', function () {
+                var index = layer.open({
+                    title: '添加记录',
+                    type: 2,
+                    area: ['60%', '100%'],
+                    maxmin: true,
+                    content: '{:U("add")}'
+                });
 
+            });
         });
     </script>
 </block>

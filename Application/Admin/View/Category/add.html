@@ -1,7 +1,7 @@
 <extend name="Public/base"/>
 <block name="main">
     <fieldset class="layui-elem-field">
-        <legend>基础设置 - {:(isset($detail['id'])?'编辑':'新增')}科目</legend>
+        <legend>基础设置 - {:(isset($detail['id'])?'编辑':'新增')}分类</legend>
         <div class="layui-field-box">
             <form class="layui-form" action="" id="health_form" method="post">
                 <if condition="isset($detail['id'])">
@@ -14,11 +14,11 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label"><span style="color:red">*</span> 科目名称</label>
+                    <label class="layui-form-label"><span style="color:red">*</span> 分类名称</label>
                     <div class="layui-input-block">
-                        <input type="text" name="subject_name" required
-                               value="{:(isset($detail['subject_name'])?$detail['subject_name']:'')}" lay-verify="required"
-                               placeholder="请输入科目名称" class="layui-input">
+                        <input type="text" name="category_name" required
+                               value="{:(isset($detail['category_name'])?$detail['category_name']:'')}" lay-verify="required"
+                               placeholder="请输入分类名称" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item">
