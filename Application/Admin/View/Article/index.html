@@ -161,17 +161,13 @@
                                 +button+ '<span class="layui-btn edit" data-id="' + data[x].id + '"data-url="{:U(\'update\')}">编辑</span>' +
                                 '<span class="layui-btn layui-btn-danger look" data-id="' + data[x].id + '"data-url="{:U(\'look\')}">查看</span>' + '</td></tr>'
                         }
-
                     } else {
                         html = '<tr><td colspan="13" style="text-align:center;">暂无数据</td></tr>'
-
                     }
                     $("#tbody").html(html);
                     $("#curr").val(msg.curr);
                     $("#limit").val(msg.limit);
                     $("#total").val(msg.total);
-
-
                     $('.edit').on('click', function () {
                         var ownObj = $(this);
                         var url = ownObj.attr('data-url').slice(0,-5)+'/id/'+ownObj.attr('data-id');

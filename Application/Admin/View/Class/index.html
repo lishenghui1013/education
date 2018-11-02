@@ -29,7 +29,6 @@
                     <th>级别名称</th>
                     <th>添加人</th>
                     <th>添加时间</th>
-                    <th>状态</th>
                     <th>操作</th>
                 </tr>
                 </thead>
@@ -82,16 +81,7 @@
                     var data = msg.data;
                     if (msg.status == 'success') {
                         for (var x in data) {
-                            var str_status = '';
                             var add_time = '';
-                            var audit_time = '';
-                            if (data[x].del_status == 2) {
-                                str_status = '<span style="color:green;">正常</span>'
-                            } else if (data[x].del_status == 1) {
-                                str_status = '<span style="color:red;">已删除</span>'
-                            } else {
-                                str_status = '<span style="color:#0000FF;">未知</span>'
-                            }
                             if (data[x].add_time != '') {
                                 add_time = new Date(data[x].add_time * 1000).format("yyyy-MM-dd");
                             } else {
@@ -100,13 +90,12 @@
 
                             html += '<tr><td>' + data[x].id + '</td><td>' + data[x].class_name + '</td><td>' + data[x].username + '</td><td>'
                                 + add_time + '</td><td>'
-                                + str_status + '</td><td>'
                                 + '<span class="layui-btn edit" data-id="' + data[x].id + '"data-url="{:U(\'update\')}">编辑</span>' +
                                 '<span class="layui-btn confirm" data-info="你确定要删除该记录吗？" data-id="' + data[x].id + '"data-url="{:U(\'delete\')}">删除</span></td></tr>'
                         }
 
                     } else {
-                        html = '<tr><td colspan="6" style="text-align:center;">暂无数据</td></tr>'
+                        html = '<tr><td colspan="5" style="text-align:center;">暂无数据</td></tr>'
 
                     }
                     $("#tbody").html(html);

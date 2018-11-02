@@ -2,31 +2,23 @@
 <block name="main">
 
     <fieldset class="layui-elem-field">
-        <legend>基础设置 - 分类管理</legend>
-        <span class="layui-btn layui-btn-normal api-add" style="margin-left:15px;"><i class="layui-icon">&#xe608;</i> 新增</span>
+        <legend>基础设置 - 轮播管理</legend>
+
         <div class="layui-field-box">
-            <form class="layui-form" id="form-admin-add" action="">
-                <div class="layui-form-item">
-                    <div class="layui-inline">
-                        <label class="layui-form-label"> 分类名称</label>
-                        <div class="layui-input-inline" style="width: 300px;">
-                            <input type="text" name="category_name" placeholder="请输入分类名称" class="layui-input" value="" id="category_name">
-                        </div>
-                    </div>
-                    <div class="layui-inline" id="search">
-                        <span class="layui-btn sub" lay-submit lay-filter="search">查询</span>
-                    </div>
-                </div>
-            </form>
-            <input type="hidden" name="category_names" id="category_names" value=""/>
+            <a href="{:U('addIndex')}" target="_self" class="layui-btn layui-btn-normal"><i class="layui-icon">&#xe608;</i>新增</a>
             <input type="hidden" name="limit" id="limit" value=""/>
             <input type="hidden" name="curr" id="curr" value=""/>
             <input type="hidden" name="total" id="total" value=""/>
             <table class="layui-table" id="list-admin" lay-even>
                 <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>分类名称</th>
+                    <th>序号</th>
+                    <th>标题</th>
+                    <th>缩略图</th>
+                    <th>发布人类型</th>
+                    <th>内容类型</th>
+                    <th>发布人</th>
+                    <th>发布时间</th>
                     <th>添加人</th>
                     <th>添加时间</th>
                     <th>操作</th>
@@ -82,28 +74,66 @@
                     if (msg.status == 'success') {
                         for (var x in data) {
                             var add_time = '';
+                            var pub_time = '';
+                            var user_type = '',item_type = '';
+                            switch(data[x].user_type){
+                                case 'COM':
+                                    user_type = '机构';
+                                    break;
+                                case 'TEA':
+                                    user_type = '老师';
+                                    break;
+                                case 'STU':
+                                    user_type = '学生';
+                                    break;
+                                default:
+                                    break;
+                            }
+                            switch(data[x].item_type){
+                                case 'ART':
+                                    item_type = '文章';
+                                    break;
+                                case 'RAD':
+                                    item_type = '视频';
+                                    break;
+                                case 'SRAD':
+                                    item_type = '系列视频';
+                                    break;
+                                case 'FILE':
+                                    item_type = '文件';
+                                    break;
+                                case 'PIC':
+                                    item_type = '图片';
+                                    break;
+                                default:
+                                    break;
+                            }
+                            if (data[x].pub_time != '') {
+                                pub_time = new Date(data[x].pub_time * 1000).format("yyyy-MM-dd");
+                            } else {
+                                pub_time = '';
+                            }
                             if (data[x].add_time != '') {
                                 add_time = new Date(data[x].add_time * 1000).format("yyyy-MM-dd");
                             } else {
-                                add_time = '--';
+                                add_time = '';
                             }
-
-                            html += '<tr><td>' + data[x].id + '</td><td>' + data[x].category_name + '</td><td>' + data[x].username + '</td><td>'
-                                + add_time + '</td><td>'
-                                + '<span class="layui-btn edit" data-id="' + data[x].id + '"data-url="{:U(\'update\')}">编辑</span>' +
+                            var num = parseInt(x)+1;
+                            html += '<tr><td>' + num+ '</td><td>' + data[x].title + '</td><td><img src="'
+                                + data[x].cover + '" style="height:60px;width:80px;" /></td><td>'
+                                + user_type + '</td><td>'+ item_type + '</td><td>'+ data[x].com_name + '</td><td>'
+                                + pub_time + '</td><td>'+ data[x].username + '</td><td>'+ add_time + '</td><td>'+
                                 '<span class="layui-btn confirm" data-info="你确定要删除该记录吗？" data-id="' + data[x].id + '"data-url="{:U(\'delete\')}">删除</span></td></tr>'
                         }
 
                     } else {
-                        html = '<tr><td colspan="5" style="text-align:center;">暂无数据</td></tr>'
+                        html = '<tr><td colspan="10" style="text-align:center;">暂无数据</td></tr>'
 
                     }
                     $("#tbody").html(html);
                     $("#curr").val(msg.curr);
                     $("#limit").val(msg.limit);
                     $("#total").val(msg.total);
-
-
                     $('.edit').on('click', function () {
                         var ownObj = $(this);
                         var url = ownObj.attr('data-url').slice(0,-5)+'/id/'+ownObj.attr('data-id');
@@ -164,7 +194,7 @@
 
                         var object = new Object();
                         object.curr = obj.curr;
-                        object.category_name = $("#category_names").val();
+                        object.class_name = $("#class_names").val();
                         ajaxlist(object);
                     }
                 }
@@ -178,14 +208,15 @@
             pagenum();
 
             form.on('submit(search)', function (data) {
-                $("#category_names").val($("#category_name").val());
+                $("#class_names").val($("#class_name").val());
                 var object = data.field;
                 object.curr = 1;
-                object.category_name = $("#category_names").val();
+                object.class_name = $("#class_names").val();
                 ajaxlist(object);
                 pagenum();
                 return false;
             });
+
             $('.api-add').on('click', function () {
                 var index = layer.open({
                     title: '添加记录',
@@ -196,7 +227,6 @@
                 });
 
             });
-
         });
     </script>
 </block>

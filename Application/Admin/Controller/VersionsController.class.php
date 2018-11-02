@@ -38,7 +38,7 @@ class VersionsController extends BaseController {
         //查询总条数
         $total = D('api_versions as v')->join('left join api_user as u on u.id=v.add_id')->where($where)->count();//查询满足要求的总记录数
 
-        $info = D('api_versions as v')->join('left join api_user as u on u.id=v.add_id')->field('v.id,v.versions_name,v.del_status,u.username,v.add_time')->where($where)->order('v.id')->limit($start, $limit)->select();
+        $info = D('api_versions as v')->join('left join api_user as u on u.id=v.add_id')->field('v.id,v.versions_name,u.username,v.add_time')->where($where)->order('v.id')->limit($start, $limit)->select();
         foreach ($info as $keys => $values) {
             foreach ($values as $key => $value) {
                 if ($values[$key] === null) {
@@ -77,8 +77,7 @@ class VersionsController extends BaseController {
     public function delete()
     {
         $id = I('post.id');
-        $arr['del_status'] = 1;
-        $res = D('api_versions')->where(array('id' => $id))->save($arr);
+        $res = D('api_versions')->where(array('id' => $id))->delete();
         if ($res === false) {
             $this->ajaxError('删除失败');
         } else {

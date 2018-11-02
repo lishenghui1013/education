@@ -1,0 +1,276 @@
+<extend name="Public/base"/>
+<block name="main">
+
+    <fieldset class="layui-elem-field">
+        <legend>轮播管理 - <a href="{:U('index')}" target="_self" style="color:blue;cursor:pointer;">轮播列表</a> - 发布内容列表</legend>
+        <div class="layui-field-box">
+            <form class="layui-form" id="form-admin-add" action="">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label"> 机构名称</label>
+                        <div class="layui-input-inline" style="width: 200px;">
+
+                            <input type="text" name="com_name" placeholder="请输入机构名称" class="layui-input" value="" id="com_name">
+                        </div>
+                    </div>
+
+                    <div class="layui-inline">
+                        <label class="layui-form-label"> 查询日期</label>
+                        <div class="layui-input-inline" style="width: 200px;">
+                        <input class="layui-input" placeholder="请选择日期"
+                               onclick="layui.laydate({elem: this, festival: true})" value="" name="add_time"
+                               id="add_time" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label"> 发布人类型</label>
+                        <div class="layui-input-inline" style="width: 200px;">
+                        <select name="user_type" id="user_type">
+                            <option value="">选择类型</option>
+                            <option value="">全部类型</option>
+                            <option value="COM">机构</option>
+                            <option value="TEA">老师</option>
+                            <option value="STU">学生</option>
+
+                        </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label"> 内容类型</label>
+                        <div class="layui-input-inline" style="width: 200px;">
+                        <select name="item_type" id="item_type">
+                            <option value="">选择类型</option>
+                            <option value="">全部类型</option>
+                            <option value="ART">文章</option>
+                            <option value="RAD">视频</option>
+                            <option value="SRAD">系列视频</option>
+                            <option value="FILE">文件</option>
+                            <option value="PIC">图片</option>
+
+                        </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline" id="search">
+                        <div class="layui-input-inline">
+                        <span class="layui-btn sub" lay-submit lay-filter="search">查询</span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <input type="hidden" name="com_names" id="com_names" value=""/>
+            <input type="hidden" name="add_times" id="add_times" value=""/>
+            <input type="hidden" name="user_types" id="user_types" value=""/>
+            <input type="hidden" name="item_types" id="item_types" value=""/>
+            <input type="hidden" name="limit" id="limit" value=""/>
+            <input type="hidden" name="curr" id="curr" value=""/>
+            <input type="hidden" name="total" id="total" value=""/>
+            <table class="layui-table" id="list-admin" lay-even>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>标题</th>
+                    <th>内容简介</th>
+                    <th>缩略图</th>
+                    <th>发布人</th>
+                    <th>发布人类型</th>
+                    <th>内容类型</th>
+                    <th>发布时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+
+                </tbody>
+            </table>
+            <div id="demo"></div>
+        </div>
+
+    </fieldset>
+</block>
+
+
+<block name="myScript">
+    <script>
+        Date.prototype.format = function (format) {
+            var o = {
+                "M+": this.getMonth() + 1, //month
+                "d+": this.getDate(), //day
+                "h+": this.getHours(), //hour
+                "m+": this.getMinutes(), //minute
+                "s+": this.getSeconds(), //second
+                "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
+                "S": this.getMilliseconds() //millisecond
+            }
+
+            if (/(y+)/.test(format)) {
+                format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            }
+
+            for (var k in o) {
+                if (new RegExp("(" + k + ")").test(format)) {
+                    format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+                }
+            }
+            return format;
+        }
+
+    </script>
+    <script>
+        function ajaxlist(object){
+            $.ajax({
+                type: "POST",
+                url: "{:U('ajaxAddIndex')}",
+                data: object,
+                async:false,
+                success: function (msg) {
+                    var html = '';
+                    var data = msg.data;
+                    if (msg.status == 'success') {
+                        for (var x in data) {
+                            var str_status = '';
+                            var add_time = '';
+                            var user_type = '',item_type = '';
+                            switch(data[x].user_type){
+                                case 'COM':
+                                    user_type = '机构';
+                                    break;
+                                case 'TEA':
+                                    user_type = '老师';
+                                    break;
+                                case 'STU':
+                                    user_type = '学生';
+                                    break;
+                                default:
+                                    break;
+                            }
+                            switch(data[x].item_type){
+                                case 'ART':
+                                    item_type = '文章';
+                                    break;
+                                case 'RAD':
+                                    item_type = '视频';
+                                    break;
+                                case 'SRAD':
+                                    item_type = '系列视频';
+                                    break;
+                                case 'FILE':
+                                    item_type = '文件';
+                                    break;
+                                case 'PIC':
+                                    item_type = '图片';
+                                    break;
+                                default:
+                                    break;
+                            }
+                            if (data[x].slideshow_status == 'Y') {
+                                str_status = '<span class="layui-btn confirm" data-info="你确定要取消吗?" data-id="' + data[x].id + '" data-url="{:U(\'delete\')}">取消</span>';
+                            } else if (data[x].slideshow_status == 'N') {
+                                str_status = '<span class="layui-btn confirm" data-info="你确定要设置当前项为轮播图吗?" data-id="' + data[x].id + '" data-url="{:U(\'add\')}">设为轮播</span>';
+                            }
+                            if (data[x].pub_time != '') {
+                                add_time = new Date(data[x].pub_time * 1000).format("yyyy-MM-dd");
+                            } else {
+                                add_time = '';
+                            }
+
+
+                            html += '<tr><td>' + data[x].id + '</td><td>' + data[x].title + '</td><td>' + data[x].intro + '</td><td><img src="'
+                                + data[x].cover + '" style="height:60px;width:80px;" /></td><td>' + data[x].com_name + '</td><td>'
+                                + user_type + '</td><td>' + item_type + '</td><td>' + add_time + '</td><td>'
+                                + str_status + '</td></tr>'
+                        }
+
+                    } else {
+                        html = '<tr><td colspan="9" style="text-align:center;">暂无数据</td></tr>'
+
+                    }
+                    $("#tbody").html(html);
+                    $("#curr").val(msg.curr);
+                    $("#limit").val(msg.limit);
+                    $("#total").val(msg.total);
+
+                    $('.confirm').on('click', function () {
+                        var ownObj = $(this);
+                        layer.confirm(ownObj.attr('data-info'), {
+                            btn: ['确定', '取消'] //按钮
+                        }, function () {
+                            $.ajax({
+                                type: "POST",
+                                url: ownObj.attr('data-url'),
+                                data: {id: ownObj.attr('data-id')},
+                                success: function (msg) {
+                                    if (msg.code == 1) {
+                                        location.reload();
+                                    } else {
+                                        layer.msg(msg.msg, {
+                                            icon: 5,
+                                            shade: [0.6, '#393D49'],
+                                            time: 1500
+                                        });
+                                    }
+                                }
+                            });
+                        });
+                    });
+                }
+            });
+        }
+        function pagenum(){
+            var curr = $("#curr").attr('value'); //获取当前分页数
+            var limit = $("#limit").val(); //每页显示条数
+            var total = $("#total").val(); //总条数
+            var page = Math.ceil(total / limit);
+            var laypage = layui.laypage
+                , layer = layui.layer;
+
+            if (curr == '') { //为空时赋值1
+                curr = 1;
+            }
+
+            laypage({
+                cont: 'demo'
+                , curr: curr
+                , pages: page //控制器转过来的页数
+                ,groups:5
+                ,first:'首页'
+                , jump: function (obj, first) {
+                    if (!first) {  //跳转必须放在这个里边，不然无限刷新
+
+                        var object = new Object();
+                        object.curr = obj.curr;
+                        object.com_name = $("#com_names").val();
+                        object.add_time = $("#add_times").val();
+                        object.user_type = $("#user_types").val();
+                        object.item_type = $("#item_types").val();
+                        ajaxlist(object);
+                    }
+                }
+            });
+        }
+
+        layui.use(['form', 'laypage', 'layer', 'laydate'], function () {
+            var form = layui.form(),
+                laydate = layui.laydate;
+            ajaxlist();
+            pagenum();
+
+            form.on('submit(search)', function (data) {
+                $("#com_names").val($("#com_name").val());
+                $("#add_times").val($("#add_time").val());
+                $("#user_types").val($("#user_type").val());
+                $("#item_types").val($("#item_type").val());
+                var object = data.field;
+                object.curr = 1;
+                object.com_name = $("#com_names").val();
+                object.add_time = $("#add_times").val();
+                object.user_type = $("#user_types").val();
+                object.item_type = $("#item_types").val();
+                ajaxlist(object);
+                pagenum();
+                return false;
+            });
+
+
+        });
+    </script>
+</block>
