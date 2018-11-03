@@ -504,7 +504,7 @@ class VideoController extends BaseController
                     $data['subject_id'] = $subject_id ? $subject_id : 0;
                     $versions_name = $objPHPExcel->getActiveSheet()->getCell("G" . $i)->getValue();
                     $versions_id = D('api_versions')->where(array('versions_name' => $versions_name))->getField('id');
-                    $data['versions_id'] = $versions_id?$versions_id:0;
+                    $data['versions_id'] = $versions_id ? $versions_id : 0;
                     $data['video_type'] = $objPHPExcel->getActiveSheet()->getCell("H" . $i)->getValue();
                     $datas[] = $data;
                 }
