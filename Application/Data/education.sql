@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50723
 File Encoding         : 65001
 
-Date: 2018-11-02 15:49:37
+Date: 2018-11-03 12:02:12
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -51,11 +51,12 @@ CREATE TABLE `api_app` (
   `app_info` tinytext NOT NULL COMMENT '应用说明',
   PRIMARY KEY (`id`),
   UNIQUE KEY `app_id` (`app_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='appId和appSecret表';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='appId和appSecret表';
 
 -- ----------------------------
 -- Records of api_app
 -- ----------------------------
+INSERT INTO `api_app` VALUES ('1', '23017783', 'KZOuFsCUIhNLrhtCRlUabeOlchdQbdKr', '教育APP', '1', '教育APP');
 
 -- ----------------------------
 -- Table structure for api_appversions
@@ -3894,12 +3895,13 @@ CREATE TABLE `api_comment` (
   `user_id` int(11) NOT NULL COMMENT '评论人id',
   `add_time` varchar(11) NOT NULL COMMENT '添加时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of api_comment
 -- ----------------------------
-INSERT INTO `api_comment` VALUES ('1', '挺好', 'COM', '1', 'F', '1', '1540546701', '1', '1564546542');
+INSERT INTO `api_comment` VALUES ('1', '挺好', 'COM', '1', 'S', '1', '1541203809', '1', '1564546542');
+INSERT INTO `api_comment` VALUES ('2', '不好啊', 'COM', '1', 'S', '1', '1564245621', '1', '1563265425');
 
 -- ----------------------------
 -- Table structure for api_ct_users
@@ -3909,12 +3911,14 @@ CREATE TABLE `api_ct_users` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '机构/老师表自增id',
   `user_name` varchar(100) NOT NULL COMMENT '负责人名称',
   `com_name` varchar(255) DEFAULT NULL COMMENT '机构名称',
+  `nickname` varchar(255) DEFAULT NULL COMMENT '昵称',
   `password` varchar(40) NOT NULL COMMENT '用户密码',
   `phone` varchar(11) NOT NULL COMMENT '电话',
   `balance` decimal(10,2) DEFAULT NULL COMMENT '余额',
-  `user_type` varchar(20) NOT NULL COMMENT '用户类型(C:机构;T:老师)',
+  `user_type` varchar(20) NOT NULL COMMENT '用户类型(COM:机构;TEA:老师)',
   `del_status` int(1) NOT NULL DEFAULT '2' COMMENT '删除状态(1,已删除;2,未删除)',
   `address` varchar(200) NOT NULL COMMENT '详细地址',
+  `login_first` varchar(10) DEFAULT NULL COMMENT '老师/学生登录首选项(Y:是;N:不是)',
   `province_id` int(11) NOT NULL COMMENT '省份id',
   `city_id` int(11) NOT NULL COMMENT '城市id',
   `area_id` int(11) NOT NULL COMMENT '县区id',
@@ -3929,9 +3933,9 @@ CREATE TABLE `api_ct_users` (
 -- ----------------------------
 -- Records of api_ct_users
 -- ----------------------------
-INSERT INTO `api_ct_users` VALUES ('1', '小王啊', '我的机构', 'e10adc3949ba59abbe56e057f20f883e', '1564524568', '58.00', 'C', '2', '石家庄', '3', '5', '40', null, '1', '1540438327', 'F', '1564854912');
-INSERT INTO `api_ct_users` VALUES ('2', '小李', '你的机构', 'e10adc3949ba59abbe56e057f20f883e', '1224566356', '68.00', 'C', '2', '石家庄', '3', '5', '41', null, '1', '1540362195', 'S', '1546254568');
-INSERT INTO `api_ct_users` VALUES ('3', '小王', '他的机构', 'e10adc3949ba59abbe56e057f20f883e', '1562365556', '88.00', 'C', '2', '石家庄', '3', '5', '42', null, '1', '1540438485', 'S', '1546000000');
+INSERT INTO `api_ct_users` VALUES ('1', '小王啊', '我的机构', null, 'e10adc3949ba59abbe56e057f20f883e', '1564524568', '58.00', 'C', '2', '石家庄', null, '3', '5', '40', null, '1', '1540438327', 'F', '1564854912');
+INSERT INTO `api_ct_users` VALUES ('2', '小李', '你的机构', null, 'e10adc3949ba59abbe56e057f20f883e', '1224566356', '68.00', 'C', '2', '石家庄', null, '3', '5', '41', null, '1', '1540362195', 'S', '1546254568');
+INSERT INTO `api_ct_users` VALUES ('3', '小王', '他的机构', null, 'e10adc3949ba59abbe56e057f20f883e', '1562365556', '88.00', 'C', '2', '石家庄', null, '3', '5', '42', null, '1', '1540438485', 'S', '1546000000');
 
 -- ----------------------------
 -- Table structure for api_document
@@ -3997,11 +4001,17 @@ CREATE TABLE `api_fields` (
   `showName` varchar(50) NOT NULL DEFAULT '' COMMENT 'wiki显示用字段',
   PRIMARY KEY (`id`),
   KEY `hash` (`hash`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用于保存各个API的字段规则';
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COMMENT='用于保存各个API的字段规则';
 
 -- ----------------------------
 -- Records of api_fields
 -- ----------------------------
+INSERT INTO `api_fields` VALUES ('6', 'app_id', '5bdcef60a582c', '2', '', '1', '', '系统配置app_id', '0', 'app_id');
+INSERT INTO `api_fields` VALUES ('7', 'signature', '5bdcef60a582c', '2', '', '1', '', '签名（客户端按方法生成）', '0', 'signature');
+INSERT INTO `api_fields` VALUES ('8', 'device_id', '5bdcef60a582c', '1', 'mobile', '1', '', '设备id（mobile）', '0', 'device_id');
+INSERT INTO `api_fields` VALUES ('9', 'data', '5bdcef60a582c', '2', '', '1', '', '', '1', 'data');
+INSERT INTO `api_fields` VALUES ('10', 'data{}access_token', '5bdcef60a582c', '2', '', '1', '', '', '1', 'data{}access_token');
+INSERT INTO `api_fields` VALUES ('11', 'data{}expires_in', '5bdcef60a582c', '1', '', '1', '', '', '1', 'data{}expires_in');
 
 -- ----------------------------
 -- Table structure for api_list
@@ -4020,11 +4030,12 @@ CREATE TABLE `api_list` (
   `returnStr` text COMMENT '返回数据示例',
   PRIMARY KEY (`id`),
   UNIQUE KEY `hash` (`hash`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用于维护接口信息';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='用于维护接口信息';
 
 -- ----------------------------
 -- Records of api_list
 -- ----------------------------
+INSERT INTO `api_list` VALUES ('2', 'BuildToken/getAccessToken', '5bdcef60a582c', '0', '0', '1', '1', '获取access_token', '0', null);
 
 -- ----------------------------
 -- Table structure for api_menu
@@ -4041,7 +4052,7 @@ CREATE TABLE `api_menu` (
   `icon` varchar(50) NOT NULL DEFAULT '' COMMENT '菜单图标',
   `level` tinyint(2) NOT NULL DEFAULT '0' COMMENT '菜单认证等级',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=213 DEFAULT CHARSET=utf8 COMMENT='目录信息';
+) ENGINE=InnoDB AUTO_INCREMENT=215 DEFAULT CHARSET=utf8 COMMENT='目录信息';
 
 -- ----------------------------
 -- Records of api_menu
@@ -4253,6 +4264,8 @@ INSERT INTO `api_menu` VALUES ('209', '添加轮播图', '207', 'Slideshow/add',
 INSERT INTO `api_menu` VALUES ('210', '删除轮播图', '207', 'Slideshow/delete', '0', '3', '0', '', '0');
 INSERT INTO `api_menu` VALUES ('211', '发布内容列表', '207', 'Slideshow/addIndex', '0', '4', '0', '', '0');
 INSERT INTO `api_menu` VALUES ('212', 'ajax获取发布内容列表', '207', 'Slideshow/ajaxAddIndex', '0', '5', '0', '', '0');
+INSERT INTO `api_menu` VALUES ('213', '测试', '80', 'Video/ceshi', '0', '30', '0', '', '0');
+INSERT INTO `api_menu` VALUES ('214', '测试方法', '80', 'Video/getVideoInfo', '0', '29', '0', '', '0');
 
 -- ----------------------------
 -- Table structure for api_myclass
@@ -4396,8 +4409,8 @@ CREATE TABLE `api_publish` (
 -- ----------------------------
 -- Records of api_publish
 -- ----------------------------
-INSERT INTO `api_publish` VALUES ('1', '我的文章', 'http://localhost/education/Public/uploads/articlePublish/knowledge/5bd17ccc28f4a.jpg', null, '简介', '0', 'COM', null, 'ART', '2', '0', '0', '0', 'N', 'S', '1', '1', '1541140065', '1564584562');
-INSERT INTO `api_publish` VALUES ('2', '我的视频', 'http://localhost/education/Public/uploads/articlePublish/knowledge/5bd17ccc28f4a.jpg', null, '简介视频', '0', 'COM', null, 'RAD', '2', '0', '0', '0', 'N', 'S', '1', '1', '1541140069', '1542564562');
+INSERT INTO `api_publish` VALUES ('1', '我的文章', 'http://localhost/education/Public/uploads/articlePublish/knowledge/5bd17ccc28f4a.jpg', null, '简介', '0', 'COM', null, 'ART', '2', '0', '0', '0', 'Y', 'S', '1', '1', '1541140065', '1564584562');
+INSERT INTO `api_publish` VALUES ('2', '我的视频', 'http://localhost/education/Public/uploads/articlePublish/knowledge/5bd17ccc28f4a.jpg', null, '简介视频', '0', 'COM', null, 'RAD', '2', '0', '0', '0', 'Y', 'S', '1', '1', '1541140069', '1542564562');
 
 -- ----------------------------
 -- Table structure for api_publish_category
@@ -4409,7 +4422,7 @@ CREATE TABLE `api_publish_category` (
   `add_id` int(11) NOT NULL COMMENT '添加人id',
   `add_time` varchar(20) NOT NULL COMMENT '添加时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='前台发布分类表';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='前台发布分类表';
 
 -- ----------------------------
 -- Records of api_publish_category
@@ -4426,6 +4439,7 @@ CREATE TABLE `api_publish_content` (
   `publish_id` int(11) NOT NULL COMMENT '发布id',
   `title` varchar(100) DEFAULT NULL COMMENT '标题',
   `cover` varchar(255) DEFAULT NULL COMMENT '封面图片',
+  `duration` varchar(20) DEFAULT NULL COMMENT '视频时长',
   `content` text NOT NULL COMMENT '信息发布内容',
   `sort` int(11) DEFAULT NULL COMMENT '排序',
   `price` float(8,2) DEFAULT NULL COMMENT '价格(单位元)',
@@ -4433,6 +4447,9 @@ CREATE TABLE `api_publish_content` (
   `read_num` int(20) NOT NULL DEFAULT '0' COMMENT '阅读量',
   `collect_num` int(20) NOT NULL DEFAULT '0' COMMENT '收藏量',
   `share_num` int(20) NOT NULL DEFAULT '0' COMMENT '分享量',
+  `audit_status` varchar(20) DEFAULT 'W' COMMENT '审核状态(S:通过;W:未审核;R:未通过)',
+  `audit_userid` int(11) DEFAULT NULL COMMENT '审核人id',
+  `audit_time` varchar(11) DEFAULT NULL COMMENT '审核时间',
   `pub_userid` int(11) NOT NULL COMMENT '发布人id',
   `pub_time` varchar(11) NOT NULL COMMENT '发布时间',
   PRIMARY KEY (`id`)
@@ -4441,9 +4458,9 @@ CREATE TABLE `api_publish_content` (
 -- ----------------------------
 -- Records of api_publish_content
 -- ----------------------------
-INSERT INTO `api_publish_content` VALUES ('1', '1', '第一章', null, '我的第一章学习', '1', '1.00', '2', '0', '0', '0', '1', '1562231021');
-INSERT INTO `api_publish_content` VALUES ('2', '1', '第二章', null, '我的第二章', '2', '3.00', '2', '0', '0', '0', '1', '1564254654');
-INSERT INTO `api_publish_content` VALUES ('3', '2', '第一个视频', null, 'http://localhost/education/Public/uploads/video/content/5bcd7f60b2661.mp4', '1', '6.00', '2', '0', '0', '0', '1', '1564235645');
+INSERT INTO `api_publish_content` VALUES ('1', '1', '第一章', null, null, '我的第一章学习', '1', '1.00', '2', '0', '0', '0', 'W', null, null, '1', '1562231021');
+INSERT INTO `api_publish_content` VALUES ('2', '1', '第二章', null, null, '我的第二章', '2', '3.00', '2', '0', '0', '0', 'W', null, null, '1', '1564254654');
+INSERT INTO `api_publish_content` VALUES ('3', '2', '第一个视频', null, null, 'http://localhost/education/Public/uploads/video/content/5bcd7f60b2661.mp4', '1', '6.00', '2', '0', '0', '0', 'W', null, null, '1', '1564235645');
 
 -- ----------------------------
 -- Table structure for api_recharge
@@ -4496,11 +4513,13 @@ CREATE TABLE `api_slideshow` (
   `add_id` int(11) NOT NULL COMMENT '添加人id',
   `add_time` varchar(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='前台轮播图表';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='前台轮播图表';
 
 -- ----------------------------
 -- Records of api_slideshow
 -- ----------------------------
+INSERT INTO `api_slideshow` VALUES ('3', '2', 'COM', '1', '1541150255');
+INSERT INTO `api_slideshow` VALUES ('4', '1', 'COM', '1', '1541150263');
 
 -- ----------------------------
 -- Table structure for api_store
@@ -4548,7 +4567,7 @@ CREATE TABLE `api_subject` (
   `add_id` int(11) unsigned NOT NULL COMMENT '添加人id',
   `add_time` varchar(20) NOT NULL COMMENT '添加时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of api_subject
@@ -4686,12 +4705,14 @@ DROP TABLE IF EXISTS `api_users`;
 CREATE TABLE `api_users` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '会员表自增id',
   `user_name` varchar(100) NOT NULL COMMENT '用户名',
+  `nickname` varchar(100) DEFAULT NULL COMMENT '昵称',
   `true_name` varchar(50) DEFAULT NULL COMMENT '姓名',
-  `password` varchar(40) NOT NULL COMMENT '用户密码',
+  `password` varchar(50) NOT NULL COMMENT '用户密码',
   `use_status` int(1) NOT NULL DEFAULT '1' COMMENT '使用状态(1,正常;2,禁用)',
   `phone` varchar(11) NOT NULL COMMENT '手机号',
   `ID_number` varchar(22) DEFAULT NULL COMMENT '身份证号',
   `balance` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '余额',
+  `login_first` varchar(10) DEFAULT NULL COMMENT '老师/学生登录首选项(Y:是;N:不是)',
   `forbidden_id` int(11) DEFAULT NULL COMMENT '禁用操作人id',
   `email` varchar(100) DEFAULT NULL COMMENT '电子邮箱',
   `icon` varchar(255) DEFAULT NULL COMMENT '头像',
@@ -4702,8 +4723,8 @@ CREATE TABLE `api_users` (
 -- ----------------------------
 -- Records of api_users
 -- ----------------------------
-INSERT INTO `api_users` VALUES ('1', '我是第一个', null, 'e10adc3949ba59abbe56e057f20f883e', '2', '13315944082', null, '0.00', null, null, null, '1564854876');
-INSERT INTO `api_users` VALUES ('2', '我是第二个', null, 'e10adc3949ba59abbe56e057f20f883e', '2', '13315944082', null, '0.00', null, null, null, '1546254876');
+INSERT INTO `api_users` VALUES ('1', '我是第一个', null, null, 'e10adc3949ba59abbe56e057f20f883e', '2', '13315944082', null, '0.00', null, null, null, null, '1564854876');
+INSERT INTO `api_users` VALUES ('2', '我是第二个', null, null, 'e10adc3949ba59abbe56e057f20f883e', '2', '13315944082', null, '0.00', null, null, null, null, '1546254876');
 
 -- ----------------------------
 -- Table structure for api_users_login
@@ -4735,7 +4756,7 @@ CREATE TABLE `api_user_action` (
   `data` text COMMENT '用户提交的数据',
   `url` varchar(200) NOT NULL DEFAULT '' COMMENT '操作URL',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8581 DEFAULT CHARSET=utf8 COMMENT='用户操作日志';
+) ENGINE=InnoDB AUTO_INCREMENT=8767 DEFAULT CHARSET=utf8 COMMENT='用户操作日志';
 
 -- ----------------------------
 -- Records of api_user_action
@@ -13320,6 +13341,192 @@ INSERT INTO `api_user_action` VALUES ('8577', 'ajax查询轮播列表', '1', '�
 INSERT INTO `api_user_action` VALUES ('8578', '发布内容列表', '1', '我超级用户', '1541142184', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Slideshow/addIndex');
 INSERT INTO `api_user_action` VALUES ('8579', 'ajax获取发布内容列表', '1', '我超级用户', '1541142184', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Slideshow/ajaxAddIndex');
 INSERT INTO `api_user_action` VALUES ('8580', 'ajax获取发布内容列表', '1', '我超级用户', '1541142190', '{\"curr\":\"2\",\"com_name\":\"\",\"add_time\":\"\",\"user_type\":\"\",\"item_type\":\"\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Slideshow/ajaxAddIndex');
+INSERT INTO `api_user_action` VALUES ('8581', '新增菜单', '1', '我超级用户', '1541146867', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Menu/add');
+INSERT INTO `api_user_action` VALUES ('8582', '新增菜单', '1', '我超级用户', '1541146895', '{\"name\":\"\\u6d4b\\u8bd5\",\"fid\":\"80\",\"url\":\"Video\\/ceshi\",\"sort\":\"30\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Menu/add');
+INSERT INTO `api_user_action` VALUES ('8583', '菜单维护', '1', '我超级用户', '1541146895', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Menu/index');
+INSERT INTO `api_user_action` VALUES ('8584', '测试', '1', '我超级用户', '1541146951', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Video/ceshi');
+INSERT INTO `api_user_action` VALUES ('8585', '新增菜单', '1', '我超级用户', '1541146978', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Menu/add');
+INSERT INTO `api_user_action` VALUES ('8586', '新增菜单', '1', '我超级用户', '1541147019', '{\"name\":\"\\u6d4b\\u8bd5\\u65b9\\u6cd5\",\"fid\":\"80\",\"url\":\"Video\\/getVideoInfo\",\"sort\":\"29\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Menu/add');
+INSERT INTO `api_user_action` VALUES ('8587', '菜单维护', '1', '我超级用户', '1541147019', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Menu/index');
+INSERT INTO `api_user_action` VALUES ('8588', '测试', '1', '我超级用户', '1541147024', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Video/ceshi');
+INSERT INTO `api_user_action` VALUES ('8589', '测试', '1', '我超级用户', '1541147039', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Video/ceshi');
+INSERT INTO `api_user_action` VALUES ('8590', '测试', '1', '我超级用户', '1541147084', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Video/ceshi');
+INSERT INTO `api_user_action` VALUES ('8591', '测试', '1', '我超级用户', '1541147124', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Video/ceshi');
+INSERT INTO `api_user_action` VALUES ('8592', '测试', '1', '我超级用户', '1541147199', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Video/ceshi');
+INSERT INTO `api_user_action` VALUES ('8593', '测试', '1', '我超级用户', '1541147203', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Video/ceshi');
+INSERT INTO `api_user_action` VALUES ('8594', '测试', '1', '我超级用户', '1541149617', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Video/ceshi');
+INSERT INTO `api_user_action` VALUES ('8595', '测试', '1', '我超级用户', '1541149650', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Video/ceshi');
+INSERT INTO `api_user_action` VALUES ('8596', 'ajax获取发布内容列表', '1', '我超级用户', '1541150228', '{\"curr\":\"1\",\"com_name\":\"\",\"add_time\":\"\",\"user_type\":\"\",\"item_type\":\"\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Slideshow/ajaxAddIndex');
+INSERT INTO `api_user_action` VALUES ('8597', '首页', '1', '我超级用户', '1541150230', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('8598', '欢迎页', '1', '我超级用户', '1541150231', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('8599', '轮播管理', '1', '我超级用户', '1541150234', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Slideshow/index');
+INSERT INTO `api_user_action` VALUES ('8600', 'ajax查询轮播列表', '1', '我超级用户', '1541150234', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Slideshow/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8601', '发布内容列表', '1', '我超级用户', '1541150239', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Slideshow/addIndex');
+INSERT INTO `api_user_action` VALUES ('8602', 'ajax获取发布内容列表', '1', '我超级用户', '1541150239', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Slideshow/ajaxAddIndex');
+INSERT INTO `api_user_action` VALUES ('8603', 'ajax获取发布内容列表', '1', '我超级用户', '1541150243', '{\"curr\":\"2\",\"com_name\":\"\",\"add_time\":\"\",\"user_type\":\"\",\"item_type\":\"\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Slideshow/ajaxAddIndex');
+INSERT INTO `api_user_action` VALUES ('8604', '添加轮播图', '1', '我超级用户', '1541150255', '{\"id\":\"2\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Slideshow/add');
+INSERT INTO `api_user_action` VALUES ('8605', '发布内容列表', '1', '我超级用户', '1541150255', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Slideshow/addIndex');
+INSERT INTO `api_user_action` VALUES ('8606', 'ajax获取发布内容列表', '1', '我超级用户', '1541150255', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Slideshow/ajaxAddIndex');
+INSERT INTO `api_user_action` VALUES ('8607', 'ajax获取发布内容列表', '1', '我超级用户', '1541150259', '{\"curr\":\"2\",\"com_name\":\"\",\"add_time\":\"\",\"user_type\":\"\",\"item_type\":\"\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Slideshow/ajaxAddIndex');
+INSERT INTO `api_user_action` VALUES ('8608', 'ajax获取发布内容列表', '1', '我超级用户', '1541150261', '{\"curr\":\"1\",\"com_name\":\"\",\"add_time\":\"\",\"user_type\":\"\",\"item_type\":\"\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Slideshow/ajaxAddIndex');
+INSERT INTO `api_user_action` VALUES ('8609', '添加轮播图', '1', '我超级用户', '1541150263', '{\"id\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Slideshow/add');
+INSERT INTO `api_user_action` VALUES ('8610', '发布内容列表', '1', '我超级用户', '1541150263', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Slideshow/addIndex');
+INSERT INTO `api_user_action` VALUES ('8611', 'ajax获取发布内容列表', '1', '我超级用户', '1541150263', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Slideshow/ajaxAddIndex');
+INSERT INTO `api_user_action` VALUES ('8612', '轮播管理', '1', '我超级用户', '1541150265', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Slideshow/index');
+INSERT INTO `api_user_action` VALUES ('8613', 'ajax查询轮播列表', '1', '我超级用户', '1541150265', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Slideshow/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8614', '级别管理', '1', '我超级用户', '1541150284', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Class/index');
+INSERT INTO `api_user_action` VALUES ('8615', 'ajax查询级别列表', '1', '我超级用户', '1541150284', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Class/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8616', '科目管理', '1', '我超级用户', '1541150289', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Subject/index');
+INSERT INTO `api_user_action` VALUES ('8617', 'ajax查询科目列表', '1', '我超级用户', '1541150289', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Subject/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8618', '版本管理', '1', '我超级用户', '1541150290', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Versions/index');
+INSERT INTO `api_user_action` VALUES ('8619', 'ajax查询版本列表', '1', '我超级用户', '1541150290', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Versions/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8620', '分类管理', '1', '我超级用户', '1541150294', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Category/index');
+INSERT INTO `api_user_action` VALUES ('8621', 'ajax查询分类列表', '1', '我超级用户', '1541150294', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Category/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8622', '知识点', '1', '我超级用户', '1541150301', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Knowledge/index');
+INSERT INTO `api_user_action` VALUES ('8623', 'ajax查询知识点列表', '1', '我超级用户', '1541150301', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Knowledge/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8624', '句子', '1', '我超级用户', '1541150306', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Sentence/index');
+INSERT INTO `api_user_action` VALUES ('8625', 'ajax查询句子列表', '1', '我超级用户', '1541150306', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Sentence/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8626', '阅读文章', '1', '我超级用户', '1541150311', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Article/index');
+INSERT INTO `api_user_action` VALUES ('8627', 'ajax查询文章列表', '1', '我超级用户', '1541150311', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Article/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8628', '课本列表', '1', '我超级用户', '1541150312', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Textbook/index');
+INSERT INTO `api_user_action` VALUES ('8629', 'ajax查询课本列表', '1', '我超级用户', '1541150313', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Textbook/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8630', '视频', '1', '我超级用户', '1541150314', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Video/index');
+INSERT INTO `api_user_action` VALUES ('8631', 'ajax查询视频列表', '1', '我超级用户', '1541150314', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Video/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8632', '词组', '1', '我超级用户', '1541150316', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Words/index');
+INSERT INTO `api_user_action` VALUES ('8633', 'ajax查询词组列表', '1', '我超级用户', '1541150316', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Words/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8634', '学生列表', '1', '我超级用户', '1541150319', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Student/index');
+INSERT INTO `api_user_action` VALUES ('8635', 'ajax查询学生列表', '1', '我超级用户', '1541150319', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Student/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8636', '禁用名单', '1', '我超级用户', '1541150324', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'StopList/index');
+INSERT INTO `api_user_action` VALUES ('8637', 'ajax获取禁用名单列表', '1', '我超级用户', '1541150324', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'StopList/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8638', '提现审核', '1', '我超级用户', '1541150327', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'WithdrawalAudit/index');
+INSERT INTO `api_user_action` VALUES ('8639', 'ajax提现审核列表', '1', '我超级用户', '1541150327', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'WithDrawalAudit/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8640', '注册审核', '1', '我超级用户', '1541150330', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'RegistAudit/index');
+INSERT INTO `api_user_action` VALUES ('8641', 'ajax查询机构注册审核列表', '1', '我超级用户', '1541150330', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'RegistAudit/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8642', '发布审核', '1', '我超级用户', '1541150335', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'PublishAudit/index');
+INSERT INTO `api_user_action` VALUES ('8643', 'ajax查询发布列表', '1', '我超级用户', '1541150335', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'PublishAudit/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8644', '查看发布内容', '1', '我超级用户', '1541150340', '{\"id\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'PublishAudit/look');
+INSERT INTO `api_user_action` VALUES ('8645', 'ajax查看发布内容目录详情', '1', '我超级用户', '1541150342', '{\"id\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'PublishAudit/ajaxCatalogLook');
+INSERT INTO `api_user_action` VALUES ('8646', 'ajax查看发布内容', '1', '我超级用户', '1541150343', '{\"pid\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'PublishAudit/ajaxLook');
+INSERT INTO `api_user_action` VALUES ('8647', 'ajax查看发布内容目录详情', '1', '我超级用户', '1541150345', '{\"id\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'PublishAudit/ajaxCatalogLook');
+INSERT INTO `api_user_action` VALUES ('8648', '查看发布内容', '1', '我超级用户', '1541150348', '{\"curr\":\"2\",\"id\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'PublishAudit/look');
+INSERT INTO `api_user_action` VALUES ('8649', '评论审核', '1', '我超级用户', '1541150357', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'CommentAudit/index');
+INSERT INTO `api_user_action` VALUES ('8650', 'ajax查询评价审核列表', '1', '我超级用户', '1541150357', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'CommentAudit/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8651', '菜单维护', '1', '我超级用户', '1541150367', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Menu/index');
+INSERT INTO `api_user_action` VALUES ('8652', '用户管理', '1', '我超级用户', '1541150369', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'User/index');
+INSERT INTO `api_user_action` VALUES ('8653', '权限管理', '1', '我超级用户', '1541150397', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Permission/index');
+INSERT INTO `api_user_action` VALUES ('8654', '操作日志', '1', '我超级用户', '1541150399', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Log/index');
+INSERT INTO `api_user_action` VALUES ('8655', 'Ajax查询Log列表', '1', '我超级用户', '1541150399', '{\"draw\":\"1\",\"columns\":[{\"data\":\"actionName\",\"name\":\"\",\"searchable\":\"true\",\"orderable\":\"false\",\"search\":{\"value\":\"\",\"regex\":\"false\"}},{\"data\":\"uid\",\"name\":\"\",\"searchable\":\"true\",\"orderable\":\"false\",\"search\":{\"value\":\"\",\"regex\":\"false\"}},{\"data\":\"nickname\",\"name\":\"\",\"searchable\":\"true\",\"orderable\":\"false\",\"search\":{\"value\":\"\",\"regex\":\"false\"}},{\"data\":\"url\",\"name\":\"\",\"searchable\":\"true\",\"orderable\":\"false\",\"search\":{\"value\":\"\",\"regex\":\"false\"}},{\"data\":\"addTime\",\"name\":\"\",\"searchable\":\"true\",\"orderable\":\"false\",\"search\":{\"value\":\"\",\"regex\":\"false\"}},{\"data\":\"\",\"name\":\"\",\"searchable\":\"true\",\"orderable\":\"false\",\"search\":{\"value\":\"\",\"regex\":\"false\"}}],\"start\":\"0\",\"length\":\"20\",\"search\":{\"value\":\"\",\"regex\":\"false\"},\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Log/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8656', '应用列表', '1', '我超级用户', '1541150408', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('8657', '接口列表', '1', '我超级用户', '1541150414', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'ApiManage/index');
+INSERT INTO `api_user_action` VALUES ('8658', '新增应用', '1', '我超级用户', '1541150613', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'App/add');
+INSERT INTO `api_user_action` VALUES ('8659', '新增应用', '1', '我超级用户', '1541150639', '{\"app_name\":\"\\u6559\\u80b2APP\",\"app_id\":\"23017783\",\"app_secret\":\"KZOuFsCUIhNLrhtCRlUabeOlchdQbdKr\",\"app_info\":\"\\u6559\\u80b2APP\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'App/add');
+INSERT INTO `api_user_action` VALUES ('8660', '应用列表', '1', '我超级用户', '1541150639', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('8661', '新增接口', '1', '我超级用户', '1541150648', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'ApiManage/add');
+INSERT INTO `api_user_action` VALUES ('8662', '新增接口', '1', '我超级用户', '1541150725', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'ApiManage/add');
+INSERT INTO `api_user_action` VALUES ('8663', '新增应用', '1', '我超级用户', '1541150746', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'App/add');
+INSERT INTO `api_user_action` VALUES ('8664', '发布审核', '1', '我超级用户', '1541151816', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'PublishAudit/index');
+INSERT INTO `api_user_action` VALUES ('8665', 'ajax查询发布列表', '1', '我超级用户', '1541151817', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'PublishAudit/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8666', '查看发布内容', '1', '我超级用户', '1541151822', '{\"id\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'PublishAudit/look');
+INSERT INTO `api_user_action` VALUES ('8667', '查看发布内容', '1', '我超级用户', '1541151854', '{\"curr\":\"2\",\"id\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'PublishAudit/look');
+INSERT INTO `api_user_action` VALUES ('8668', '查看发布内容', '1', '我超级用户', '1541151858', '{\"curr\":\"1\",\"id\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'PublishAudit/look');
+INSERT INTO `api_user_action` VALUES ('8669', '发布审核', '1', '我超级用户', '1541151867', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'PublishAudit/index');
+INSERT INTO `api_user_action` VALUES ('8670', 'ajax查询发布列表', '1', '我超级用户', '1541151867', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'PublishAudit/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8671', 'ajax查询发布列表', '1', '我超级用户', '1541151869', '{\"curr\":\"2\",\"com_name\":\"\",\"add_time\":\"\",\"audit_status\":\"\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'PublishAudit/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8672', '查看发布内容', '1', '我超级用户', '1541151870', '{\"id\":\"2\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'PublishAudit/look');
+INSERT INTO `api_user_action` VALUES ('8673', 'ajax查看发布内容', '1', '我超级用户', '1541151875', '{\"pid\":\"2\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'PublishAudit/ajaxLook');
+INSERT INTO `api_user_action` VALUES ('8674', 'ajax查看发布内容目录详情', '1', '我超级用户', '1541151877', '{\"id\":\"3\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'PublishAudit/ajaxCatalogLook');
+INSERT INTO `api_user_action` VALUES ('8675', '视频', '1', '我超级用户', '1541152728', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Video/index');
+INSERT INTO `api_user_action` VALUES ('8676', 'ajax查询视频列表', '1', '我超级用户', '1541152728', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Video/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8677', '视频目录列表', '1', '我超级用户', '1541152753', '{\"video_id\":\"20\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Video/catalog');
+INSERT INTO `api_user_action` VALUES ('8678', 'ajax查询视频目录列表', '1', '我超级用户', '1541152754', '{\"video_id\":\"20\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Video/ajaxGetCatalog');
+INSERT INTO `api_user_action` VALUES ('8679', '视频目录添加', '1', '我超级用户', '1541152764', '{\"video_id\":\"20\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"r6ogkh0l5fpn1teru1cgcv3pi3\"}', 'Video/addCatalog');
+INSERT INTO `api_user_action` VALUES ('8680', '首页', '1', '我超级用户', '1541203711', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('8681', '欢迎页', '1', '我超级用户', '1541203711', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('8682', '首页', '1', '我超级用户', '1541203711', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('8683', '欢迎页', '1', '我超级用户', '1541203713', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('8684', '菜单维护', '1', '我超级用户', '1541203715', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'Menu/index');
+INSERT INTO `api_user_action` VALUES ('8685', '发布审核', '1', '我超级用户', '1541203801', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'PublishAudit/index');
+INSERT INTO `api_user_action` VALUES ('8686', 'ajax查询发布列表', '1', '我超级用户', '1541203801', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'PublishAudit/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8687', '评论审核', '1', '我超级用户', '1541203802', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'CommentAudit/index');
+INSERT INTO `api_user_action` VALUES ('8688', 'ajax查询评价审核列表', '1', '我超级用户', '1541203802', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'CommentAudit/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8689', '修改评论审核状态为通过', '1', '我超级用户', '1541203809', '{\"id\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'CommentAudit/open');
+INSERT INTO `api_user_action` VALUES ('8690', '评论审核', '1', '我超级用户', '1541203809', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'CommentAudit/index');
+INSERT INTO `api_user_action` VALUES ('8691', 'ajax查询评价审核列表', '1', '我超级用户', '1541203809', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'CommentAudit/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8692', '首页', '1', '我超级用户', '1541203891', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('8693', '欢迎页', '1', '我超级用户', '1541203892', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('8694', '评论审核', '1', '我超级用户', '1541203895', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'CommentAudit/index');
+INSERT INTO `api_user_action` VALUES ('8695', 'ajax查询评价审核列表', '1', '我超级用户', '1541203895', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'CommentAudit/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8696', 'ajax查询评价审核列表', '1', '我超级用户', '1541203896', '{\"curr\":\"2\",\"title\":\"\",\"add_time\":\"\",\"audit_status\":\"\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'CommentAudit/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8697', 'ajax查询评价审核列表', '1', '我超级用户', '1541203899', '{\"curr\":\"1\",\"title\":\"\",\"add_time\":\"\",\"audit_status\":\"\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'CommentAudit/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8698', 'ajax查询评价审核列表', '1', '我超级用户', '1541203900', '{\"curr\":\"2\",\"title\":\"\",\"add_time\":\"\",\"audit_status\":\"\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'CommentAudit/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8699', 'ajax查询评价审核列表', '1', '我超级用户', '1541203902', '{\"curr\":\"1\",\"title\":\"\",\"add_time\":\"\",\"audit_status\":\"\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'CommentAudit/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8700', 'ajax查询评价审核列表', '1', '我超级用户', '1541203908', '{\"title\":\"\\u597d\",\"add_time\":\"\",\"audit_status\":\"\",\"curr\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'CommentAudit/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8701', 'ajax查询评价审核列表', '1', '我超级用户', '1541204066', '{\"title\":\"\\u6211\",\"add_time\":\"\",\"audit_status\":\"\",\"curr\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'CommentAudit/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8702', 'ajax查询评价审核列表', '1', '我超级用户', '1541204129', '{\"title\":\"\\u6211\",\"add_time\":\"2019-07-31\",\"audit_status\":\"\",\"curr\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'CommentAudit/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8703', '首页', '1', '我超级用户', '1541204133', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('8704', '欢迎页', '1', '我超级用户', '1541204133', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('8705', '评论审核', '1', '我超级用户', '1541204137', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'CommentAudit/index');
+INSERT INTO `api_user_action` VALUES ('8706', 'ajax查询评价审核列表', '1', '我超级用户', '1541204137', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'CommentAudit/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8707', 'ajax查询评价审核列表', '1', '我超级用户', '1541204144', '{\"title\":\"\",\"add_time\":\"\",\"audit_status\":\"S\",\"curr\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'CommentAudit/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8708', 'ajax查询评价审核列表', '1', '我超级用户', '1541204148', '{\"title\":\"\",\"add_time\":\"\",\"audit_status\":\"F\",\"curr\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'CommentAudit/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8709', 'ajax查询评价审核列表', '1', '我超级用户', '1541204151', '{\"title\":\"\",\"add_time\":\"\",\"audit_status\":\"W\",\"curr\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'CommentAudit/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('8710', '接口列表', '1', '我超级用户', '1541204751', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'ApiManage/index');
+INSERT INTO `api_user_action` VALUES ('8711', '新增接口', '1', '我超级用户', '1541204753', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'ApiManage/add');
+INSERT INTO `api_user_action` VALUES ('8712', '新增接口', '1', '我超级用户', '1541204784', '{\"apiName\":\"BuildToken\\/getAccessToken\",\"method\":\"1\",\"hash\":\"5bdceb11523b8\",\"accessToken\":\"0\",\"needLogin\":\"0\",\"isTest\":\"1\",\"info\":\"\\u83b7\\u53d6access_token\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'ApiManage/add');
+INSERT INTO `api_user_action` VALUES ('8713', '接口列表', '1', '我超级用户', '1541204784', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'ApiManage/index');
+INSERT INTO `api_user_action` VALUES ('8714', '请求字段编辑', '1', '我超级用户', '1541204799', '{\"hash\":\"5bdceb11523b8\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/request');
+INSERT INTO `api_user_action` VALUES ('8715', '新增字段', '1', '我超级用户', '1541204801', '{\"hash\":\"5bdceb11523b8\",\"type\":\"0\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/add');
+INSERT INTO `api_user_action` VALUES ('8716', '新增字段', '1', '我超级用户', '1541204925', '{\"hash\":\"5bdceb11523b8\",\"type\":\"0\",\"showName\":\"timestamp\",\"dataType\":\"1\",\"default\":\"\",\"isMust\":\"1\",\"range\":\"\",\"info\":\"\\u65f6\\u95f4\\u6233\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/add');
+INSERT INTO `api_user_action` VALUES ('8717', '请求字段编辑', '1', '我超级用户', '1541204925', '{\"hash\":\"5bdceb11523b8\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/request');
+INSERT INTO `api_user_action` VALUES ('8718', '新增字段', '1', '我超级用户', '1541204927', '{\"hash\":\"5bdceb11523b8\",\"type\":\"0\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/add');
+INSERT INTO `api_user_action` VALUES ('8719', '新增字段', '1', '我超级用户', '1541205000', '{\"hash\":\"5bdceb11523b8\",\"type\":\"0\",\"showName\":\"app_id\",\"dataType\":\"2\",\"default\":\"\",\"isMust\":\"1\",\"range\":\"\",\"info\":\"\\u7cfb\\u7edf\\u914d\\u7f6eapp_id\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/add');
+INSERT INTO `api_user_action` VALUES ('8720', '请求字段编辑', '1', '我超级用户', '1541205000', '{\"hash\":\"5bdceb11523b8\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/request');
+INSERT INTO `api_user_action` VALUES ('8721', '新增字段', '1', '我超级用户', '1541205002', '{\"hash\":\"5bdceb11523b8\",\"type\":\"0\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/add');
+INSERT INTO `api_user_action` VALUES ('8722', '新增字段', '1', '我超级用户', '1541205039', '{\"hash\":\"5bdceb11523b8\",\"type\":\"0\",\"showName\":\"rand_str\",\"dataType\":\"2\",\"default\":\"\",\"isMust\":\"1\",\"range\":\"\",\"info\":\"\\u968f\\u673a\\u6570\\uff0c12\\u4f4d\\u6570\\u5b57\\u5b57\\u6bcd\\u6df7\\u5408\\u7ec4\\u6210\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/add');
+INSERT INTO `api_user_action` VALUES ('8723', '请求字段编辑', '1', '我超级用户', '1541205039', '{\"hash\":\"5bdceb11523b8\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/request');
+INSERT INTO `api_user_action` VALUES ('8724', '新增字段', '1', '我超级用户', '1541205040', '{\"hash\":\"5bdceb11523b8\",\"type\":\"0\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/add');
+INSERT INTO `api_user_action` VALUES ('8725', '新增字段', '1', '我超级用户', '1541205064', '{\"hash\":\"5bdceb11523b8\",\"type\":\"0\",\"showName\":\"signature\",\"dataType\":\"2\",\"default\":\"\",\"isMust\":\"1\",\"range\":\"\",\"info\":\"\\u7b7e\\u540d\\uff08\\u5ba2\\u6237\\u7aef\\u6309\\u65b9\\u6cd5\\u751f\\u6210\\uff09\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/add');
+INSERT INTO `api_user_action` VALUES ('8726', '请求字段编辑', '1', '我超级用户', '1541205064', '{\"hash\":\"5bdceb11523b8\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/request');
+INSERT INTO `api_user_action` VALUES ('8727', '新增字段', '1', '我超级用户', '1541205074', '{\"hash\":\"5bdceb11523b8\",\"type\":\"0\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/add');
+INSERT INTO `api_user_action` VALUES ('8728', '新增字段', '1', '我超级用户', '1541205142', '{\"hash\":\"5bdceb11523b8\",\"type\":\"0\",\"showName\":\"device_id\",\"dataType\":\"1\",\"default\":\"mobile\",\"isMust\":\"1\",\"range\":\"\",\"info\":\"\\u8bbe\\u5907id\\uff08mobile\\uff09\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/add');
+INSERT INTO `api_user_action` VALUES ('8729', '请求字段编辑', '1', '我超级用户', '1541205142', '{\"hash\":\"5bdceb11523b8\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/request');
+INSERT INTO `api_user_action` VALUES ('8730', '请求字段编辑', '1', '我超级用户', '1541205755', '{\"hash\":\"5bdceb11523b8\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/request');
+INSERT INTO `api_user_action` VALUES ('8731', '首页', '1', '我超级用户', '1541205772', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('8732', '欢迎页', '1', '我超级用户', '1541205772', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('8733', '应用列表', '1', '我超级用户', '1541205777', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('8734', '接口列表', '1', '我超级用户', '1541205777', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'ApiManage/index');
+INSERT INTO `api_user_action` VALUES ('8735', '请求字段编辑', '1', '我超级用户', '1541205784', '{\"hash\":\"5bdceb11523b8\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/request');
+INSERT INTO `api_user_action` VALUES ('8736', '删除接口', '1', '我超级用户', '1541205845', '{\"id\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'ApiManage/del');
+INSERT INTO `api_user_action` VALUES ('8737', '接口列表', '1', '我超级用户', '1541205845', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'ApiManage/index');
+INSERT INTO `api_user_action` VALUES ('8738', '新增接口', '1', '我超级用户', '1541205856', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'ApiManage/add');
+INSERT INTO `api_user_action` VALUES ('8739', '新增接口', '1', '我超级用户', '1541205908', '{\"apiName\":\"BuildToken\\/getAccessToken\",\"method\":\"1\",\"hash\":\"5bdcef60a582c\",\"accessToken\":\"0\",\"needLogin\":\"0\",\"isTest\":\"0\",\"info\":\"\\u83b7\\u53d6access_token\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'ApiManage/add');
+INSERT INTO `api_user_action` VALUES ('8740', '接口列表', '1', '我超级用户', '1541205908', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'ApiManage/index');
+INSERT INTO `api_user_action` VALUES ('8741', '请求字段编辑', '1', '我超级用户', '1541205911', '{\"hash\":\"5bdcef60a582c\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/request');
+INSERT INTO `api_user_action` VALUES ('8742', '新增字段', '1', '我超级用户', '1541205915', '{\"hash\":\"5bdcef60a582c\",\"type\":\"0\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/add');
+INSERT INTO `api_user_action` VALUES ('8743', '新增字段', '1', '我超级用户', '1541205957', '{\"hash\":\"5bdcef60a582c\",\"type\":\"0\",\"showName\":\"app_id\",\"dataType\":\"2\",\"default\":\"\",\"isMust\":\"1\",\"range\":\"\",\"info\":\"\\u7cfb\\u7edf\\u914d\\u7f6eapp_id\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/add');
+INSERT INTO `api_user_action` VALUES ('8744', '请求字段编辑', '1', '我超级用户', '1541205957', '{\"hash\":\"5bdcef60a582c\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/request');
+INSERT INTO `api_user_action` VALUES ('8745', '新增字段', '1', '我超级用户', '1541205959', '{\"hash\":\"5bdcef60a582c\",\"type\":\"0\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/add');
+INSERT INTO `api_user_action` VALUES ('8746', '新增字段', '1', '我超级用户', '1541205995', '{\"hash\":\"5bdcef60a582c\",\"type\":\"0\",\"showName\":\"signature\",\"dataType\":\"2\",\"default\":\"\",\"isMust\":\"1\",\"range\":\"\",\"info\":\"\\u7b7e\\u540d\\uff08\\u5ba2\\u6237\\u7aef\\u6309\\u65b9\\u6cd5\\u751f\\u6210\\uff09\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/add');
+INSERT INTO `api_user_action` VALUES ('8747', '请求字段编辑', '1', '我超级用户', '1541205996', '{\"hash\":\"5bdcef60a582c\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/request');
+INSERT INTO `api_user_action` VALUES ('8748', '新增字段', '1', '我超级用户', '1541205997', '{\"hash\":\"5bdcef60a582c\",\"type\":\"0\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/add');
+INSERT INTO `api_user_action` VALUES ('8749', '新增字段', '1', '我超级用户', '1541206034', '{\"hash\":\"5bdcef60a582c\",\"type\":\"0\",\"showName\":\"device_id\",\"dataType\":\"1\",\"default\":\"mobile\",\"isMust\":\"1\",\"range\":\"\",\"info\":\"\\u8bbe\\u5907id\\uff08mobile\\uff09\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/add');
+INSERT INTO `api_user_action` VALUES ('8750', '请求字段编辑', '1', '我超级用户', '1541206035', '{\"hash\":\"5bdcef60a582c\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/request');
+INSERT INTO `api_user_action` VALUES ('8751', '字段编辑', '1', '我超级用户', '1541206040', '{\"id\":\"6\",\"type\":\"0\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/edit');
+INSERT INTO `api_user_action` VALUES ('8752', '返回字段编辑', '1', '我超级用户', '1541206117', '{\"hash\":\"5bdcef60a582c\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/response');
+INSERT INTO `api_user_action` VALUES ('8753', '新增字段', '1', '我超级用户', '1541206118', '{\"hash\":\"5bdcef60a582c\",\"type\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/add');
+INSERT INTO `api_user_action` VALUES ('8754', '新增字段', '1', '我超级用户', '1541206134', '{\"hash\":\"5bdcef60a582c\",\"type\":\"1\",\"showName\":\"data\",\"dataType\":\"2\",\"default\":\"\",\"isMust\":\"1\",\"range\":\"\",\"info\":\"\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/add');
+INSERT INTO `api_user_action` VALUES ('8755', '返回字段编辑', '1', '我超级用户', '1541206134', '{\"hash\":\"5bdcef60a582c\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/response');
+INSERT INTO `api_user_action` VALUES ('8756', '新增字段', '1', '我超级用户', '1541206136', '{\"hash\":\"5bdcef60a582c\",\"type\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/add');
+INSERT INTO `api_user_action` VALUES ('8757', '新增字段', '1', '我超级用户', '1541206152', '{\"hash\":\"5bdcef60a582c\",\"type\":\"1\",\"showName\":\"data{}access_token\",\"dataType\":\"2\",\"default\":\"\",\"isMust\":\"1\",\"range\":\"\",\"info\":\"\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/add');
+INSERT INTO `api_user_action` VALUES ('8758', '返回字段编辑', '1', '我超级用户', '1541206152', '{\"hash\":\"5bdcef60a582c\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/response');
+INSERT INTO `api_user_action` VALUES ('8759', '新增字段', '1', '我超级用户', '1541206154', '{\"hash\":\"5bdcef60a582c\",\"type\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/add');
+INSERT INTO `api_user_action` VALUES ('8760', '新增字段', '1', '我超级用户', '1541206159', '{\"hash\":\"5bdcef60a582c\",\"type\":\"1\",\"showName\":\"data{}expires_in\",\"dataType\":\"1\",\"default\":\"\",\"isMust\":\"1\",\"range\":\"\",\"info\":\"\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/add');
+INSERT INTO `api_user_action` VALUES ('8761', '返回字段编辑', '1', '我超级用户', '1541206159', '{\"hash\":\"5bdcef60a582c\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/response');
+INSERT INTO `api_user_action` VALUES ('8762', '批量上传返回字段', '1', '我超级用户', '1541206172', '{\"hash\":\"5bdcef60a582c\",\"type\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'FieldsManage/upload');
+INSERT INTO `api_user_action` VALUES ('8763', '禁用接口', '1', '我超级用户', '1541206213', '{\"id\":\"2\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'ApiManage/close');
+INSERT INTO `api_user_action` VALUES ('8764', '接口列表', '1', '我超级用户', '1541206213', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'ApiManage/index');
+INSERT INTO `api_user_action` VALUES ('8765', '启用接口', '1', '我超级用户', '1541206215', '{\"id\":\"2\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'ApiManage/open');
+INSERT INTO `api_user_action` VALUES ('8766', '接口列表', '1', '我超级用户', '1541206215', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"001ljtjbvuvjkheeqe2j3heaa1\"}', 'ApiManage/index');
 
 -- ----------------------------
 -- Table structure for api_user_data
@@ -13337,7 +13544,7 @@ CREATE TABLE `api_user_data` (
 -- ----------------------------
 -- Records of api_user_data
 -- ----------------------------
-INSERT INTO `api_user_data` VALUES ('1', '42', '0', '1541117464', '1');
+INSERT INTO `api_user_data` VALUES ('1', '43', '0', '1541203708', '1');
 
 -- ----------------------------
 -- Table structure for api_user_info
