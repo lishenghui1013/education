@@ -1,0 +1,444 @@
+<?php
+
+/**
+ * 用户中心的相关操作
+ * @since   2018/11/06 创建
+ * @author  李胜辉
+ */
+
+namespace Home\Api;
+
+use Admin\Model\ApiAppModel;
+use Home\ORG\ApiLog;
+use Home\ORG\Crypt;
+use Home\ORG\Response;
+use Home\ORG\ReturnCode;
+
+class UsersCenter extends Base
+{
+
+
+    /**
+     * 添加我的级别
+     * @author: 李胜辉
+     * @time: 2018/11/06 09:34
+     *
+     */
+    public function addMyClass($param)
+    {
+        $data['class_id'] = $param['calss_id']; //我的级别id
+        $data['user_type'] = $param['user_type']; //用户类型(COM:机构;TEA:老师;STU:学生)
+        $data['add_id'] = $param['add_id'];//添加人id
+        $data['add_time'] = time();//添加时间
+        $res = D('api_myclass')->add($data);
+        if ($res) {
+            return array('login_status' => 'success');//success:登录成功;fail:登录失败
+        } else {
+            return array('login_status' => 'fail');//success:登录成功;fail:登录失败
+        }
+
+    }
+
+    /**
+     * 编辑我的级别
+     * @author: 李胜辉
+     * @time: 2018/11/06 09:34
+     *
+     */
+    public function setMyClass($param)
+    {
+        $data['id'] = $param['id']; //修改项id;
+        $data['class_id'] = $param['calss_id']; //我的级别id
+
+        $res = D('api_myclass')->save($data);
+        if ($res) {
+            return array('login_status' => 'success');//success:登录成功;fail:登录失败
+        } else {
+            return array('login_status' => 'fail');//success:登录成功;fail:登录失败
+        }
+
+    }
+
+    /**
+     * 获取未读信息条数
+     * @author: 李胜辉
+     * @time: 2018/11/06 09:34
+     *
+     */
+    public function getUnreadNum($param)
+    {
+        $where['to_suerid'] = $param['user_id']; //用户id;
+        $where['user_type'] = $param['user_type']; //用户类型(COM:机构;TEA:老师;STU:学生)
+        $where['read_status'] = 'UNREAD'; //阅读状态(READ:已读;UNREAD:未读)
+        $where['del_status'] = 2; //删除状态(1,已删除;2,未删除)
+
+        $num = D('api_notice')->where($where)->count();
+        if ($num) {
+            return array('login_status' => 'success', 'num' => $num);//success:登录成功;fail:登录失败
+        } else {
+            return array('login_status' => 'fail');//success:登录成功;fail:登录失败
+        }
+
+    }
+
+    /**
+     * 消息列表
+     * @author: 李胜辉
+     * @time: 2018/11/06 09:34
+     *
+     */
+    public function noticeList($param)
+    {
+        $user_id = $param['user_id'] ? $param['user_id'] : '';//用户id
+
+        $pagenum = $param['pagenum'] ? $param['pagenum'] : 1;//当前页
+        $limit = $param['limit'] ? $param['limit'] : 10;//每页显示条数
+        $start = ($pagenum - 1) * $limit;
+        $moth = $param['moth'] ? $param['moth'] : '';//添加生词的月份时间戳
+        $day = $param['day'] ? $param['day'] : '';//添加生词日期时间戳
+        $where = array();
+        $where['user_type'] = $param['user_type']; //用户类型(COM:机构;TEA:老师;STU:学生)
+        $where['del_status'] = 2;
+        if ($day !== '') {
+            $year = date('Y', $day);//年份
+            $moth = date('m', $day);//月份
+            $date = date('d', $day);//日期
+            $where['_string'] = 'year(FROM_UNIXTIME(add_time,"%Y-%m-%d"))="' . $year . '" and month(FROM_UNIXTIME(add_time,"%Y-%m-%d"))="' . $moth . '" and dayofmonth(FROM_UNIXTIME(add_time,"%Y-%m-%d"))="' . $date . '"';
+        } else if ($moth !== '') {
+            $year = date('Y', $moth);//年份
+            $moth = date('m', $moth);//月份
+            $where['_string'] = 'year(FROM_UNIXTIME(add_time,"%Y-%m-%d"))="' . $year . '" and month(FROM_UNIXTIME(add_time,"%Y-%m-%d"))="' . $moth . '"';
+        }
+        if ($user_id !== '') {
+            $where['add_suerid'] = $user_id;
+            $list = D('api_notice')->field('id,title,content,read_status,notice_type,add_time')->where($where)->order('id desc')->limit($start, $limit)->select();
+            if ($list) {
+                $list['response_status'] = 'success';//success:成功;fail:失败
+                return $list;
+            } else {
+                $list['response_status'] = 'fail';//success:成功;fail:失败
+                return $list;
+            }
+        } else {
+            $list['response_status'] = 'lack';//缺少参数
+            return $list;
+        }
+    }
+
+    /**
+     * 消息详情
+     * @author: 李胜辉
+     * @time: 2018/11/06 09:34
+     *
+     */
+    public function noticeDetail($param)
+    {
+        $where = array();
+        $where['id'] = $param['id'];//消息id
+        $where['del_status'] = 2;
+        $list = D('api_notice')->field('id,title,content,read_status,notice_type,read_time,send_userid,add_time')->where($where)->find();
+        if ($list) {
+            $list['response_status'] = 'success';//success:成功;fail:失败
+            return $list;
+        } else {
+            $list['response_status'] = 'fail';//success:成功;fail:失败
+            return $list;
+        }
+
+    }
+
+    /**
+     * 查询会员资料详情
+     * @author: 李胜辉
+     * @time: 2018/11/06 09:34
+     *
+     */
+    public function userInfoDetail($param)
+    {
+        $where = array();
+        $where['use_status'] = 1;
+        $where['id'] = $param['id'];//用户id
+        $user_type = $param['user_type'];//用户类型(COM:机构;TEA:老师;STU:学生)
+        if ($user_type == 'STU') {
+            $list = D('api_users')->field('id,user_name,nickname,true_name,phone,balance,icon,add_time')->where($where)->find();
+
+        } else {
+            $list = D('api_ct_users')->field('id,user_name,com_name,nickname,true_name,user_type,phone,balance,icon,add_time')->where($where)->find();
+
+        }
+        if ($list) {
+            $list['response_status'] = 'success';//success:成功;fail:失败
+            return $list;
+        } else {
+            $list['response_status'] = 'fail';//success:成功;fail:失败
+            return $list;
+        }
+
+    }
+
+    /**
+     * 充值/消费记录列表
+     * @author: 李胜辉
+     * @time: 2018/11/06 09:34
+     *
+     */
+    public function iomoneyList($param)
+    {
+        $user_id = $param['user_id'] ? $param['user_id'] : '';//用户id
+        $user_type = $param['user_type'];//用户类型(STU:学生;TEA:老师;COM:机构)
+        $pagenum = $param['pagenum'] ? $param['pagenum'] : 1;//当前页
+        $limit = $param['limit'] ? $param['limit'] : 10;//每页显示条数
+        $start = ($pagenum - 1) * $limit;
+        $where = array();
+        $where['del_status'] = 2;
+        $sql = 'select * from (select concat("+","",gold_num) as num,explain,add_time from api_recharge where user_id=' . $user_id . 'and role_type="' . $user_type . '" and status=1 UNION select concat("-","",e_money) as num,explain,add_time from api_expense where user_id=' . $user_id . ' and e_status="S" and r_type="' . $user_type . '") as u order by add_time asc limit ' . $start . ',' . $limit;
+        $table = M();
+        $list = $table->query($sql);
+        if ($list) {
+            $list['response_status'] = 'success';//success:成功;fail:失败
+            return $list;
+        } else {
+            $list['response_status'] = 'fail';//success:成功;fail:失败
+            return $list;
+        }
+
+    }
+
+    /*******************************************************************************************评论 开始*******************************************************/
+
+
+
+    /**
+     * 评论列表
+     * @author: 李胜辉
+     * @time: 2018/11/05 09:34
+     */
+    public function commentList($param)
+    {
+        $pagenum = $param['pagenum'] ? $param['pagenum'] : 1;//当前页
+        $limit = $param['limit'] ? $param['limit'] : 10;//每页显示条数
+        $start = ($pagenum - 1) * $limit;
+        $user_id = $param['user_id'] ? $param['user_id'] : '';//用户id
+        $where = array();
+        $where['user_type'] = $param['user_type'];//用户类型(COM:机构;TEA:老师;STU:学生)
+        if ($user_id !== '') {
+            $where['user_id'] = $user_id;
+            $list = D('api_comment')->field('id,content,pub_type,is_catalog,item_id,add_time')->where($where)->order('id desc')->limit($start, $limit)->select();
+            if($list){
+                foreach($list as $key=>$value){
+                    if($value['is_catalog']=='N'){
+                        $title = D('api_publish')->where(array('id'=>$value['item_id']))->getField('title');
+                        $list[$key]['title'] = $title;
+                    }else{
+                        $title = D('api_publish_content')->where(array('id'=>$value['item_id']))->getField('title');
+                        $list[$key]['title'] = $title;
+                    }
+                }
+                unset($key,$value);
+                $list['response_status'] = 'success';//成功
+                return $list;
+            }else{
+                $list['response_status'] = 'fail';//失败
+                return $list;
+            }
+
+        } else {
+            $list['response_status'] = 'lack';//缺少参数
+            return $list;
+        }
+    }
+
+    /*******************************************************************************************评论 结束*******************************************************/
+
+    /*******************************************************************************************收藏 开始*******************************************************/
+    /**
+     * 取消收藏
+     * @author: 李胜辉
+     * @time: 2018/11/05 09:34
+     */
+    public function deleteCollect($param)
+    {
+        $id = $param['id'];//收藏id
+        $res = D('api_collect')->where(array('id' => $id))->delete();
+        if ($res) {
+            return array('response_status' => 'success');//success:成功;fail:失败
+        } else {
+            return array('response_status' => 'fail');//success:成功;fail:失败
+        }
+    }
+
+    /**
+     * 收藏列表
+     * @author: 李胜辉
+     * @time: 2018/11/05 09:34
+     */
+    public function collectList($param)
+    {
+        $pagenum = $param['pagenum'] ? $param['pagenum'] : 1;//当前页
+        $limit = $param['limit'] ? $param['limit'] : 10;//每页显示条数
+        $start = ($pagenum - 1) * $limit;
+        $item_type = $param['item_type'] ? $param['item_type'] : '';//收藏项目的类型(STORE:商城;GOODS:商品;KAP:知识;EXE:习题;WOR:试题;RADIO:广播;LIB:图书馆
+        $user_id = $param['user_id'] ? $param['user_id'] : '';//用户id
+        $where = array();
+        $where['user_type'] = $param['user_type'];//用户类型(COM:机构;TEA:老师;STU:学生)
+        if ($user_id !== '') {
+            if ($item_type !== '') {
+                $where['item_type'] = $item_type;
+            }
+            $where['user_id'] = $user_id;
+            $list = D('api_collect')->field('id,item_type,item_category,pub_type,is_catalog,item_id,add_time')->where($where)->order('id desc')->limit($start, $limit)->select();
+            if ($list) {
+                switch ($item_type) {
+                    case 'STORE':
+                        //查询商城信息
+                        foreach ($list as $key => $value) { //循环 压入数据
+                            if ($value['is_catalog'] == 'N') { //收藏的是大标题
+                                $temp = D('api_publish')->field('id as ids,title')->where(array('id' => $value['item_id']))->find();
+                                $list[$key]['ids'] = $temp['ids'];
+                                $list[$key]['title'] = $temp['title'];
+                            } else {  //收藏的是目录详情页内容
+                                $temp = D('api_publish_content')->field('id as ids,title')->where(array('id' => $value['item_id']))->find();
+                                $list[$key]['ids'] = $temp['ids'];
+                                $list[$key]['title'] = $temp['title'];
+                            }
+                        }
+
+                        break;
+                    case 'GOODS': //商品
+
+                        break;
+                    case 'KAP':  //知识
+                        //知识
+                        foreach ($list as $key => $value) { //循环 压入数据
+                            switch ($value['item_category']) { //项目分类(ART:知识点,句子,阅读文章,词组;VID:视频;TEX:课本;OTHER:其他的)
+                                case 'ART':
+                                    $temp = D('api_article_publish')->field('id as ids,title')->where(array('id' => $value['item_id']))->find();
+                                    $list[$key]['ids'] = $temp['ids'];
+                                    $list[$key]['title'] = $temp['title'];
+                                    break;
+                                case 'VID':
+                                    if ($value['is_catalog'] == 'N') { //收藏的是大标题
+                                        $temp = D('api_video')->field('id as ids,title')->where(array('id' => $value['item_id']))->find();
+                                        $list[$key]['ids'] = $temp['ids'];
+                                        $list[$key]['title'] = $temp['title'];
+                                    } else {  //收藏的是目录详情页内容
+                                        $temp = D('api_video_content')->field('id as ids,title')->where(array('id' => $value['item_id']))->find();
+                                        $list[$key]['ids'] = $temp['ids'];
+                                        $list[$key]['title'] = $temp['title'];
+                                    }
+                                    break;
+                                case 'TEX':
+                                    if ($value['is_catalog'] == 'N') { //收藏的是大标题
+                                        $temp = D('api_textbook')->field('id as ids,title')->where(array('id' => $value['item_id']))->find();
+                                        $list[$key]['ids'] = $temp['ids'];
+                                        $list[$key]['title'] = $temp['title'];
+                                    } else {  //收藏的是目录详情页内容
+                                        $temp = D('api_textbook_content')->field('id as ids,title')->where(array('id' => $value['item_id']))->find();
+                                        $list[$key]['ids'] = $temp['ids'];
+                                        $list[$key]['title'] = $temp['title'];
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+
+                        break;
+                    case 'EXE': //练习
+
+                        break;
+                    case 'WOR': //试题
+
+                        break;
+                    case 'RADIO': //广播
+
+                        break;
+                    case 'LIB': //图书馆
+
+                        break;
+                    default:
+                        //分页
+                        foreach ($list as $key => $value) { //循环 压入数据
+                            switch ($value['item_type']) {
+                                case 'STORE':
+                                    //查询商城信息
+                                    if ($value['is_catalog'] == 'N') { //收藏的是大标题
+                                        $temp = D('api_publish')->field('id as ids,title')->where(array('id' => $value['item_id']))->find();
+                                        $list[$key]['ids'] = $temp['ids'];
+                                        $list[$key]['title'] = $temp['title'];
+                                    } else {  //收藏的是目录详情页内容
+                                        $temp = D('api_publish_content')->field('id as ids,title')->where(array('id' => $value['item_id']))->find();
+                                        $list[$key]['ids'] = $temp['ids'];
+                                        $list[$key]['title'] = $temp['title'];
+                                    }
+                                    break;
+                                case 'GOODS': //商品
+
+                                    break;
+                                case 'KAP': //知识
+                                    switch ($value['item_category']) { //项目分类(ART:知识点,句子,阅读文章,词组;VID:视频;TEX:课本;OTHER:其他的)
+                                        case 'ART':
+                                            $temp = D('api_article_publish')->field('id as ids,title')->where(array('id' => $value['item_id']))->find();
+                                            $list[$key]['ids'] = $temp['ids'];
+                                            $list[$key]['title'] = $temp['title'];
+                                            break;
+                                        case 'VID':
+                                            if ($value['is_catalog'] == 'N') { //收藏的是大标题
+                                                $temp = D('api_video')->field('id as ids,title')->where(array('id' => $value['item_id']))->find();
+                                                $list[$key]['ids'] = $temp['ids'];
+                                                $list[$key]['title'] = $temp['title'];
+                                            } else {  //收藏的是目录详情页内容
+                                                $temp = D('api_video_content')->field('id as ids,title')->where(array('id' => $value['item_id']))->find();
+                                                $list[$key]['ids'] = $temp['ids'];
+                                                $list[$key]['title'] = $temp['title'];
+                                            }
+                                            break;
+                                        case 'TEX':
+                                            if ($value['is_catalog'] == 'N') { //收藏的是大标题
+                                                $temp = D('api_textbook')->field('id as ids,title')->where(array('id' => $value['item_id']))->find();
+                                                $list[$key]['ids'] = $temp['ids'];
+                                                $list[$key]['title'] = $temp['title'];
+                                            } else {  //收藏的是目录详情页内容
+                                                $temp = D('api_textbook_content')->field('id as ids,title')->where(array('id' => $value['item_id']))->find();
+                                                $list[$key]['ids'] = $temp['ids'];
+                                                $list[$key]['title'] = $temp['title'];
+                                            }
+                                            break;
+                                        default:
+                                            break;
+                                    }
+
+                                    break;
+                                case 'EXE': //练习
+
+                                    break;
+                                case 'WOR': //试题
+
+                                    break;
+                                case 'RADIO': //校园广播
+
+                                    break;
+                                case 'LIB':  //图书馆
+
+                                    break;
+                                default:
+                            }
+
+
+                        }
+                        unset($key, $value);
+                        break;
+                }
+                $list['response_status'] = 'success';//success:成功;fail:失败
+            } else {
+                $list['response_status'] = 'no';//暂无数据
+            }
+            return $list;
+        } else {
+            $list['response_status'] = 'lack';//缺少参数
+            return $list;
+        }
+    }
+
+    /*******************************************************************************************收藏 结束*******************************************************/
+}

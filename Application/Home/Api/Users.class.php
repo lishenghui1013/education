@@ -67,7 +67,7 @@ class Users extends Base
     public function verifyLogin($param)
     {
 
-        $phone = $param['phone'];
+        $phone = $param['phone'];//手机号
         $verify_code = $param['input_code'];//用户输入的验证码
         $sys_code = $param['sys_code'];//系统发送的验证码
         Response::debug($phone . '+' . $verify_code . '+' . $sys_code);
@@ -124,7 +124,7 @@ class Users extends Base
      */
     public function forgetPassword($param)
     {
-        $user_type = $param['user_type'];//会员类型
+        $user_type = $param['user_type'];//用户类型(COM:机构;TEA:老师;STU:学生)
         $phone = $param['phone'];//手机号
         $verify_code = $param['input_code'];//用户输入的验证码
         $sys_code = $param['sys_code'];//发送的验证码
