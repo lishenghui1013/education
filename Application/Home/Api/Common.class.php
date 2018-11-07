@@ -103,6 +103,7 @@ class Common extends Base
         $data['is_catalog'] = $param['is_catalog'] ? $param['is_catalog'] : 'Y';//是否评论的详情(Y:是;N:否)
         $data['add_time'] = time();//评论时间
         $data['user_id'] = $param['user_id'];//评论人id
+        $data['user_type'] = $param['user_type'];//评论人类型(COM:机构;TEA:老师;STU:学生)
 
         $res = D('api_comment')->add($data);
         if ($res) {

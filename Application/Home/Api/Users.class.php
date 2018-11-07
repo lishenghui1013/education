@@ -33,14 +33,14 @@ class Users extends Base
         $user_info = D('api_users')->field('id,login_first,phone,user_name,icon,balance,nickname')->where(array('user_name' => $user_name, 'password' => $password, 'use_status' => 1))->find();//先查询学生表
         if ($user_info) { //如果有该账户
             if ($user_info->login_first == 'Y') {//如果为首选登录项
-                $user_info['login_status'] = 'success';//success:登录成功;fail:登录失败
+                $user_info['login_status'] = 'success';//success:成功;fail:失败
                 $user_info['user_type'] = 'STU';//身份为学生
                 return $user_info;
 
             } else {
                 $teacher_info = D('api_ct_users')->field('id,login_first,phone,user_name,com_name,user_type,icon,balance,nickname')->where(array('user_name' => $user_name, 'password' => $password, 'del_status' => 2, 'audit_status' => 'S'))->find();//查询机构/老师表
                 if ($teacher_info) {
-                    $teacher_info['login_status'] = 'success';//success:登录成功;fail:登录失败
+                    $teacher_info['login_status'] = 'success';//success:成功;fail:失败
                     return $teacher_info;
                 } else {
                     return array('login_status' => 'uperror');//账号或密码错误
@@ -49,7 +49,7 @@ class Users extends Base
         } else {
             $com_info = D('api_ct_users')->field('id,login_first,phone,user_name,com_name,user_type,icon,balance,nickname')->where(array('user_name' => $user_name, 'password' => $password, 'del_status' => 2, 'audit_status' => 'S'))->find();//查询机构表
             if ($com_info) { //如果机构表中有该用户
-                $com_info['login_status'] = 'success';//success:登录成功;fail:登录失败
+                $com_info['login_status'] = 'success';//success:成功;fail:失败
                 return $com_info;
             } else {
                 return array('login_status' => 'uperror');//账号或密码错误
@@ -85,7 +85,7 @@ class Users extends Base
         $user_info = D('api_users')->field('id,login_first,phone,user_name,icon,balance,nickname')->where(array('phone' => $phone, 'use_status' => 1))->find();//先查询学生表
         if ($user_info) { //如果有该账户
             if ($user_info->login_first == 'Y') {//如果为首选登录项
-                $user_info['login_status'] = 'success';//success:登录成功;fail:登录失败
+                $user_info['login_status'] = 'success';//success:成功;fail:失败
                 $user_info['user_type'] = 'STU';//身份为学生
                 Response::debug($user_info);
                 return $user_info;
@@ -94,7 +94,7 @@ class Users extends Base
                 $teacher_info = D('api_ct_users')->field('id,login_first,phone,user_name,com_name,user_type,icon,balance,nickname')->where(array('phone' => $phone, 'del_status' => 2, 'audit_status' => 'S'))->find();//查询机构/老师表
                 if ($teacher_info) {
 
-                    $teacher_info['login_status'] = 'success';//success:登录成功;fail:登录失败
+                    $teacher_info['login_status'] = 'success';//success:成功;fail:失败
                     Response::debug($teacher_info);
                     return $teacher_info;
                 } else {
@@ -105,7 +105,7 @@ class Users extends Base
             $com_info = D('api_ct_users')->field('id,login_first,phone,user_name,com_name,user_type,icon,balance,nickname')->where(array('phone' => $phone, 'del_status' => 2, 'audit_status' => 'S'))->find();//查询机构表
             if ($com_info) { //如果机构表中有该用户
 
-                $com_info['login_status'] = 'success';//success:登录成功;fail:登录失败
+                $com_info['login_status'] = 'success';//success:成功;fail:失败
                 Response::debug($com_info);
                 return $com_info;
             } else {
@@ -138,7 +138,7 @@ class Users extends Base
         if ($verify_code == '' || $verify_code != $sys_code) {
             return array('response_status' => 'cerror');//验证码不正确
         }
-        if ($param['password'] == '' || !preg_match($preg_pass, $param['pwsd'])) {
+        if ($param['password'] == '' || !preg_match($preg_pass, $param['password'])) {
             return array('response_status' => 'pserror');//密码格式不正确
         }
         Response::debug($phone . '+' . $param['password'] . '+' . $password);
@@ -149,7 +149,7 @@ class Users extends Base
                     return array('response_status' => 'no');//此用户不存在
                 }
                 $data['password'] = $password;
-                $res = D('api_users')->where(array('phone' => $phone,'id'=>$user_info->id))->save($data);
+                $res = D('api_users')->where(array('phone' => $phone))->save($data);
                 $teacher = D('api_ct_users')->where(array('phone' => $phone))->save($data);
                 if ($res && $teacher) {
                     return array('response_status' => "success");//修改成功

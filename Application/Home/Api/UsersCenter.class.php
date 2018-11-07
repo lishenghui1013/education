@@ -32,9 +32,9 @@ class UsersCenter extends Base
         $data['add_time'] = time();//添加时间
         $res = D('api_myclass')->add($data);
         if ($res) {
-            return array('login_status' => 'success');//success:登录成功;fail:登录失败
+            return array('login_status' => 'success');//success:成功;fail:失败
         } else {
-            return array('login_status' => 'fail');//success:登录成功;fail:登录失败
+            return array('login_status' => 'fail');//success:成功;fail:失败
         }
 
     }
@@ -48,13 +48,13 @@ class UsersCenter extends Base
     public function setMyClass($param)
     {
         $data['id'] = $param['id']; //修改项id;
-        $data['class_id'] = $param['calss_id']; //我的级别id
+        $data['class_id'] = $param['class_id']; //我的级别id
 
         $res = D('api_myclass')->save($data);
         if ($res) {
-            return array('login_status' => 'success');//success:登录成功;fail:登录失败
+            return array('login_status' => 'success');//success:成功;fail:失败
         } else {
-            return array('login_status' => 'fail');//success:登录成功;fail:登录失败
+            return array('login_status' => 'fail');//success:成功;fail:失败
         }
 
     }
@@ -74,9 +74,9 @@ class UsersCenter extends Base
 
         $num = D('api_notice')->where($where)->count();
         if ($num) {
-            return array('login_status' => 'success', 'num' => $num);//success:登录成功;fail:登录失败
+            return array('login_status' => 'success', 'num' => $num);//success:成功;fail:失败
         } else {
-            return array('login_status' => 'fail');//success:登录成功;fail:登录失败
+            return array('login_status' => 'fail','num' => 0);//success:成功;fail:失败
         }
 
     }
@@ -117,6 +117,7 @@ class UsersCenter extends Base
                 return $list;
             } else {
                 $list['response_status'] = 'fail';//success:成功;fail:失败
+                $list['msg'] = '暂无数据';
                 return $list;
             }
         } else {
@@ -189,16 +190,14 @@ class UsersCenter extends Base
         $pagenum = $param['pagenum'] ? $param['pagenum'] : 1;//当前页
         $limit = $param['limit'] ? $param['limit'] : 10;//每页显示条数
         $start = ($pagenum - 1) * $limit;
-        $where = array();
-        $where['del_status'] = 2;
-        $sql = 'select * from (select concat("+","",gold_num) as num,explain,add_time from api_recharge where user_id=' . $user_id . 'and role_type="' . $user_type . '" and status=1 UNION select concat("-","",e_money) as num,explain,add_time from api_expense where user_id=' . $user_id . ' and e_status="S" and r_type="' . $user_type . '") as u order by add_time asc limit ' . $start . ',' . $limit;
+        $sql = 'select * from (select concat("+","",gold_num) as num,`explain`,add_time from api_recharge where user_id=' . $user_id . ' and role_type="' . $user_type . '" and status=1 UNION select concat("-","",e_money) as num,`explain`,add_time from api_expense where user_id=' . $user_id . ' and e_status="S" and r_type="' . $user_type . '") as u order by add_time asc limit ' . $start . ',' . $limit;
         $table = M();
         $list = $table->query($sql);
         if ($list) {
             $list['response_status'] = 'success';//success:成功;fail:失败
             return $list;
         } else {
-            $list['response_status'] = 'fail';//success:成功;fail:失败
+            $list['response_status'] = $sql;//success:成功;fail:失败
             return $list;
         }
 
@@ -219,8 +218,12 @@ class UsersCenter extends Base
         $limit = $param['limit'] ? $param['limit'] : 10;//每页显示条数
         $start = ($pagenum - 1) * $limit;
         $user_id = $param['user_id'] ? $param['user_id'] : '';//用户id
+        $user_type = $param['user_type']?$param['user_type']:'';//用户类型(COM:机构;TEA:老师;STU:学生)
         $where = array();
-        $where['user_type'] = $param['user_type'];//用户类型(COM:机构;TEA:老师;STU:学生)
+        if($user_type!==''){
+            $where['user_type'] = $user_type;
+        }
+
         if ($user_id !== '') {
             $where['user_id'] = $user_id;
             $list = D('api_comment')->field('id,content,pub_type,is_catalog,item_id,add_time')->where($where)->order('id desc')->limit($start, $limit)->select();
