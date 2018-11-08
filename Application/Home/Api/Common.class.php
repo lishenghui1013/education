@@ -13,6 +13,7 @@ use Home\ORG\ApiLog;
 use Home\ORG\Crypt;
 use Home\ORG\Response;
 use Home\ORG\ReturnCode;
+use Home\Api\SmsDemo;
 
 class Common extends Base
 {
@@ -392,14 +393,28 @@ class Common extends Base
      */
     public function sendCodes($param)
     {
-        $id = $param['id'];//生词id
-        $res = D('api_new_words')->where(array('id' => $id))->delete();
-        if ($res) {
-            return array('response_status' => 'success');//success:成功;fail:失败
-        } else {
-            return array('response_status' => 'fail');//success:成功;fail:失败
-        }
+        $phone = $param['phone'];//手机号
+        $code = $this->buildCodes();//验证码
+        $res = SmsDemo::sendSms($phone,$code);
+        print_r($res);
+
     }
+
+    /**
+     * 验证码生成
+     * @author: 李胜辉
+     * @time: 2018/11/06 09:34
+     */
+    public function buildCodes()
+    {
+        $code = '';
+        for($i=0;$i<4;$i++){
+            $code .= mt_rand(0,9);
+        }
+        return $code;
+
+    }
+
 
     /*******************************************************************************************发送手机验证码 结束*******************************************************/
 

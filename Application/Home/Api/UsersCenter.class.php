@@ -654,8 +654,32 @@ class UsersCenter extends Base
 
 
     /*******************************************************************************************用户资料 结束*******************************************************/
-
-
+    /*******************************************************************************************分享 开始*******************************************************/
+    /**
+     * 分享
+     * @author: 李胜辉
+     * @time: 2018/11/08 09:34
+     *
+     */
+    public function share($param)
+    {
+        $app_versions = $param['app_versions'];//当前APP版本
+        $type = $param['pub_type'];//发布类型(ART:文章,句子,词组,知识点;VID:视频;TEX:课本;PUB:机构发布)
+        $is_catalog = $param['is_catalog'];//是否目录详情(Y:是;N:不是)
+        $id = $param['item_id'];//分享内容id
+        $info = D('api_appversions')->field('id,app_versions,app_url,app_type,code_url')->where(array('app_versions'=>$app_versions))->find();
+        if ($info) {
+            $info['response_status'] = 'success';//success:成功;fail:失败
+            $info['pub_type'] = $type;
+            $info['is_catalog'] = $is_catalog;
+            $info['item_id'] = $id;
+            return $info;
+        } else {
+            $info['response_status'] = 'fail';//success:成功;fail:失败
+            return $info;
+        }
+    }
+    /*******************************************************************************************分享 结束*******************************************************/
     /*******************************************************************************************银行卡 开始*******************************************************/
 
     /**

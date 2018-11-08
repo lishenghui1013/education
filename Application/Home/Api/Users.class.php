@@ -27,12 +27,62 @@ class Users extends Base
         $data['user_name']= $param['user_name'];
         $data['phone'] = $param['phone'];
         $data['password'] = md5($param['password']);
+        $input_code = $param['input_code'];//用户填写的验证码
+        $send_code = $param['send_code'];//系统发送验证码
         $user_type = $param['user_type'];
+        $preg = '/^1[3456789]\d{9}$/';
+        $preg_pass = '/^[\da-zA-Z]{6,20}$/';
+        if(!$param['user_name']){
+            return array('response_status' => 'nouser');//用户名不能为空
+        }
+        if(!$param['phone']){
+            return array('response_status' => 'nophone');//手机号不能为空
+        }
+        if(!preg_match_all($preg,$param['phone'])){
+            return array('response_status' => 'pherror');//手机号格式不正确
+        }
+        if(!$param['password']){
+            return array('response_status' => 'nopass');//密码不能为空
+        }
+        if(!preg_match_all($preg_pass,$param['password'])){
+            return array('response_status' => 'perror');//密码格式不正确
+        }
+        if(!$user_type){
+            return array('response_status' => 'notype');//注册类型不能为空
+        }
+        if($input_code===''||$send_code===''){
+            return array('response_status' => 'nocode');//验证码为空
+        }
+        if($input_code!=$send_code){
+            return array('response_status' => 'neqcode');//输入验证码不正确
+        }
+
         if($user_type == 'STU'){
-
-
+            $is_name = D('api_users')->field('id')->where(array('user_name'=>$param['user_name']))->select();
+            if($is_name){
+                return array('response_status' => 'hasuser');//用户名已存在
+            }
+            $is_phone = D('api_users')->field('id')->where(array('phone'=>$param['phone']))->select();
+            if($is_phone){
+                return array('response_status' => 'hasphone');//手机号已经注册
+            }
+            $insert = D('api_users')->data($data)->save();
         }else{
-
+            $is_name = D('api_ct_users')->field('id')->where(array('user_name'=>$param['user_name']))->select();
+            if($is_name){
+                return array('response_status' => 'hasuser');//用户名已存在
+            }
+            $is_phone = D('api_ct_users')->field('id')->where(array('phone'=>$param['phone']))->select();
+            if($is_phone){
+                return array('response_status' => 'hasphone');//手机号已经注册
+            }
+            $data['user_type'] = $param['user_type'];
+            $insert = D('api_ct_users')->data($data)->save();
+        }
+        if ($insert) {
+            return array('response_status' => 'success');//success:成功;fail:失败
+        } else {
+            return array('response_status' => 'fail');//success:成功;fail:失败
         }
 
     }
@@ -44,14 +94,49 @@ class Users extends Base
      */
     public function phoneRegister($param)
     {
-        $data['phone'] = $param['phone'];
-        $data['password'] = md5($param['password']);
-        $user_type = $param['user_type'];
+        $data['phone'] = $param['phone'];//用户手机号
+        $data['password'] = md5($param['password']);//用户密码
+        $user_type = $param['user_type'];//用户类型
+        $input_code = $param['input_code'];//用户填写的验证码
+        $send_code = $param['send_code'];//系统发送验证码
+        $preg = '/^1[3456789]\d{9}$/';
+        $preg_pass = '/^[\da-zA-Z]{6,20}$/';
+        if(!$param['phone']){
+            return array('response_status' => 'nophone');//手机号不能为空
+        }
+        if(!preg_match_all($preg,$param['phone'])){
+            return array('response_status' => 'pherror');//手机号格式不正确
+        }
+        if(!$param['password']){
+            return array('response_status' => 'nopass');//密码不能为空
+        }
+        if(!preg_match_all($preg_pass,$param['password'])){
+            return array('response_status' => 'perror');//密码格式不正确
+        }
+        if($input_code===''||$send_code===''){
+            return array('response_status' => 'nocode');//验证码为空
+        }
+        if($input_code!=$send_code){
+            return array('response_status' => 'neqcode');//输入验证码不正确
+        }
         if($user_type == 'STU'){
-
-
+            $is_phone = D('api_users')->field('id')->where(array('phone'=>$param['phone']))->select();
+            if($is_phone){
+                return array('response_status' => 'hasphone');//手机号已经注册
+            }
+            $insert = D('api_users')->data($data)->save();
         }else{
-
+            $is_phone = D('api_ct_users')->field('id')->where(array('phone'=>$param['phone']))->select();
+            if($is_phone){
+                return array('response_status' => 'hasphone');//手机号已经注册
+            }
+            $data['user_type'] = $param['user_type'];
+            $insert = D('api_ct_users')->data($data)->save();
+        }
+        if ($insert) {
+            return array('response_status' => 'success');//success:成功;fail:失败
+        } else {
+            return array('response_status' => 'fail');//success:成功;fail:失败
         }
 
     }
