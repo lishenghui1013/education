@@ -16,6 +16,45 @@ use Home\ORG\ReturnCode;
 
 class Users extends Base
 {
+    /**
+     * 账号注册
+     * @author: 李胜辉
+     * @time: 2018/11/08 11:34
+     *
+     */
+    public function register($param)
+    {
+        $data['user_name']= $param['user_name'];
+        $data['phone'] = $param['phone'];
+        $data['password'] = md5($param['password']);
+        $user_type = $param['user_type'];
+        if($user_type == 'STU'){
+
+
+        }else{
+
+        }
+
+    }
+    /**
+     * 手机号注册账号
+     * @author: 李胜辉
+     * @time: 2018/11/08 11:34
+     *
+     */
+    public function phoneRegister($param)
+    {
+        $data['phone'] = $param['phone'];
+        $data['password'] = md5($param['password']);
+        $user_type = $param['user_type'];
+        if($user_type == 'STU'){
+
+
+        }else{
+
+        }
+
+    }
 
 
     /**

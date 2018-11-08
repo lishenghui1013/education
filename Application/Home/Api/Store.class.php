@@ -233,43 +233,30 @@ class Store extends Base
 
     }
     /**
-     * 发布文章
+     * 发布图片/文章/视频/文件
      * @author: 李胜辉
-     * @time: 2018/11/07 10:34
+     * @time: 2018/11/08 10:34
      */
-    public function publishArticle($param)
+    public function publishInfo($param)
     {
-        $data['cover'] = $param['cover'];//封面
-        $data['title'] = $param['title'];//标题
-        $data['intro']= $param['content'];//内容
-        $data['pub_time'] = time();//添加时间
-        $data['category_id']= $param['category_id'];//类型
-        $data['user_type']= $param['user_type'];//发布人的类型(COM:机构;TEA:老师;STU:学生)
-        $data['item_type']= $param['item_type'];//发布内容类型(ART:文章;RAD:视频;SRAD:系列视频;FILE:文件;PIC:图片;)
-        $data['pub_userid'] = $param['user_id'];//发布人id
-        $insert = D('api_publish')->add($data);
-        if($insert){
-            $content['cover'] = $param['cover'];//封面
-            $content['publish_id'] = $insert;//发布id
-            $content['title'] = $param['title'];//标题
-            $content['content']= $param['content'];//内容
-            $content['pub_time'] = time();//添加时间
-            $content['pub_userid'] = $param['user_id'];//发布人id
-            $add = D('api_publish')->add($content);
-            return array('response_status' => 'success');//成功
-        }else{
-            return array('response_status' => 'fail');//失败
+        $item_type = $param['item_type'];//发布内容类型(ART:文章;VID:视频;SVID:系列视频;FILE:文件;PIC:图片;)
+        switch ($item_type){
+            case 'ART':
+                $path = 'publish/article';
+                break;
+            case 'VID':
+                $path = 'publish/video';
+                break;
+            case 'FILE':
+                $path = 'publish/file';
+                break;
+            case 'PIC':
+                $path = 'publish/pic';
+                break;
+            default :
+                $path = 'publish/article';
+                break;
         }
-    }
-
-    /**
-     * 发布图片
-     * @author: 李胜辉
-     * @time: 2018/11/07 10:34
-     */
-    public function publishPic($param)
-    {
-        $path = 'publish/pic';
         $url = $this->uploads($path);
         $data['cover'] = $param['cover']?$param['cover']:'';//封面
         $data['title'] = $param['title'];//标题
@@ -287,7 +274,7 @@ class Store extends Base
             $content['content']= $url;//内容
             $content['pub_time'] = time();//添加时间
             $content['pub_userid'] = $param['user_id'];//发布人id
-            $add = D('api_publish')->add($content);
+            $add = D('api_publish_content')->add($content);
             if($add){
                 return array('response_status' => 'success');//成功
             }else{
@@ -300,42 +287,6 @@ class Store extends Base
     }
 
 
-    /**
-     * 发布视频
-     * @author: 李胜辉
-     * @time: 2018/11/07 16:34
-     */
-    public function publishVideo($param)
-    {
-        $path = 'publish/video';
-        $url = $this->uploads($path);
-        $data['cover'] = $param['cover']?$param['cover']:'';//封面
-        $data['title'] = $param['title'];//标题
-        $data['intro']= $param['content']?$param['content']:'';//内容
-        $data['pub_time'] = time();//添加时间
-        $data['category_id']= $param['category_id'];//类型
-        $data['user_type']= $param['user_type'];//发布人的类型(COM:机构;TEA:老师;STU:学生)
-        $data['item_type']= $param['item_type'];//发布内容类型(ART:文章;RAD:视频;SRAD:系列视频;FILE:文件;PIC:图片;)
-        $data['pub_userid'] = $param['user_id'];//发布人id
-        $insert = D('api_publish')->add($data);
-        if($insert){
-            $content['cover'] = $param['cover']?$param['cover']:'';//封面
-            $content['publish_id'] = $insert;//发布id
-            $content['title'] = $param['title'];//标题
-            $content['content']= $url;//内容
-            $content['pub_time'] = time();//添加时间
-            $content['pub_userid'] = $param['user_id'];//发布人id
-            $add = D('api_publish')->add($content);
-            if($add){
-                return array('response_status' => 'success');//成功
-            }else{
-                return array('response_status' => 'half');//目录表没有添加成功
-            }
-
-        }else{
-            return array('response_status' => 'fail');//失败
-        }
-    }
     /**
      * 发布系列视频
      * @author: 李胜辉
@@ -345,6 +296,7 @@ class Store extends Base
     {
         $path = 'publish/setVideo';
         $file_name = array();
+        //将视频url保存到数组中
         if($_FILES){
             foreach($_FILES as $key=>$value){
                 $url = $this->uploads($path);
@@ -352,7 +304,6 @@ class Store extends Base
             }
             unset($key,$value);
         }
-
 
         $data['cover'] = $param['cover']?$param['cover']:'';//封面
         $data['title'] = $param['title'];//标题
@@ -364,14 +315,22 @@ class Store extends Base
         $data['pub_userid'] = $param['user_id'];//发布人id
         $data['price'] = $param['price'];//价格
         $insert = D('api_publish')->add($data);
+        $content = array();
+        $datas = array();
         if($insert){
             $content['cover'] = $param['cover']?$param['cover']:'';//封面
             $content['publish_id'] = $insert;//发布id
-            $content['title'] = $param['title'];//标题
-            $content['content']= $url;//内容
             $content['pub_time'] = time();//添加时间
             $content['pub_userid'] = $param['user_id'];//发布人id
-            $add = D('api_publish')->add($content);
+            if($file_name){
+                foreach($file_name as $keys=>$values){
+                    $content['title'] = $param['title'.$keys];//标题
+                    $content['content']= $values;//内容
+                    $datas[] = $content;
+                }
+                unset($keys,$values);
+            }
+            $add = D('api_publish_content')->addAll($datas);
             if($add){
                 return array('response_status' => 'success');//成功
             }else{
@@ -417,41 +376,6 @@ class Store extends Base
             return $info;
         }
     }
-    /**
-     * 发布文件
-     * @author: 李胜辉
-     * @time: 2018/11/07 16:34
-     */
-    public function publishFile($param)
-    {
-        $path = 'publish/files';
-        $url = $this->uploads($path);
-        $data['cover'] = $param['cover']?$param['cover']:'';//封面
-        $data['title'] = $param['title'];//标题
-        $data['intro']= $param['content']?$param['content']:'';//内容
-        $data['pub_time'] = time();//添加时间
-        $data['category_id']= $param['category_id'];//类型
-        $data['user_type']= $param['user_type'];//发布人的类型(COM:机构;TEA:老师;STU:学生)
-        $data['item_type']= $param['item_type'];//发布内容类型(ART:文章;RAD:视频;SRAD:系列视频;FILE:文件;PIC:图片;)
-        $data['pub_userid'] = $param['user_id'];//发布人id
-        $insert = D('api_publish')->add($data);
-        if($insert){
-            $content['cover'] = $param['cover']?$param['cover']:'';//封面
-            $content['publish_id'] = $insert;//发布id
-            $content['title'] = $param['title'];//标题
-            $content['content']= $url;//内容
-            $content['pub_time'] = time();//添加时间
-            $content['pub_userid'] = $param['user_id'];//发布人id
-            $add = D('api_publish')->add($content);
-            if($add){
-                return array('response_status' => 'success');//成功
-            }else{
-                return array('response_status' => 'half');//目录表没有添加成功
-            }
 
-        }else{
-            return array('response_status' => 'fail');//失败
-        }
-    }
 
 }

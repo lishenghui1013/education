@@ -122,7 +122,7 @@ class Common extends Base
     const SEC_KEY = 'mGsITpcCqpGicOm0Xr0jmafvzAUpQgnq';  //替换为您的密钥
 
     /**
-     * 翻译入口
+     * 有道智云 翻译入口
      * @author: 李胜辉
      * @time: 2018/11/05 09:34
      * @param: $query 查询内容
@@ -344,5 +344,63 @@ class Common extends Base
 
 
     /*******************************************************************************************生词 结束*******************************************************/
+    /*******************************************************************************************文件上传 开始*******************************************************/
+    /**
+     * 文件上传方法
+     * @author: 李胜辉
+     * @time: 2018/11/07 16:34
+     * @param: $files  $_FILES
+     * @param: $path string 路径
+     */
+    public function uploads($path)
+    {
+        //获取网站根目录地址$url
+        $PHP_SELF = $_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_NAME'];
+        $str = substr($PHP_SELF, 1);
+        $url = 'http://' . $_SERVER['HTTP_HOST'] . '/' . substr($str, 0, strpos($str, '/') + 1);
+        Response::debug($url);
+        $upload = new \Think\Upload();   // 实例化上传类
+        $upload->maxSize = 3145728;    // 设置附件上传大小
+        $upload->exts = array('jpg', 'gif', 'png', 'jpeg'); // 设置附件上传类型
+        $upload->rootPath = THINK_PATH;          // 设置附件上传根目录
+        $upload->savePath = '../Public/uploads/';    // 设置附件上传（子）目录
+        $upload->subName = $path;  //子文件夹
+        $upload->replace = true;  //同名文件是否覆盖
+        // 上传文件
+        $res_info = $upload->upload();
+        $info = '';
+        if($res_info){
+            foreach ($res_info as $key => $tepimg) {
+                $info .= $url . preg_replace('/^..\//','',$tepimg['savepath']) . $tepimg['savename'] . ';';//拼接图片地址
+            }
+            unset($key, $tepimg);
+            $info = substr($info, 0, -1);
+            return $info;
+        }else{
+            return $info;
+        }
+    }
+
+    /*******************************************************************************************文件上传 结束*******************************************************/
+
+    /*******************************************************************************************发送手机验证码 开始*******************************************************/
+
+    /**
+     * 发送验证码
+     * @author: 李胜辉
+     * @time: 2018/11/06 09:34
+     */
+    public function sendCodes($param)
+    {
+        $id = $param['id'];//生词id
+        $res = D('api_new_words')->where(array('id' => $id))->delete();
+        if ($res) {
+            return array('response_status' => 'success');//success:成功;fail:失败
+        } else {
+            return array('response_status' => 'fail');//success:成功;fail:失败
+        }
+    }
+
+    /*******************************************************************************************发送手机验证码 结束*******************************************************/
 
 }
