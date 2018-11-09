@@ -155,9 +155,11 @@ class Upload
         $files = $this->dealFiles($files);
         foreach ($files as $key => $file) {
             $file['name'] = strip_tags($file['name']);
+
             if (!isset($file['key'])) {
                 $file['key'] = $key;
             }
+
 
             /* 通过扩展获取文件类型，可解决FLASH上传$FILES数组返回文件类型错误的问题 */
             if (isset($finfo)) {
@@ -226,6 +228,7 @@ class Upload
         if (isset($finfo)) {
             finfo_close($finfo);
         }
+
         return empty($info) ? false : $info;
     }
 

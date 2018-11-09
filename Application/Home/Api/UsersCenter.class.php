@@ -519,7 +519,7 @@ class UsersCenter extends Base
     }
 
     /**
-     * 查询默认银行卡
+     * 查询默认提现银行卡
      * @author: 李胜辉
      * @time: 2018/11/08 09:34
      *
@@ -596,7 +596,7 @@ class UsersCenter extends Base
         if($param['user_type']=='STU'){ //用户类型为学生(STU:学生;TEA:老师;COM:机构)
             $path = 'student/icon';
             $old_icon = D('api_users')->where(array('id'=>$param['user_id']))->getField('icon');
-            $icon = $common->uploads($path);
+            $icon = $common->uploads(array('path'=>$path));
             $set = D('api_users')->data(array('icon'=>$icon))->save();
             if ($set) {
                 if($old_icon){ //删除旧头像
@@ -609,7 +609,7 @@ class UsersCenter extends Base
         }else{
             $path = 'com/icon';
             $old_icon = D('api_ct_users')->where(array('id'=>$param['user_id']))->getField('icon');
-            $icon = $common->uploads($path);
+            $icon = $common->uploads(array('path'=>$path));
             $set = D('api_ct_users')->data(array('icon'=>$icon))->save();
             if ($set) {
                 if($old_icon){

@@ -353,8 +353,9 @@ class Common extends Base
      * @param: $files  $_FILES
      * @param: $path string 路径
      */
-    public function uploads($path)
+    public function uploads($param)
     {
+        $path = $param['path'];//子文件夹路径
         //获取网站根目录地址$url
         $PHP_SELF = $_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_NAME'];
         $str = substr($PHP_SELF, 1);
@@ -362,7 +363,7 @@ class Common extends Base
         Response::debug($url);
         $upload = new \Think\Upload();   // 实例化上传类
         $upload->maxSize = 3145728;    // 设置附件上传大小
-        $upload->exts = array('jpg', 'gif', 'png', 'jpeg'); // 设置附件上传类型
+        /*$upload->exts = array('jpg', 'gif', 'png', 'jpeg'); // 设置附件上传类型*/
         $upload->rootPath = THINK_PATH;          // 设置附件上传根目录
         $upload->savePath = '../Public/uploads/';    // 设置附件上传（子）目录
         $upload->subName = $path;  //子文件夹
@@ -396,8 +397,11 @@ class Common extends Base
         $phone = $param['phone'];//手机号
         $code = $this->buildCodes();//验证码
         $res = SmsDemo::sendSms($phone,$code);
-        print_r($res);
-
+        if($res['Message']=='OK'){
+            return array('response_status'=>'success','code'=>$code);//成功发送
+        }else{
+            return array('response_status'=>'fail');//发送失败
+        }
     }
 
     /**

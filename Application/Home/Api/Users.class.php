@@ -24,12 +24,13 @@ class Users extends Base
      */
     public function register($param)
     {
-        $data['user_name']= $param['user_name'];
-        $data['phone'] = $param['phone'];
-        $data['password'] = md5($param['password']);
+        $data['user_name']= $param['user_name'];//用户名
+        $data['phone'] = $param['phone'];//电话
+        $data['password'] = md5($param['password']);//密码
+        $data['add_time'] = time();//添加时间
         $input_code = $param['input_code'];//用户填写的验证码
         $send_code = $param['send_code'];//系统发送验证码
-        $user_type = $param['user_type'];
+        $user_type = $param['user_type'];//用户类型(STU:学生;TEA:老师;COM:机构)
         $preg = '/^1[3456789]\d{9}$/';
         $preg_pass = '/^[\da-zA-Z]{6,20}$/';
         if(!$param['user_name']){
@@ -66,7 +67,21 @@ class Users extends Base
             if($is_phone){
                 return array('response_status' => 'hasphone');//手机号已经注册
             }
-            $insert = D('api_users')->data($data)->save();
+            $data['login_first'] ='Y';
+            $insert = D('api_users')->add($data);
+            if($insert){
+                $data['login_first'] ='N';
+                $data['user_type'] = 'TEA';
+                $insert_teacher = D('api_ct_users')->add($data);
+                if ($insert_teacher) {
+                    return array('response_status' => 'success');//success:成功;fail:失败
+                } else {
+                    return array('response_status' => 'tfail');//机构表添加失败
+                }
+            }else{
+                return array('response_status' => 'fail');//success:成功;fail:失败
+            }
+
         }else{
             $is_name = D('api_ct_users')->field('id')->where(array('user_name'=>$param['user_name']))->select();
             if($is_name){
@@ -77,14 +92,29 @@ class Users extends Base
                 return array('response_status' => 'hasphone');//手机号已经注册
             }
             $data['user_type'] = $param['user_type'];
-            $insert = D('api_ct_users')->data($data)->save();
+            if($user_type == 'TEA'){
+                $data['login_first'] = 'Y';
+                $insert = D('api_ct_users')->add($data);
+                if($insert){
+                    $data['login_first'] ='N';
+                    $insert_stu = D('api_users')->add($data);
+                    if ($insert_stu) {
+                        return array('response_status' => 'success');//success:成功;fail:失败
+                    } else {
+                        return array('response_status' => 'sfail');//学生表添加失败
+                    }
+                }else{
+                    return array('response_status' => 'fail');//success:成功;fail:失败
+                }
+            }else{
+                $insert = D('api_ct_users')->add($data);
+                if ($insert) {
+                    return array('response_status' => 'success');//success:成功;fail:失败
+                } else {
+                    return array('response_status' => 'fail');//success:成功;fail:失败
+                }
+            }
         }
-        if ($insert) {
-            return array('response_status' => 'success');//success:成功;fail:失败
-        } else {
-            return array('response_status' => 'fail');//success:成功;fail:失败
-        }
-
     }
     /**
      * 手机号注册账号
@@ -96,7 +126,8 @@ class Users extends Base
     {
         $data['phone'] = $param['phone'];//用户手机号
         $data['password'] = md5($param['password']);//用户密码
-        $user_type = $param['user_type'];//用户类型
+        $data['add_time'] = time();//注册时间
+        $user_type = $param['user_type'];//用户类型(STU:学生;TEA:老师;COM:机构)
         $input_code = $param['input_code'];//用户填写的验证码
         $send_code = $param['send_code'];//系统发送验证码
         $preg = '/^1[3456789]\d{9}$/';
@@ -124,19 +155,48 @@ class Users extends Base
             if($is_phone){
                 return array('response_status' => 'hasphone');//手机号已经注册
             }
-            $insert = D('api_users')->data($data)->save();
+            $data['login_first'] ='Y';
+            $insert = D('api_users')->add($data);
+            if($insert){
+                $data['login_first'] ='N';
+                $data['user_type'] = 'TEA';
+                $insert_teacher = D('api_ct_users')->add($data);
+                if ($insert_teacher) {
+                    return array('response_status' => 'success');//success:成功;fail:失败
+                } else {
+                    return array('response_status' => 'tfail');//机构表添加失败
+                }
+            }else{
+                return array('response_status' => 'fail');//success:成功;fail:失败
+            }
         }else{
             $is_phone = D('api_ct_users')->field('id')->where(array('phone'=>$param['phone']))->select();
             if($is_phone){
                 return array('response_status' => 'hasphone');//手机号已经注册
             }
             $data['user_type'] = $param['user_type'];
-            $insert = D('api_ct_users')->data($data)->save();
-        }
-        if ($insert) {
-            return array('response_status' => 'success');//success:成功;fail:失败
-        } else {
-            return array('response_status' => 'fail');//success:成功;fail:失败
+            if($user_type == 'TEA'){
+                $data['login_first'] = 'Y';
+                $insert = D('api_ct_users')->add($data);
+                if($insert){
+                    $data['login_first'] ='N';
+                    $insert_stu = D('api_users')->add($data);
+                    if ($insert_stu) {
+                        return array('response_status' => 'success');//success:成功;fail:失败
+                    } else {
+                        return array('response_status' => 'sfail');//学生表添加失败
+                    }
+                }else{
+                    return array('response_status' => 'fail');//success:成功;fail:失败
+                }
+            }else{
+                $insert = D('api_ct_users')->add($data);
+                if ($insert) {
+                    return array('response_status' => 'success');//success:成功;fail:失败
+                } else {
+                    return array('response_status' => 'fail');//success:成功;fail:失败
+                }
+            }
         }
 
     }
