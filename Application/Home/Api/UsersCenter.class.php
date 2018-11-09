@@ -533,7 +533,8 @@ class UsersCenter extends Base
         $where['default']= 'Y';//默认提现
         $list = D('api_bankcard')->field('id,user_name,phone,bank_name,bank_card')->where($where)->find();
         if ($list) {
-            return array('response_status' => 'success');//success:成功;fail:失败
+            $list['response_status'] = 'success';//success:成功;fail:失败
+            return $list;
         } else {
             return array('response_status' => 'fail');//success:成功;fail:失败
         }
