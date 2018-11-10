@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50723
 File Encoding         : 65001
 
-Date: 2018-11-10 17:23:55
+Date: 2018-11-10 18:00:25
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -4752,7 +4752,6 @@ INSERT INTO `api_fields` VALUES ('545', 'package', '5be51c087c4c0', '2', '', '1'
 INSERT INTO `api_fields` VALUES ('546', 'noncestr', '5be51c087c4c0', '2', '', '1', '', '', '1', 'data{}noncestr');
 INSERT INTO `api_fields` VALUES ('547', 'timestamp', '5be51c087c4c0', '1', '', '1', '', '', '1', 'data{}timestamp');
 INSERT INTO `api_fields` VALUES ('548', 'sign', '5be51c087c4c0', '2', '', '1', '', '', '1', 'data{}sign');
-INSERT INTO `api_fields` VALUES ('549', 'intro', '5be4fe8c11228', '2', '', '0', '', '简介', '0', 'intro');
 INSERT INTO `api_fields` VALUES ('550', 'intro', '5be4ff8dcc928', '2', '', '0', '', '简介', '0', 'intro');
 INSERT INTO `api_fields` VALUES ('551', 'bank_id', '5be5025438888', '1', '', '1', '', '银行id', '0', 'bank_id');
 
@@ -4851,7 +4850,7 @@ CREATE TABLE `api_menu` (
   `icon` varchar(50) NOT NULL DEFAULT '' COMMENT '菜单图标',
   `level` tinyint(2) NOT NULL DEFAULT '0' COMMENT '菜单认证等级',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=221 DEFAULT CHARSET=utf8 COMMENT='目录信息';
+) ENGINE=InnoDB AUTO_INCREMENT=222 DEFAULT CHARSET=utf8 COMMENT='目录信息';
 
 -- ----------------------------
 -- Records of api_menu
@@ -5071,6 +5070,7 @@ INSERT INTO `api_menu` VALUES ('217', '删除银行记录', '215', 'BankName/del
 INSERT INTO `api_menu` VALUES ('218', '添加银行', '215', 'BankName/add', '0', '2', '0', '', '0');
 INSERT INTO `api_menu` VALUES ('219', '编辑银行', '215', 'BankName/update', '0', '3', '0', '', '0');
 INSERT INTO `api_menu` VALUES ('220', '图片上传(银行)', '215', 'BankName/uploads', '0', '4', '0', '', '0');
+INSERT INTO `api_menu` VALUES ('221', '删除字段', '9', 'FieldsManage/del', '0', '0', '1', '', '0');
 
 -- ----------------------------
 -- Table structure for api_myclass
@@ -5606,7 +5606,7 @@ CREATE TABLE `api_user_action` (
   `data` text COMMENT '用户提交的数据',
   `url` varchar(200) NOT NULL DEFAULT '' COMMENT '操作URL',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10906 DEFAULT CHARSET=utf8 COMMENT='用户操作日志';
+) ENGINE=InnoDB AUTO_INCREMENT=10918 DEFAULT CHARSET=utf8 COMMENT='用户操作日志';
 
 -- ----------------------------
 -- Records of api_user_action
@@ -16516,6 +16516,18 @@ INSERT INTO `api_user_action` VALUES ('10902', '新增字段', '1', '我超级�
 INSERT INTO `api_user_action` VALUES ('10903', '请求字段编辑', '1', '我超级用户', '1541841292', '{\"hash\":\"5be5025438888\",\"PHPSESSID\":\"rll3i7buc9i4cpnflr9v63vlv7\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\"}', 'FieldsManage/request');
 INSERT INTO `api_user_action` VALUES ('10904', '请求字段编辑', '1', '我超级用户', '1541841500', '{\"hash\":\"5be64d86695d7\",\"PHPSESSID\":\"rll3i7buc9i4cpnflr9v63vlv7\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\"}', 'FieldsManage/request');
 INSERT INTO `api_user_action` VALUES ('10905', '请求字段编辑', '1', '我超级用户', '1541841507', '{\"hash\":\"5be64d86695d7\",\"PHPSESSID\":\"rll3i7buc9i4cpnflr9v63vlv7\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\"}', 'FieldsManage/request');
+INSERT INTO `api_user_action` VALUES ('10906', '新增字段', '1', '我超级用户', '1541842728', '{\"hash\":\"5be64d86695d7\",\"type\":\"0\",\"PHPSESSID\":\"rll3i7buc9i4cpnflr9v63vlv7\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\"}', 'FieldsManage/add');
+INSERT INTO `api_user_action` VALUES ('10907', '请求字段编辑', '1', '我超级用户', '1541842756', '{\"hash\":\"5be4fc2cea7cb\",\"PHPSESSID\":\"rll3i7buc9i4cpnflr9v63vlv7\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\"}', 'FieldsManage/request');
+INSERT INTO `api_user_action` VALUES ('10908', '请求字段编辑', '1', '我超级用户', '1541842773', '{\"hash\":\"5be4fe8c11228\",\"PHPSESSID\":\"rll3i7buc9i4cpnflr9v63vlv7\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\"}', 'FieldsManage/request');
+INSERT INTO `api_user_action` VALUES ('10909', '首页', '1', '我超级用户', '1541842945', '{\"PHPSESSID\":\"rll3i7buc9i4cpnflr9v63vlv7\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('10910', '欢迎页', '1', '我超级用户', '1541842945', '{\"PHPSESSID\":\"rll3i7buc9i4cpnflr9v63vlv7\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('10911', '菜单维护', '1', '我超级用户', '1541842949', '{\"PHPSESSID\":\"rll3i7buc9i4cpnflr9v63vlv7\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\"}', 'Menu/index');
+INSERT INTO `api_user_action` VALUES ('10912', '新增菜单', '1', '我超级用户', '1541843045', '{\"PHPSESSID\":\"rll3i7buc9i4cpnflr9v63vlv7\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\"}', 'Menu/add');
+INSERT INTO `api_user_action` VALUES ('10913', '新增菜单', '1', '我超级用户', '1541843113', '{\"name\":\"\\u5220\\u9664\\u5b57\\u6bb5\",\"fid\":\"9\",\"hide\":\"on\",\"url\":\"FieldsManage\\/del\",\"sort\":\"0\",\"PHPSESSID\":\"rll3i7buc9i4cpnflr9v63vlv7\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\"}', 'Menu/add');
+INSERT INTO `api_user_action` VALUES ('10914', '菜单维护', '1', '我超级用户', '1541843113', '{\"PHPSESSID\":\"rll3i7buc9i4cpnflr9v63vlv7\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\"}', 'Menu/index');
+INSERT INTO `api_user_action` VALUES ('10915', '删除字段', '1', '我超级用户', '1541843130', '{\"id\":\"549\",\"PHPSESSID\":\"rll3i7buc9i4cpnflr9v63vlv7\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\"}', 'FieldsManage/del');
+INSERT INTO `api_user_action` VALUES ('10916', '请求字段编辑', '1', '我超级用户', '1541843130', '{\"hash\":\"5be4fe8c11228\",\"PHPSESSID\":\"rll3i7buc9i4cpnflr9v63vlv7\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\"}', 'FieldsManage/request');
+INSERT INTO `api_user_action` VALUES ('10917', '返回字段编辑', '1', '我超级用户', '1541843156', '{\"hash\":\"5be4fc2cea7cb\",\"PHPSESSID\":\"rll3i7buc9i4cpnflr9v63vlv7\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\"}', 'FieldsManage/response');
 
 -- ----------------------------
 -- Table structure for api_user_data
