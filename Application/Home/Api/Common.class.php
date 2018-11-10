@@ -370,6 +370,7 @@ class Common extends Base
         $upload->replace = true;  //同名文件是否覆盖
         // 上传文件
         $res_info = $upload->upload();
+
         $info = '';
         if($res_info){
             foreach ($res_info as $key => $tepimg) {
