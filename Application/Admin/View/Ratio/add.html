@@ -1,0 +1,111 @@
+<extend name="Public/base"/>
+<block name="main">
+    <fieldset class="layui-elem-field">
+        <legend>基础设置 - {:(isset($detail['id'])?'编辑':'新增')}比例</legend>
+        <div class="layui-field-box">
+            <form class="layui-form" action="" id="health_form" method="post">
+                <if condition="isset($detail['id'])">
+                    <input type="hidden" name="id" value="{$detail['id']}">
+                </if>
+                <div class="layui-form-item">
+
+                    <div class="layui-input-block">
+
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red">*</span> 比例类型</label>
+                    <div class="layui-input-block">
+                        <select name="ratio_type" lay-verify="">
+                            <option value="">请选择类型</option>
+
+                                <if condition="$detail['ratio_type'] eq 'REC'">
+                                    <option value="REC" selected>充值</option>
+                                    <else/>
+                                    <option value="REC">充值</option>
+                                </if>
+                            <if condition="$detail['ratio_type'] eq 'WITH'">
+                                <option value="WITH" selected>提现</option>
+                                <else/>
+                                <option value="WITH">提现</option>
+                            </if>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red">*</span> 比例</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="ratio" required
+                               value="{:(isset($detail['ratio'])?$detail['ratio']:'')}" lay-verify="required"
+                               placeholder="请输入比例" class="layui-input">
+                    </div>
+                </div>
+                
+
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="admin-form">立即提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </fieldset>
+</block>
+<block name="myScript">
+
+    <if condition="isset($detail['id'])">
+        <script>
+            layui.use('form', function () {
+                var form = layui.form();
+                form.on('submit(admin-form)', function (data) {
+                    //alert(data.field);
+                    $.ajax({
+                        type: "POST",
+                        url: '{:U("update")}',
+                        data: data.field,
+                        success: function (msg) {
+                            //alert(msg);return false;
+                            if (msg.code == 1) {
+                                parent.location.reload();
+                            } else {
+                                parent.layer.msg(msg.msg, {
+                                    icon: 5,
+                                    shade: [0.6, '#393D49'],
+                                    time: 1500
+                                });
+                            }
+                        }
+                    });
+                    return false;
+                });
+
+            });
+        </script>
+        <else/>
+        <script>
+            layui.use('form', function () {
+                var form = layui.form();
+                form.on('submit(admin-form)', function (data) {
+                    $.ajax({
+                        type: "POST",
+                        url: '{:U("add")}',
+                        data: data.field,
+                        success: function (msg) {
+                            if (msg.code == 1) {
+                                parent.location.reload();
+                            } else {
+                                parent.layer.msg(msg.msg, {
+                                    icon: 5,
+                                    shade: [0.6, '#393D49'],
+                                    time: 1500
+                                });
+                            }
+                        }
+                    });
+                    return false;
+                });
+
+            });
+        </script>
+    </if>
+</block>

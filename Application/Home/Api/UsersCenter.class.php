@@ -422,6 +422,23 @@ class UsersCenter extends Base
     /*******************************************************************************************收藏 结束*******************************************************/
     /*******************************************************************************************我的金币 开始*******************************************************/
     /**
+     * 查询比例
+     * @author: 李胜辉
+     * @time: 2018/11/08 09:34
+     *
+     */
+    public function getRatio($param)
+    {
+        $where = array();
+        $where['ratio_type'] = $param['ratio_type']; //类型;
+        $ratio = D('api_ratio')->where($where)->getField('ratio');
+        if ($ratio) {
+            return array('response_status' => 'success', 'ratio' => $ratio);//success:成功;fail:失败
+        } else {
+            return array('response_status' => 'fail');//success:成功;fail:失败
+        }
+    }
+    /**
      * 充值/消费记录列表
      * @author: 李胜辉
      * @time: 2018/11/06 09:34
@@ -491,6 +508,36 @@ class UsersCenter extends Base
         }
         $insert = D('api_bankcard')->add($data);
         if ($insert) {
+            return array('response_status' => 'success');//success:成功;fail:失败
+        } else {
+            return array('response_status' => 'fail');//success:成功;fail:失败
+        }
+    }
+    /**
+     * 删除银行卡
+     * @author: 李胜辉
+     * @time: 2018/11/12 09:34
+     *
+     */
+    public function delBankCard($param)
+    {
+        $id = $param['id'];//银行卡id
+        $is_default = D('api_bankcard')->where(array('id' => $id))->field('id,default,user_type,user_id,audit_status')->find();
+        if($is_default['default']=='Y'){
+            $default = D('api_bankcard')->field('id')->where(array('user_type'=>$is_default['user_type'],'default'=>'N','user_id'=>$is_default['user_id'],'audit_status'=>'S'))->order('id asc')->limit(0,1)->select();
+            if($default){
+                $update = D('api_bankcard')->where(array('id'=>$default[0]['id']))->save(array('default'=>'Y'));
+                if($update){
+                    $res = D('api_bankcard')->where(array('id' => $id))->delete();
+                }else{
+                    return array('response_status' => 'fail');//失败
+                }
+            }else{
+                $res = D('api_bankcard')->where(array('id' => $id))->delete();
+            }
+        }
+
+        if ($res) {
             return array('response_status' => 'success');//success:成功;fail:失败
         } else {
             return array('response_status' => 'fail');//success:成功;fail:失败
@@ -585,8 +632,11 @@ class UsersCenter extends Base
      */
     public function withdraw($param)
     {
-        $data['e_money'] = $param['e_money'] / 10.00;//提现金额
-        $data['order'] = date("YmdHis") . time() . mt_rand(1000, 9999);//订单号
+        $common = new Common();
+        $microtime = $common->getMicrotime();
+        $ratio = D('api_ratio')->where(array('ratio_type'=>'WITH'))->getField('ratio');
+        $data['e_money'] = floatval($param['e_money']) / $ratio;//提现金额
+        $data['order'] = date("YmdHis") . $microtime . mt_rand(1000, 9999);//订单号
         $data['etype'] = 2;//类型(1,消费;2,提现)
         $data['r_type'] = $param['user_type'];//角色类型(STU:学生;TEA:老师;COM:机构)
         $data['explain'] = '提现';//说明

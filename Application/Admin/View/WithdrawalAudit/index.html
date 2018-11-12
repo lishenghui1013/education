@@ -68,7 +68,6 @@
                     <th>提现金额</th>
                     <th>银行</th>
                     <th>卡号</th>
-                    <th>开户网点</th>
                     <th>申请日期</th>
                     <th>审核日期</th>
                     <th>审核人</th>
@@ -150,14 +149,14 @@
                             }
 
                             html += '<tr><td>' + data[x].id + '</td><td>' + data[x].user_name + '</td><td>' + data[x].phone + '</td><td>'
-                                + data[x].balance + '</td><td>' + data[x].e_money + '</td><td>' + data[x].bank_name + '</td><td>'+ data[x].bank_card + '</td><td>' + data[x].Acc_open + '</td><td>' + add_time + '</td><td>'
+                                + data[x].balance + '</td><td>' + data[x].e_money + '</td><td>' + data[x].bank_name + '</td><td>'+ data[x].bank_card + '</td><td>' + add_time + '</td><td>'
                                  + audit_time + '</td><td>'+ data[x].username + '</td><td>' + str_status + '</td><td>'
                                 + '<span class="layui-btn confirm" data-info="你确定通过审核吗？" data-id="' + data[x].id + '"data-url="{:U(\'open\')}">通过</span>' +
                                 '<span class="layui-btn confirm" data-info="你确定拒绝审核吗？" data-id="' + data[x].id + '"data-url="{:U(\'close\')}">拒绝</span>' + '</td></tr>'
                         }
 
                     } else {
-                        html = '<tr><td colspan="13" style="text-align:center;">暂无数据</td></tr>'
+                        html = '<tr><td colspan="12" style="text-align:center;">暂无数据</td></tr>'
 
                     }
                     $("#tbody").html(html);

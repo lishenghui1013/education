@@ -30,9 +30,10 @@ class Wxpay extends Base
     //下单
     public function getPrePayOrder($param)
     {
+        $ratio = D('api_ratio')->where(array('ratio_type'=>'REC'))->getField('ratio');
         $order = date("YmdHis") . time() . mt_rand(1000, 9999);//订单号
         $price = $param['price'];//价格
-        $gold_num = $price * 10;//金币数量
+        $gold_num = $price * $ratio;//金币数量
         $role_type = $param['role_type'];//角色类型(STU:学生;TEA:老师;COM:机构)
         $uid = $param['user_id'];//用户id
         //Response::debug($price.'+'.$uid);

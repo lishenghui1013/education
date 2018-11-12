@@ -422,5 +422,16 @@ class Common extends Base
 
 
     /*******************************************************************************************发送手机验证码 结束*******************************************************/
+    /**
+     * 获取微妙级时间戳
+     * @author: 李胜辉
+     * @time: 2018/11/12 09:34
+     */
+    public function getMicrotime()
+    {
+        $arr_microtime = explode(" ",microtime());
+        $str_microtime = intval($arr_microtime[1]).intval($arr_microtime[0]*1000000);
+        return $str_microtime;
+    }
 
 }
