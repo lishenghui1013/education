@@ -91,7 +91,6 @@ class UsersCenter extends Base
     public function noticeList($param)
     {
         $user_id = $param['user_id'] ? $param['user_id'] : '';//用户id
-
         $pagenum = $param['pagenum'] ? $param['pagenum'] : 1;//当前页
         $limit = $param['limit'] ? $param['limit'] : 10;//每页显示条数
         $start = ($pagenum - 1) * $limit;
@@ -438,6 +437,7 @@ class UsersCenter extends Base
             return array('response_status' => 'fail');//success:成功;fail:失败
         }
     }
+
     /**
      * 充值/消费记录列表
      * @author: 李胜辉
@@ -513,6 +513,7 @@ class UsersCenter extends Base
             return array('response_status' => 'fail');//success:成功;fail:失败
         }
     }
+
     /**
      * 删除银行卡
      * @author: 李胜辉
@@ -523,16 +524,16 @@ class UsersCenter extends Base
     {
         $id = $param['id'];//银行卡id
         $is_default = D('api_bankcard')->where(array('id' => $id))->field('id,default,user_type,user_id,audit_status')->find();
-        if($is_default['default']=='Y'){
-            $default = D('api_bankcard')->field('id')->where(array('user_type'=>$is_default['user_type'],'default'=>'N','user_id'=>$is_default['user_id'],'audit_status'=>'S'))->order('id asc')->limit(0,1)->select();
-            if($default){
-                $update = D('api_bankcard')->where(array('id'=>$default[0]['id']))->save(array('default'=>'Y'));
-                if($update){
+        if ($is_default['default'] == 'Y') {
+            $default = D('api_bankcard')->field('id')->where(array('user_type' => $is_default['user_type'], 'default' => 'N', 'user_id' => $is_default['user_id'], 'audit_status' => 'S'))->order('id asc')->limit(0, 1)->select();
+            if ($default) {
+                $update = D('api_bankcard')->where(array('id' => $default[0]['id']))->save(array('default' => 'Y'));
+                if ($update) {
                     $res = D('api_bankcard')->where(array('id' => $id))->delete();
-                }else{
+                } else {
                     return array('response_status' => 'fail');//失败
                 }
-            }else{
+            } else {
                 $res = D('api_bankcard')->where(array('id' => $id))->delete();
             }
         }
@@ -543,6 +544,7 @@ class UsersCenter extends Base
             return array('response_status' => 'fail');//success:成功;fail:失败
         }
     }
+
     /**
      * 银行列表
      * @author: 李胜辉
@@ -552,15 +554,16 @@ class UsersCenter extends Base
     public function bankList()
     {
         $list = D('api_bankname')->field('id,bank_name,logo,pic')->order('id asc')->select();
-        if($list){
+        if ($list) {
             $list['response_status'] = 'success';//成功
             return $list;
-        }else{
+        } else {
             $list['response_status'] = 'fail';//失败
             return $list;
         }
 
     }
+
     /**
      * 设为默认银行卡
      * @author: 李胜辉
@@ -611,11 +614,14 @@ class UsersCenter extends Base
      */
     public function bankCardList($param)
     {
+        $pagenum = $param['pagenum'] ? $param['pagenum'] : 1;//当前页
+        $limit = $param['limit'] ? $param['limit'] : 10;//每页显示条数
+        $start = ($pagenum - 1) * $limit;
         $where = array();
         $where['b.user_id'] = $param['user_id'];//用户id
         $where['b.user_type'] = $param['user_type'];//用户类型(COM:机构;TEA:老师;STU:学生)
         $where['b.audit_status'] = 'S';//审核状态
-        $list = D('api_bankcard as b')->join('left join api_bankname as n on n.id=b.bank_id')->field('b.id,b.user_name,b.phone,b.bank_id,b.bank_card,n.bank_name,n.pic,n.logo')->where($where)->order('b.id asc')->select();
+        $list = D('api_bankcard as b')->join('left join api_bankname as n on n.id=b.bank_id')->field('b.id,b.user_name,b.phone,b.bank_id,b.bank_card,n.bank_name,n.pic,n.logo')->where($where)->order('b.id asc')->limit($start,$limit)->select();
         if ($list) {
             $list['response_status'] = 'success';//success:成功;fail:失败
             return $list;
@@ -634,7 +640,7 @@ class UsersCenter extends Base
     {
         $common = new Common();
         $microtime = $common->getMicrotime();
-        $ratio = D('api_ratio')->where(array('ratio_type'=>'WITH'))->getField('ratio');
+        $ratio = D('api_ratio')->where(array('ratio_type' => 'WITH'))->getField('ratio');
         $data['e_money'] = floatval($param['e_money']) / $ratio;//提现金额
         $data['order'] = date("YmdHis") . $microtime . mt_rand(1000, 9999);//订单号
         $data['etype'] = 2;//类型(1,消费;2,提现)
@@ -648,6 +654,143 @@ class UsersCenter extends Base
             return array('response_status' => 'success');//success:成功;fail:失败
         } else {
             return array('response_status' => 'fail');//success:成功;fail:失败
+        }
+    }
+
+    /**
+     * 签到
+     * @author: 李胜辉
+     * @time: 2018/11/13 09:34
+     *
+     */
+    public function signIn($param)
+    {
+        $common = new Common();
+        $microtime = $common->getMicrotime();
+        $where = array();
+        $data['order'] = date("YmdHis") . $microtime . mt_rand(1000, 9999);//订单号
+        $data['pay_type'] = 'SIGN';//充值方式(W:微信;A:支付宝;SIGN:签到)
+        $data['role_type'] = $param['user_type'];//角色类型(STU:学生;TEA:老师;COM:机构)
+        $data['explain'] = '签到';//说明
+        $data['user_id'] = $param['user_id'];//用户id
+        $data['add_time'] = time();//添加时间
+        $year = date('Y', $data['add_time']);//年份
+        $moth = date('m', $data['add_time']);//月份
+        $date = date('d', $data['add_time']);//日期
+        $where['_string'] = 'year(FROM_UNIXTIME(add_time,"%Y-%m-%d"))="' . $year . '" and month(FROM_UNIXTIME(add_time,"%Y-%m-%d"))="' . $moth . '" and dayofmonth(FROM_UNIXTIME(add_time,"%Y-%m-%d"))="' . $date . '"';
+        $where['user_id'] = $data['user_id'];
+        $where['role_type'] = $data['role_type'];
+        $where['pay_type'] = $data['pay_type'];
+        $is_sign = D('api_recharge')->where($where)->select();
+        if ($is_sign) {
+            return array('response_status' => 'signed');//已经签到过了
+        }
+        $i = 1;//签到连续天数
+        $one = 24 * 60 * 60;//一天的秒数
+        //获取当前日期时间戳
+        $curr_time = strtotime(date('Y-m-d', $data['add_time']));
+        //查询奖励表中签到记录等级数量
+        $award_list = D('api_award')->field('id,serial_days,award_num,add_time')->where(array('award_type' => 'SIGN'))->order('serial_days desc')->select();
+        $total = count($award_list);
+        //查询签到信息
+        unset($where['_string']);
+        $signed_info = D('api_recharge')->where($where)->field('id,add_time')->order('add_time desc')->limit(0, $award_list[0]['serial_days'])->select();
+
+        $max = count($signed_info);
+        if ($signed_info) {
+            for ($j = 0; $j < $max; $j++) {
+                $start = $curr_time - $one * ($j + 1);
+                $end = $curr_time - $one * $j;
+                if ($signed_info[$j]['add_time'] > $start && $signed_info[$j]['add_time'] < $end) {
+                    $i++;
+                } else {
+                    $j = $max;
+                }
+            }
+        }
+        $map['award_type'] = 'SIGN';
+        $map['serial_days'] = array('elt', $i);
+        $award_info = D('api_award')->where($map)->field('award_num')->order('serial_days desc')->limit(0, 1)->select();//奖励金额
+        $data['gold_num'] = $award_info[0]['award_num'];//奖励金额
+        $data['status'] = 1;//状态
+        $insert = D('api_recharge')->add($data);
+        if ($insert) {
+            if($param['user_type']=='STU'){
+                $balance = D('api_users')->where(array('id'=>$param['user_id']))->getField('balance');
+                $blance = $data['gold_num']+$balance;
+                $res = D('api_users')->where(array('id'=>$param['user_id']))->save(array('balance'=>$blance));
+                if($res){
+                    return array('response_status' => 'success');//success:成功;fail:失败
+                }else{
+                    return array('response_status' => 'ufail');//用户表余额未更新成功
+                }
+            }else{
+                $balance = D('api_ct_users')->where(array('id'=>$param['user_id']))->getField('balance');
+                $blance = $data['gold_num']+$balance;
+                $res = D('api_ct_users')->where(array('id'=>$param['user_id']))->save(array('balance'=>$blance));
+                if($res){
+                    return array('response_status' => 'success');//success:成功;fail:失败
+                }else{
+                    return array('response_status' => 'ufail');//用户表余额未更新成功
+                }
+            }
+        } else {
+            return array('response_status' => 'fail');//success:成功;fail:失败
+        }
+    }
+
+    /**
+     * 签到详情
+     * @author: 李胜辉
+     * @time: 2018/11/13 09:34
+     *
+     */
+    public function signInDetail($param)
+    {
+        $curr_time = time();//添加时间
+        $where['role_type'] = $param['user_type'];//角色类型(STU:学生;TEA:老师;COM:机构)
+        $where['user_id'] = $param['user_id'];//用户id
+        $where['pay_type'] = 'SIGN';
+        //签到信息
+        $signed_info = D('api_recharge')->field('id,add_time')->where($where)->select();
+        $signed_info['total'] = count($signed_info);//累计签到多少天
+        //连续签到多少天
+        //获取当前日期时间戳
+        $curr_date = strtotime(date('Y-m-d', $curr_time));
+        $i = 1;//签到连续天数
+        $one = 24 * 60 * 60;//一天的秒数
+        if ($signed_info) {
+            for ($j = 0; $j < $signed_info['total']; $j++) {
+                $start = $curr_date - $one * ($j + 1);
+                $end = $curr_date - $one * $j;
+                if ($signed_info[$j]['add_time'] > $start && $signed_info[$j]['add_time'] < $end) {
+                    $i++;
+                } else {
+                    $j = $signed_info['total'];
+                }
+            }
+        }
+        $signed_info['serial_signed'] = $i;//连续签到天数
+        $year = date('Y', $curr_time);//年份
+        $moth = date('m', $curr_time);//月份
+        $date = date('d', $curr_time);//日期
+        $wheres['_string'] = 'year(FROM_UNIXTIME(add_time,"%Y-%m-%d"))="' . $year . '" and month(FROM_UNIXTIME(add_time,"%Y-%m-%d"))="' . $moth . '" and dayofmonth(FROM_UNIXTIME(add_time,"%Y-%m-%d"))="' . $date . '"';
+        $wheres['user_id'] = $param['user_id'];
+        $wheres['role_type'] = $param['user_type'];
+        $wheres['pay_type'] = 'SIGN';
+        $is_sign = D('api_recharge')->where($wheres)->select();
+        if ($is_sign) {
+            $signed_info['signed_status'] = 'SIGNED';//已经签到过了
+        } else {
+            $signed_info['signed_status'] = 'NO';//今天还未签到
+        }
+
+        if ($signed_info) {
+            $signed_info['response_status'] = 'success';//success:成功;fail:失败
+            return $signed_info;
+        } else {
+            $signed_info['response_status'] = 'fail';//success:成功;fail:失败
+            return $signed_info;
         }
     }
     /*******************************************************************************************我的金币 结束*******************************************************/
@@ -760,7 +903,6 @@ class UsersCenter extends Base
     }
     /*******************************************************************************************分享 结束*******************************************************/
     /*******************************************************************************************银行卡 开始*******************************************************/
-
 
 
     /*******************************************************************************************银行卡 结束*******************************************************/

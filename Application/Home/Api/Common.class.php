@@ -135,16 +135,33 @@ class Common extends Base
         $query = $param['query'];//查询内容
         $from = $param['from'] ? $param['from'] : 'EN';//要翻译的语言
         $to = $param['to'] ? $param['to'] : 'zh-CHS';//翻译成什么语言
+        $where = array();
+        if($param['add_userid']!=''){
+            $where['add_userid'] = $param['add_userid'];//用户id
+            $where['new_words'] = $query;//单词
+        }
+        if($param['user_type']!=''){
+            $where['user_type'] = $param['user_type'];//生词类型(SPACE:学习空间的;OTHER:其他的)
+        }
+        if($param['words_type']!=''){
+            $where['words_type'] = $param['words_type'];//用户类型(COM:机构;TEA:老师;STU:学生)
+        }
         $args = array(
             'q' => $query,
             'appKey' => self::APP_KEY,
             'salt' => rand(10000, 99999),
             'from' => $from,
-            'to' => $to,
-
+            'to' => $to
         );
         $args['sign'] = $this->buildSign(self::APP_KEY, $query, $args['salt'], self::SEC_KEY);
         $ret = $this->call(self::URL, $args);
+        print_r($ret);exit;
+        $is_have = D('api_new_words')->where($where)->getField('id');
+        if($is_have){
+            $ret['add_status']='Y';//已经添加
+        }else{
+            $ret['add_status']='N';//已经添加
+        }
         $ret = json_decode($ret, true);
         return $ret;
     }
@@ -370,7 +387,6 @@ class Common extends Base
         $upload->replace = true;  //同名文件是否覆盖
         // 上传文件
         $res_info = $upload->upload();
-
         $info = '';
         if($res_info){
             foreach ($res_info as $key => $tepimg) {

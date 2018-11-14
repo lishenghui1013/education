@@ -1,7 +1,7 @@
 <extend name="Public/base"/>
 <block name="main">
     <fieldset class="layui-elem-field">
-        <legend>基础设置 - {:(isset($detail['id'])?'编辑':'新增')}比例</legend>
+        <legend>基础设置 - {:(isset($detail['id'])?'编辑':'新增')}奖励</legend>
         <div class="layui-field-box">
             <form class="layui-form" action="" id="health_form" method="post">
                 <if condition="isset($detail['id'])">
@@ -14,40 +14,49 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label"><span style="color:red">*</span> 比例类型</label>
+                    <label class="layui-form-label"><span style="color:red">*</span> 奖励类型</label>
                     <div class="layui-input-block">
-                        <select name="ratio_type" lay-verify="">
+                        <select name="award_type" lay-verify="">
                             <option value="">请选择类型</option>
 
-                            <if condition="$detail['ratio_type'] eq 'REC'">
-                                <option value="REC" selected>充值</option>
+                            <if condition="$detail['award_type'] eq 'SIGN'">
+                                <option value="SIGN" selected>签到</option>
                                 <else/>
-                                <option value="REC">充值</option>
+                                <option value="SIGN">签到</option>
                             </if>
-                            <if condition="$detail['ratio_type'] eq 'WITH'">
-                                <option value="WITH" selected>提现</option>
-                                <else/>
-                                <option value="WITH">提现</option>
-                            </if>
-                            <if condition="$detail['ratio_type'] eq 'RAKE'">
-                                <option value="RAKE" selected>抽成</option>
-                                <else/>
-                                <option value="RAKE">抽成</option>
-                            </if>
-                            <if condition="$detail['ratio_type'] eq 'CWITH'">
-                                <option value="CWITH" selected>允许提现</option>
-                                <else/>
-                                <option value="CWITH">允许提现</option>
-                            </if>
+
                         </select>
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label"><span style="color:red">*</span> 比例</label>
+                    <label class="layui-form-label"><span style="color:red">*</span> 规则</label>
                     <div class="layui-input-block">
-                        <input type="text" name="ratio" required
-                               value="{:(isset($detail['ratio'])?$detail['ratio']:'')}" lay-verify="required"
-                               placeholder="请输入比例" class="layui-input">
+                        <select name="limit" lay-verify="">
+                            <option value="">请选择规则</option>
+
+                            <if condition="$detail['limit'] eq 'ONE'">
+                                    <option value="ONE" selected>一天一次</option>
+                                <else/>
+                                <option value="ONE">一天一次</option>
+                            </if>
+
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red">*</span> 连续天数</label>
+                    <div class="layui-input-block">
+                        <input type="number" name="serial_days" required
+                               value="{:(isset($detail['serial_days'])?$detail['serial_days']:'')}" lay-verify="required"
+                               placeholder="请输入连续天数" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red">*</span> 奖励</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="award_num" required
+                               value="{:(isset($detail['award_num'])?$detail['award_num']:'')}" lay-verify="required"
+                               placeholder="请输入奖励金币数量" class="layui-input">
                     </div>
                 </div>
 
