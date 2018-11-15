@@ -10,6 +10,7 @@ layui.define(['layer','element', 'forTree'], function(exports) {
     var tabTitle   = null;
     var navFilter  = null;
     var tabFilter  = null;
+
     /**
      * 添加导航
      */
@@ -19,12 +20,14 @@ layui.define(['layer','element', 'forTree'], function(exports) {
         pidName  = pidName  || 'pid';
         nodeName = nodeName || 'node';
         urlName  = urlName  || 'url';
+
         var myTree = new forTree(data, idName, pidName, topId);
         var html = '';
 
         myTree.forBefore = function (v, k, hasChildren) {
             html += '<li class="layui-nav-item">';
         };
+
         myTree.forCurr = function(v, k, hasChildren) {
             html += '<a href="javascript:;"'+(v[urlName] ? ' data-url="'+v[urlName]+'" data-id="'+v[idName]+'"' : '')+'>';
             html += v[nodeName];
@@ -46,6 +49,7 @@ layui.define(['layer','element', 'forTree'], function(exports) {
         myTree.each();
 
         nav.append(html);
+
         element.init('nav('+navFilter+')');
     }
 
@@ -53,6 +57,7 @@ layui.define(['layer','element', 'forTree'], function(exports) {
      * 将侧边栏与顶部切换卡进行绑定
      */
     function bind(height) {
+
         height = height || 60 + 41 + 44; //头部高度 顶部切换卡标题高度 底部高度
         /**
          * iframe自适应
@@ -76,6 +81,7 @@ layui.define(['layer','element', 'forTree'], function(exports) {
             var id       = elem.children('a').attr('data-id');
             var frame   = tabContent.find('iframe[data-id='+id+']').eq(0);
             var tabIndex = (new Date()).getTime();
+
             if(src != undefined && src != null && id != undefined && id != null) {
                 if(frame.length) { //存在 iframe
                     //获取iframe身上的tab index
@@ -95,6 +101,7 @@ layui.define(['layer','element', 'forTree'], function(exports) {
                     //顶部切换卡新增一个卡片
                     element.tabAdd(tabFilter, {title: title, content: newFrame, id: 'index-'+tabIndex});
                 }
+
                 //切换到指定索引的卡片
                 element.tabChange(tabFilter, 'index-'+tabIndex);
 
@@ -122,6 +129,7 @@ layui.define(['layer','element', 'forTree'], function(exports) {
         tab        = $('.layui-tab[lay-filter='+tabFilter+']').eq(0);
         tabContent = tab.children('.layui-tab-content').eq(0);
         tabTitle   = tab.children('.layui-tab-title').eq(0);
+
         var error = '';
         if(nav.length == 0) {
             error += '没有找到导航栏<br>';
@@ -135,6 +143,7 @@ layui.define(['layer','element', 'forTree'], function(exports) {
             layer.msg('cms模块初始化失败！<br>' + error);
             return false;
         }
+
         return {addNav: addNav, bind: bind, clickLI: clickLI};
     });
 });

@@ -12,7 +12,6 @@ layui.define(function(exports) {
         var _idName   = idName  || 'id'; //id名称
         var _pidName  = pidName || 'pid'; //父id名称
         var _topId    = topId   || 0; //顶级节点父id
-
         for(var i in arr) {
             if(arr[i][_pidName] == _topId) {
                 _father.push(arr[i]);
@@ -47,7 +46,6 @@ layui.define(function(exports) {
          */
         this.getChildren = function(id) {
             var son = [];
-
             for(var i in _children) {
                 if(_children[i][_pidName] == id) {
                     son.push(_children[i]);

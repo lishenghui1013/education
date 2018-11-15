@@ -7,7 +7,7 @@
     <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
     <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
     <style>
-        .layui-nav-child .layui-nav-item{
+        .layui-nav-child .layui-nav-item {
             padding-left: 15px;
         }
     </style>
@@ -18,41 +18,67 @@
 <div class="layui-layout layui-layout-admin">
     <!-- 头部 -->
     <div class="layui-header">
-        <div class="layui-main">
-            <!-- logo -->
-            <a href="/" style="color: #c2c2c2; font-size: 18px; line-height: 60px;">{:C('APP_NAME')}管理后台</a>
-            <!-- 水平导航 -->
-            <ul class="layui-nav" style="position: absolute; top: 0; right: 0; background: none;">
-                <!--<li class="layui-nav-item">
-                    <a href="javascript:;">
-                        进入前台
-                    </a>
-                </li>-->
-                <li class="layui-nav-item">
-                    <a href="javascript:;">
-                        管理员
-                    </a>
-                    <dl class="layui-nav-child">
-                        <dd class="api-add">
-                            <a href="javascript:;">
-                                个人信息
-                            </a>
-                        </dd>
-                        <dd>
-                            <a href="{:U('Login/logOut')}">
-                                退出登录
-                            </a>
-                        </dd>
-                    </dl>
-                </li>
-            </ul>
-        </div>
+        <!--<div class="layui-main">-->
+        <!-- logo -->
+
+        <ul class="layui-nav" lay-filter="top-nav" style="border-radius: 0;" id="top-nav">
+            <a href="" class="layui-item" style="color: #c2c2c2; font-size: 18px; line-height: 60px;margin-right:35px;">{:C('APP_NAME')}管理后台</a>
+
+            <foreach name="source_list" item="vo" key="k">
+                <if condition="$k eq 0">
+                    <li class="layui-nav-item layui-this" data-key='{:json_encode($source_list[$k])}'><a
+                            href="javascript:;">{$vo['name']}</a></li>
+                    <else/>
+                    <li class="layui-nav-item" data-key='{:json_encode($source_list[$k])}'><a href="javascript:;">{$vo['name']}</a>
+                    </li>
+                </if>
+            </foreach>
+            <li class="layui-nav-item" style="float:right;">
+                <a href="javascript:;">
+                    管理员
+                </a>
+                <dl class="layui-nav-child">
+                    <dd class="api-add">
+                        <a href="javascript:;">
+                            个人信息
+                        </a>
+                    </dd>
+                    <dd>
+                        <a href="{:U('Login/logOut')}">
+                            退出登录
+                        </a>
+                    </dd>
+                </dl>
+            </li>
+        </ul>
+        <!-- 水平导航 -->
+       <!-- <ul class="layui-nav" style="float:right;">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    管理员
+                </a>
+                <dl class="layui-nav-child">
+                    <dd class="api-add">
+                        <a href="javascript:;">
+                            个人信息
+                        </a>
+                    </dd>
+                    <dd>
+                        <a href="{:U('Login/logOut')}">
+                            退出登录
+                        </a>
+                    </dd>
+                </dl>
+            </li>
+        </ul>-->
+        <!--</div>-->
     </div>
 
     <!-- 侧边栏 -->
-    <div class="layui-side layui-bg-black">
+    <div class="layui-side layui-bg-black" style="margin-top:5px;">
         <div class="layui-side-scroll">
-            <ul class="layui-nav layui-nav-tree" lay-filter="left-nav" style="border-radius: 0;">
+            <ul class="layui-nav layui-nav-tree" lay-filter="left-nav" style="border-radius: 0;" id="left-nav">
+
             </ul>
         </div>
     </div>
@@ -73,19 +99,148 @@
 </div>
 
 <script type="text/javascript" src="__PUBLIC__/layui/layui.js"></script>
+<script>
+
+
+    layui.use(['element', 'layer', 'form', 'forTree'], function () {
+        var element = layui.element(); //导航的hover效果、二级菜单等功能，需要依赖element模块
+        var tab        = $('.layui-tab[lay-filter=top-tab]').eq(0);
+        var tabContent = tab.children('.layui-tab-content').eq(0);
+        var height = height || 60 + 41 + 64; //头部高度 顶部切换卡标题高度 底部高度
+        /**
+         * iframe自适应
+         */
+        $(window).resize(function() {
+            //设置顶部切换卡容器度
+            tabContent.height($(this).height() - height);
+            //设置顶部切换卡容器内每个iframe高度
+            tabContent.find('iframe').each(function () {
+                $(this).height(tabContent.height());
+            });
+        }).resize();
+
+        var data_one = $("[lay-filter='top-nav']").find(".layui-this").attr("data-key");
+        data_one = eval('(' + data_one + ')');
+        var child_one = data_one._child;
+        var url_one = child_one[0].url;
+        var id_one = child_one[0].id;
+        var htmls = '<li class="layui-nav-item" style="background:black;"><a href="javascript:;" style="font-size:17px;line-height:45px;">'+data_one.name+'<i class="layui-icon" style="float:right;">&#xe61a;</i></a></li>';
+        htmls += '<li class="layui-nav-item clickthis layui-this"><a href="javascript:;"' + ' data-url="' + url_one + '" data-id="' + id_one + '"' + '>&nbsp;&nbsp;&nbsp;&nbsp;' + child_one[0].name + '</a></li>';
+
+        $("#left-nav").html(htmls);
+        $("#left-nav").find('.clickthis').click(function () {
+            var ownObj = $(this);
+            ownObj.addClass('layui-this').siblings().removeClass('layui-this');
+            var src = ownObj.find('a').attr('data-url');
+            var id = ownObj.find('a').attr('data-id');
+            var tabIndex = '';
+            var tmpIndex = '';
+            /*var url = ownObj.attr('data-url').slice(0,-5)+'/id/'+ownObj.attr('data-id');*/
+            var newFrame = '<iframe onload="layui.layer.close(' + tmpIndex + ')"';
+            newFrame += ' src="' + src + '" data-id="' + id + '" data-tabindex="' + tabIndex + '"';
+            newFrame += ' style="width: 100%; height: ' + tabContent.height() + 'px; border: 0px;"';
+            newFrame += '></iframe>';
+
+            $(".layui-tab-content").html(newFrame);
+        });
+        var ownObj = $("#left-nav").find('.clickthis');
+
+        var src = ownObj.find('a').attr('data-url');
+        var id = ownObj.find('a').attr('data-id');
+        var tabIndex = '';
+        var tmpIndex = '';
+        /*var url = ownObj.attr('data-url').slice(0,-5)+'/id/'+ownObj.attr('data-id');*/
+        var newFrame = '<iframe onload="layui.layer.close(' + tmpIndex + ')"';
+        newFrame += ' src="' + src + '" data-id="' + id + '" data-tabindex="' + tabIndex + '"';
+        newFrame += ' style="width: 100%; height: ' + tabContent.height() + 'px; border: 0px;"';
+        newFrame += '></iframe>';
+
+        $(".layui-tab-content").html(newFrame);
+
+
+
+
+        //监听导航点击
+        element.on('nav(top-nav)', function (elem) {
+            var last = $(".api-add").html();
+            if(last!=$(this).html()){
+            var num = $(this).attr('data-key');
+            var data = eval('(' + num + ')');
+            var child = data._child;
+            var html = '<li class="layui-nav-item" style="background:black;"><a href="javascript:;" style="font-size:17px;line-height:45px;">' + data.name + '<i class="layui-icon" style="float:right;">&#xe61a;</i></a></li>';
+            for (var i in child) {
+                if (i == 0) {
+                    html += '<li class="layui-nav-item clickthis layui-this"><a href="javascript:;"' + ' data-url="' + child[i].url + '" data-id="' + child[i].id + '"' + '>&nbsp;&nbsp;&nbsp;&nbsp;' + child[i].name + '</a></li>';
+                } else {
+                    html += '<li class="layui-nav-item clickthis"><a href="javascript:;"' + ' data-url="' + child[i].url + '" data-id="' + child[i].id + '"' + '>&nbsp;&nbsp;&nbsp;&nbsp;' + child[i].name + '</a></li>';
+                }
+            }
+            $("#left-nav").html(html);
+
+            var ownObj = $("#left-nav").find('.clickthis');
+
+            var src = ownObj.find('a').attr('data-url');
+            var id = ownObj.find('a').attr('data-id');
+            var tabIndex = '';
+            var tmpIndex = '';
+            /*var url = ownObj.attr('data-url').slice(0,-5)+'/id/'+ownObj.attr('data-id');*/
+            var newFrame = '<iframe onload="layui.layer.close(' + tmpIndex + ')"';
+            newFrame += ' src="' + src + '" data-id="' + id + '" data-tabindex="' + tabIndex + '"';
+            newFrame += ' style="width: 100%; height: ' + tabContent.height() + 'px; border: 0px;"';
+            newFrame += '></iframe>';
+
+            $(".layui-tab-content").html(newFrame);
+            $('.clickthis').on('click', function () {
+                var ownObj = $(this);
+                ownObj.addClass('layui-this').siblings().removeClass('layui-this');
+                var src = ownObj.find('a').attr('data-url');
+                var id = ownObj.find('a').attr('data-id');
+                var tabIndex = '';
+                var tmpIndex = '';
+                /*var url = ownObj.attr('data-url').slice(0,-5)+'/id/'+ownObj.attr('data-id');*/
+                var newFrame = '<iframe onload="layui.layer.close(' + tmpIndex + ')"';
+                newFrame += ' src="' + src + '" data-id="' + id + '" data-tabindex="' + tabIndex + '"';
+                newFrame += ' style="width: 100%; height: ' + tabContent.height() + 'px; border: 0px;"';
+                newFrame += '></iframe>';
+
+                $(".layui-tab-content").html(newFrame);
+            });
+            $("#left-nav").find('.clickthis').click(function () {
+                var ownObj = $(this);
+                ownObj.addClass('layui-this').siblings().removeClass('layui-this');
+                var src = ownObj.find('a').attr('data-url');
+                var id = ownObj.find('a').attr('data-id');
+                var tabIndex = '';
+                var tmpIndex = '';
+                /*var url = ownObj.attr('data-url').slice(0,-5)+'/id/'+ownObj.attr('data-id');*/
+                var newFrame = '<iframe onload="layui.layer.close(' + tmpIndex + ')"';
+                newFrame += ' src="' + src + '" data-id="' + id + '" data-tabindex="' + tabIndex + '"';
+                newFrame += ' style="width: 100%; height: ' + tabContent.height() + 'px; border: 0px;"';
+                newFrame += '></iframe>';
+
+                $(".layui-tab-content").html(newFrame);
+            });
+
+        }
+        });
+
+    });
+
+
+</script>
 <script type="text/javascript">
     layui.config({
         base: '__PUBLIC__/js/'
     });
 
-    layui.use(['cms'], function() {
+    /*layui.use(['cms'], function() {
         var cms = layui.cms('left-nav', 'top-tab');
         cms.addNav(JSON.parse('{:json_encode($list)}'), 0, 'id', 'fid', 'name', 'url');
         cms.bind(60 + 41 + 20 + 44); //头部高度 + 顶部切换卡标题高度 + 顶部切换卡内容padding + 底部高度
         cms.clickLI(0);
-    });
+    });*/
 
-    layui.use(['layer'], function() {
+    layui.use(['layer'], function () {
         $('.api-add').on('click', function () {
             layer.open({
                 type: 2,
@@ -95,24 +250,24 @@
             });
         });
         var updateTime = '{$userInfo["updateTime"]}';
-        if( updateTime == 0 ){
+        if (updateTime == 0) {
             layer.open({
                 title: '初次登陆请重置密码！',
                 type: 2,
                 area: ['80%', '80%'],
                 maxmin: true,
-                closeBtn:0,
+                closeBtn: 0,
                 content: '{:U("Login/changeUser")}'
             });
-        }else{
+        } else {
             var nickname = '{$userInfo["nickname"]}';
-            if( !nickname ){
+            if (!nickname) {
                 layer.open({
                     title: '初次登陆请补充真实姓名！',
                     type: 2,
                     area: ['80%', '80%'],
                     maxmin: true,
-                    closeBtn:0,
+                    closeBtn: 0,
                     content: '{:U("Login/changeUser")}'
                 });
             }

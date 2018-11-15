@@ -5,8 +5,10 @@ namespace Admin\Controller;
 
 use Admin\ORG\Auth;
 
-class IndexController extends BaseController {
-    public function index() {
+class IndexController extends BaseController
+{
+    public function index()
+    {
         $isAdmin = isAdministrator();
         $list = array();
         $menuAll = $this->allMenu;
@@ -27,12 +29,16 @@ class IndexController extends BaseController {
         }
         $list = listToTree($list);
         foreach ($list as $key => $item) {
-            if(empty($item['_child']) && $item['url'] != U('Index/welcome')){
+            if (empty($item['_child']) && $item['url'] != U('Index/welcome')) {
                 unset($list[$key]);
             }
         }
+        $source_list = $list;
+
         $list = formatTree($list);
+
         $this->assign('list', $list);
+        $this->assign('source_list', $source_list);
         $this->display();
     }
 }
