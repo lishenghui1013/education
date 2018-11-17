@@ -8,9 +8,42 @@
                     <input type="hidden" name="id" value="{$detail['id']}">
                 </if>
                 <div class="layui-form-item">
-
+                    <label class="layui-form-label"><span style="color:red">*</span> 类别</label>
                     <div class="layui-input-block">
+                        <select name="class_type" lay-verify="">
+                            <option value="">请选择类别</option>
+                                <if condition="$detail['class_type'] eq 'SMALL'">
+                                    <option value="SMALL" selected>小学</option>
+                                    <else/>
+                                    <option value="SMALL">小学</option>
+                                </if>
+                            <if condition="$detail['class_type'] eq 'JUN'">
+                                <option value="JUN" selected>初中</option>
+                                <else/>
+                                <option value="JUN">初中</option>
+                            </if>
+                            <if condition="$detail['class_type'] eq 'HIGHT'">
+                                <option value="HIGHT" selected>高中</option>
+                                <else/>
+                                <option value="HIGHT">高中</option>
+                            </if>
+                            <if condition="$detail['class_type'] eq 'COLL'">
+                                <option value="COLL" selected>专科</option>
+                                <else/>
+                                <option value="COLL">专科</option>
+                            </if>
+                            <if condition="$detail['class_type'] eq 'UNI'">
+                                <option value="UNI" selected>大学</option>
+                                <else/>
+                                <option value="UNI">大学</option>
+                            </if>
+                            <if condition="$detail['class_type'] eq 'GRAD'">
+                                <option value="GRAD" selected>研究生</option>
+                                <else/>
+                                <option value="GRAD">研究生</option>
+                            </if>
 
+                        </select>
                     </div>
                 </div>
                 <div class="layui-form-item">

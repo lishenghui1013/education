@@ -3,7 +3,7 @@
     <fieldset class="layui-elem-field">
         <legend>内容管理 - 词组列表</legend>
         <span class="layui-btn layui-btn-normal api-add" style="margin-left:15px;"><i class="layui-icon">&#xe608;</i> 新增</span>
-        <span class="layui-btn layui-btn-normal api-add" style="margin-left:30px;"><i class="layui-icon">&#xe608;</i> 批量添加</span>
+        <span class="layui-btn layui-btn-normal batch-add" style="margin-left:30px;"><i class="layui-icon">&#xe608;</i> 批量添加</span>
         <div class="layui-field-box">
             <form class="layui-form" action="" method="post">
                 <div class="layui-form-item">
@@ -65,6 +65,21 @@
             <input type="hidden" name="curr" id="curr" value=""/>
             <input type="hidden" name="total" id="total" value=""/>
             <table class="layui-table" lay-even>
+                <colgroup>
+                    <col width="5%">
+                    <col width="10%">
+                    <col>
+                    <col width="5%">
+                    <col width="5%">
+                    <col width="5%">
+                    <col width="10%">
+                    <col width="5%">
+                    <col width="5%">
+                    <col width="5%">
+                    <col width="5%">
+                    <col width="5%">
+                    <col width="15%">
+                </colgroup>
                 <thead>
                 <tr>
                     <th>ID</th>
@@ -131,6 +146,8 @@
                             var add_time = '';
                             var audit_time = '';
                             var button = '';
+                            var title = data[x].title;
+                            var content = data[x].content;
                             if (data[x].show_status == 1) {
                                 button = '<span class="layui-btn layui-btn-danger confirm" data-info="你确定下线当前项么？"\n' +
                                     '                            data-id="'+data[x].id+'" data-url="{:U(\'close\')}">下线</span>';
@@ -147,8 +164,14 @@
                             } else {
                                 add_time = '--';
                             }
+                            if (content.length >= 30) {
+                                content = content.substr(0, 20) + '...';
+                            }
+                            if (title.length >= 30) {
+                                title = title.substr(0, 20) + '...';
+                            }
 
-                            html += '<tr><td>' + data[x].id + '</td><td>' + data[x].title + '</td><td>' + data[x].content + '</td><td>'
+                            html += '<tr><td>' + data[x].id + '</td><td><span title="'+data[x].title+'">' + title + '</span></td><td><span title="' + data[x].content + '">' + content + '</span></td><td>'
                                 + data[x].class_name + '</td><td>' + data[x].subject_name + '</td><td>'+ data[x].versions_name + '</td><td>' + add_time + '</td><td>'
                                 + data[x].username + '</td><td>' + data[x].read_num + '</td><td>' + data[x].collect_num + '</td><td>'+ data[x].share_num + '</td><td>'+ str_status + '</td><td>'
                                 +button+ '<span class="layui-btn edit" data-id="' + data[x].id + '"data-url="{:U(\'update\')}">编辑</span>' +
@@ -272,6 +295,15 @@
                     area: ['60%', '100%'],
                     maxmin: true,
                     content: '{:U("add")}'
+                });
+            });
+            $('.batch-add').on('click', function () {
+                var index = layer.open({
+                    title: '批量添加记录',
+                    type: 2,
+                    area: ['40%', '40%'],
+                    maxmin: true,
+                    content: '{:U("batchAdd")}'
                 });
 
             });

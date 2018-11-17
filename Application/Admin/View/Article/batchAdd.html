@@ -1,0 +1,36 @@
+<extend name="Public/base"/>
+<block name="main">
+    <fieldset class="layui-elem-field">
+        <legend>课本管理 - 批量添加文章</legend>
+        <form class="layui-form" action="" id="health_form" method="post" enctype="multipart/form-data">
+
+            <div class="layui-form-item" style="margin:10px;border:solid 1px #2e3133;">
+                <input type="file" name="excel_file" class="layui-upload-file" lay-title="选择EXCEL文件" id="excel_file" lay-type="file">
+                <a href="__PUBLIC__/templates/article.xlsx" target="_blank" style="color:blue;">下载Excel模板</a>
+            </div>
+
+        </form>
+    </fieldset>
+</block>
+<block name="myScript">
+    <script>
+        layui.use('upload', function () {
+            layui.upload({
+                url: '{:U(\'imports\')}' //上传接口
+                , success: function (res) { //上传成功后的回调
+                    if(res == 1){
+                        html = '<div>添加成功!</div>';
+                        $("#health_form").append(html);
+                        setTimeout(function(){parent.location.reload()},2000);
+                    }else{
+                        html = '<div style="color:red;">上传失败!</div>';
+                        $("#health_form").append(html);
+                    }
+                }
+            });
+
+
+        });
+
+    </script>
+</block>

@@ -30,7 +30,7 @@ class PublishAuditController extends BaseController
     {
         $getInfo = I('post.');
         $curr = $getInfo['curr'] ? $getInfo['curr'] : 1;//当前页
-        $limit = $getInfo['limit'] ? $getInfo['limit'] : 1;//每页显示条数
+        $limit = $getInfo['limit'] ? $getInfo['limit'] : C('PAGENUM');//每页显示条数
         $start = ($curr - 1) * $limit;//开始
         $com_name = $getInfo['com_name'] ? $getInfo['com_name'] : '';//查询关键字
         $add_time = $getInfo['add_time'] ? strtotime($getInfo['add_time']) : '';//查询的时间
@@ -131,7 +131,7 @@ class PublishAuditController extends BaseController
         $getInfo = I('get.');
         $id = $getInfo['id'];//发布内容id
         $curr = $getInfo['curr'] ? $getInfo['curr'] : 1;//当前页
-        $limit = $getInfo['limit'] ? $getInfo['limit'] : 1;//每页显示条数
+        $limit = $getInfo['limit'] ? $getInfo['limit'] : C('PAGENUM');//每页显示条数
         $start = ($curr - 1) * $limit;//开始
         $count = D('api_publish_content as c')->join('left join api_publish as p on p.id=c.publish_id')->join('left join api_ct_users as s on s.id=c.pub_userid')->field('c.title,c.id')->where(array('c.publish_id' => $id))->count();
 

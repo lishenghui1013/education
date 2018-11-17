@@ -31,7 +31,7 @@ class SlideshowController extends BaseController
 
         $getInfo = I('post.');
         $curr = $getInfo['curr'] ? $getInfo['curr'] : 1;//当前页
-        $limit = $getInfo['limit'] ? $getInfo['limit'] : 1;//每页显示条数
+        $limit = $getInfo['limit'] ? $getInfo['limit'] : C('PAGENUM');//每页显示条数
         $start = ($curr - 1) * $limit;//开始
         $where = array();
 
@@ -75,12 +75,32 @@ class SlideshowController extends BaseController
     public function delete()
     {
         $id = I('post.id');
-        $publish_id = D('api_slideshow')->where(array('id' => $id))->getField('publish_id');
+        $publish_id = D('api_slideshow')->where(array('id'=>$id))->getField('publish_id');
         $res = D('api_slideshow')->where(array('id' => $id))->delete();
         if ($res === false) {
             $this->ajaxError('删除失败');
         } else {
             $update = D('api_publish')->where(array('id' => $publish_id))->save(array('slideshow_status' => 'N'));
+            if($update){
+                $this->ajaxSuccess('删除成功');
+            }else{
+                $this->ajaxError('操作失败', 0);
+            }
+        }
+    }
+    /**
+     * 取消轮播
+     * @author: 李胜辉
+     * @time: 2018/11/16 10:32
+     */
+    public function cancel()
+    {
+        $id = I('post.id');
+        $res = D('api_slideshow')->where(array('publish_id' => $id))->delete();
+        if ($res === false) {
+            $this->ajaxError('删除失败');
+        } else {
+            $update = D('api_publish')->where(array('id' => $id))->save(array('slideshow_status' => 'N'));
             if($update){
                 $this->ajaxSuccess('删除成功');
             }else{
@@ -134,7 +154,7 @@ class SlideshowController extends BaseController
     {
         $getInfo = I('post.');
         $curr = $getInfo['curr'] ? $getInfo['curr'] : 1;//当前页
-        $limit = $getInfo['limit'] ? $getInfo['limit'] : 1;//每页显示条数
+        $limit = $getInfo['limit'] ? $getInfo['limit'] : C('PAGENUM');//每页显示条数
         $start = ($curr - 1) * $limit;//开始
         $com_name = $getInfo['com_name'] ? $getInfo['com_name'] : '';//查询关键字
         $add_time = $getInfo['add_time'] ? strtotime($getInfo['add_time']) : '';//查询的时间

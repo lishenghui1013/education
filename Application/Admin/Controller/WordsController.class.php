@@ -39,7 +39,7 @@ class WordsController extends BaseController
     {
         $getInfo = I('post.');
         $curr = $getInfo['curr'] ? $getInfo['curr'] : 1;//当前页
-        $limit = $getInfo['limit'] ? $getInfo['limit'] : 1;//每页显示条数
+        $limit = $getInfo['limit'] ? $getInfo['limit'] : C('PAGENUM');//每页显示条数
         $start = ($curr-1) * $limit;//开始
 
         $class = $getInfo['class_id'] ? $getInfo['class_id'] : '';//查询的时间
@@ -256,5 +256,90 @@ class WordsController extends BaseController
         }
     }
 
+    /**
+     * 批量添加页
+     * @author: 李胜辉
+     * @time: 2018/11/16 17:32
+     */
+    public function batchAdd()
+    {
+        $this->display();
 
+    }
+    /**
+     * 词组导入excel
+     * @author: 李胜辉
+     * @time: 2018/11/16 17:32
+     *
+     */
+    public function imports()
+    {
+
+        header("Content-Type:text/html;charset = utf-8");
+
+        if (!empty($_FILES)) {
+
+            $upload = new \Think\Upload();   // 实例化上传类
+            $upload->maxSize = 3145728;    // 设置附件上传大小
+            $upload->exts = array('xls', 'xlsx'); // 设置附件上传类型
+            $upload->rootPath = THINK_PATH;          // 设置附件上传根目录
+            $upload->savePath = '../Public/';    // 设置附件上传（子）目录
+            $upload->subName = 'uploads/words';  //子文件夹
+            $upload->replace = true;  //同名文件是否覆盖
+            // 上传文件
+            $info = $upload->upload();
+            if ($info) {
+                $file_name = substr($info['excel_file']['savepath'], 3) . $info['excel_file']['savename'];//拼接图片地址
+                $exts = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));//判断导入表格后缀格式
+                vendor("PHPExcel.PHPExcel");
+                if ($exts == 'xlsx') {
+                    $objReader = \PHPExcel_IOFactory::createReader('Excel2007');
+                    $objPHPExcel = $objReader->load($file_name, $encode = 'utf-8');
+
+                } else if ($exts == 'xls') {
+                    $objReader = \PHPExcel_IOFactory::createReader('Excel15');
+                    $objPHPExcel = $objReader->load($file_name, $encode = 'utf-8');
+                }
+                $sheet = $objPHPExcel->getSheet(0);
+                $highestRow = $sheet->getHighestRow();//获取总行数
+                $highestColumn = $sheet->getHighestColumn();//取得总列数
+                $datas = array();
+                for ($i = 3; $i <= $highestRow; $i++) {
+                    $data['title'] = $objPHPExcel->getActiveSheet()->getCell("A" . $i)->getValue();
+                    $data['pub_userid'] = session('uid');
+                    $data['pub_time'] = time();
+                    $data['content'] = $objPHPExcel->getActiveSheet()->getCell("B" . $i)->getValue();
+                    $data['price'] = $objPHPExcel->getActiveSheet()->getCell("C" . $i)->getValue();
+                    $data['show_status'] = $objPHPExcel->getActiveSheet()->getCell("D" . $i)->getValue();
+                    $data['article_type'] = $objPHPExcel->getActiveSheet()->getCell("E" . $i)->getValue();
+                    $data['class_id'] = $objPHPExcel->getActiveSheet()->getCell("F" . $i)->getValue();
+                    $class_id = D('api_class')->where(array('class_name' => $data['class_id']))->getField('id');
+                    $data['class_id'] = $class_id?$class_id:0;
+                    $subject_ids = $objPHPExcel->getActiveSheet()->getCell("G" . $i)->getValue();
+                    $subject_id = D('api_subject')->where(array('subject_name' => $subject_ids))->getField('id');
+                    $data['subject_id'] = $subject_id?$subject_id:0;
+
+                    $versions_ids = $objPHPExcel->getActiveSheet()->getCell("H" . $i)->getValue();
+                    $versions_id = D('api_versions')->where(array('versions_name' => $versions_ids))->getField('id');
+
+                    $data['versions_id'] = $versions_id?$versions_id:0;
+                    $datas[] = $data;
+                }
+                $res = D('api_article_publish')->addAll($datas);
+                if ($res) {
+                    unlink($file_name);
+                    echo 1;//成功
+                } else {
+                    echo 2;//失败
+                }
+
+            } else {
+                $a = $upload->getError();//获取失败信息
+                echo json_encode($a);
+            }
+        } else {
+            echo json_encode(3);
+        }
+
+    }
 }

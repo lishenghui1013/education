@@ -163,7 +163,7 @@
                                     break;
                             }
                             if (data[x].slideshow_status == 'Y') {
-                                str_status = '<span class="layui-btn confirm" data-info="你确定要取消吗?" data-id="' + data[x].id + '" data-url="{:U(\'delete\')}">取消</span>';
+                                str_status = '<span class="layui-btn confirm" data-info="你确定要取消吗?" data-id="' + data[x].id + '" data-url="{:U(\'cancel\')}">取消</span>';
                             } else if (data[x].slideshow_status == 'N') {
                                 str_status = '<span class="layui-btn confirm" data-info="你确定要设置当前项为轮播图吗?" data-id="' + data[x].id + '" data-url="{:U(\'add\')}">设为轮播</span>';
                             }

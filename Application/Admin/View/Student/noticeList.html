@@ -36,6 +36,17 @@
             <input type="hidden" name="total" id="total" value=""/>
             <input type="hidden" name="user_id" id="user_id" value="{$Think.get.user_id}"/>
             <table class="layui-table" id="list-admin" lay-even>
+                <colgroup>
+                    <col width="5%">
+                    <col width="15%">
+                    <col width="30%">
+                    <col width="5%">
+                    <col width="5%">
+                    <col width="10%">
+                    <col width="5%">
+                    <col width="10%">
+                    <col width="15%">
+                </colgroup>
                 <thead>
                 <tr>
                     <th>ID</th>
@@ -105,6 +116,8 @@
                             var add_time = '';
                             var read_time = '';
                             var del_status ='';
+                            var title = data[x].title;
+                            var content = data[x].content;
                             if (data[x].read_status == 'READ') {
                                 read_status = '<span style="color:green;">已读</span>'
                             } else if (data[x].read_status == 'UNREAD') {
@@ -129,8 +142,14 @@
                             } else {
                                 add_time = '--';
                             }
+                            if (content.length >= 50) {
+                                content = content.substr(0, 50) + '...';
+                            }
+                            if (title.length >= 30) {
+                                title = title.substr(0, 20) + '...';
+                            }
 
-                            html += '<tr><td>' + data[x].id + '</td><td>' + data[x].title + '</td><td>' + data[x].content + '</td><td>'+del_status+'</td><td>'+ read_status + '</td><td>' + read_time + '</td><td>'
+                            html += '<tr><td>' + data[x].id + '</td><td><span title="'+data[x].title+'">' + title + '</span></td><td><span title="' + data[x].content + '">' + content + '</span></td><td>'+del_status+'</td><td>'+ read_status + '</td><td>' + read_time + '</td><td>'
                                 + data[x].username + '</td><td>' + add_time
                                 + '</td><td><span class="layui-btn edit layui-btn-normal" data-id="' + data[x].id + '" data-url="{:U(\'updateNotice\')}">编辑</span>' +
                                 '<span class="layui-btn confirm" data-info="你确定要删除吗？" data-id="' + data[x].id + '"data-url="{:U(\'delete\')}">删除</span></td></tr>'

@@ -6,6 +6,8 @@ return array(
     'APP_VERSION' => 'v1.0',
     'APP_NAME'    => '教育APP',
 
+    'LOAD_EXT_CONFIG'=>'const',
+
     'USER_ADMINISTRATOR' => array(1,2),
     'AUTH_KEY' => 'I&TC{pft>L,C`wFQ>&#ROW>k{Kxlt1>ryW(>r<#R',
 

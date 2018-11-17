@@ -28,7 +28,7 @@ class SubjectController extends BaseController {
     {
         $getInfo = I('post.');
         $curr = $getInfo['curr'] ? $getInfo['curr'] : 1;//当前页
-        $limit = $getInfo['limit'] ? $getInfo['limit'] : 1;//每页显示条数
+        $limit = $getInfo['limit'] ? $getInfo['limit'] : C('PAGENUM');//每页显示条数
         $start = ($curr - 1) * $limit;//开始
         $subject_name = $getInfo['subject_name'] ? $getInfo['subject_name'] : '';//查询关键字
         $where = array();

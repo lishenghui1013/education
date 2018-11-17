@@ -28,7 +28,7 @@ class ClassController extends BaseController {
     {
         $getInfo = I('post.');
         $curr = $getInfo['curr'] ? $getInfo['curr'] : 1;//当前页
-        $limit = $getInfo['limit'] ? $getInfo['limit'] : 1;//每页显示条数
+        $limit = $getInfo['limit'] ? $getInfo['limit'] : C('PAGENUM');//每页显示条数
         $start = ($curr - 1) * $limit;//开始
         $class_name = $getInfo['class_name'] ? $getInfo['class_name'] : '';//查询关键字
         $where = array();
@@ -38,7 +38,7 @@ class ClassController extends BaseController {
         //查询总条数
         $total = D('api_class as c')->join('left join api_user as u on u.id=c.add_id')->where($where)->count();//查询满足要求的总记录数
 
-        $info = D('api_class as c')->join('left join api_user as u on u.id=c.add_id')->field('c.id,c.class_name,u.username,c.add_time')->where($where)->order('c.id')->limit($start, $limit)->select();
+        $info = D('api_class as c')->join('left join api_user as u on u.id=c.add_id')->field('c.id,c.class_name,c.class_type,u.username,c.add_time')->where($where)->order('c.id')->limit($start, $limit)->select();
         foreach ($info as $keys => $values) {
             foreach ($values as $key => $value) {
                 if ($values[$key] === null) {

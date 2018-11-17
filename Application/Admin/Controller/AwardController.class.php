@@ -28,7 +28,7 @@ class AwardController extends BaseController {
     {
         $getInfo = I('post.');
         $curr = $getInfo['curr'] ? $getInfo['curr'] : 1;//当前页
-        $limit = $getInfo['limit'] ? $getInfo['limit'] : 1;//每页显示条数
+        $limit = $getInfo['limit'] ? $getInfo['limit'] : C('PAGENUM');//每页显示条数
         $start = ($curr - 1) * $limit;//开始
         //查询总条数
         $total = D('api_award as c')->join('left join api_user as u on u.id=c.add_id')->count();//查询满足要求的总记录数
