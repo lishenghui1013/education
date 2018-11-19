@@ -10,7 +10,8 @@
                     <th>#</th>
                     <th>版本号</th>
                     <th>描述</th>
-                    <th>版本路径</th>
+                    <th>APP版本路径</th>
+                    <th>APP二维码路径</th>
                     <th>创建时间</th>
                     <th>操作</th>
                 </tr>
@@ -22,7 +23,8 @@
                         <td>{$vo['app_version']}</td>
                         <td>{$vo['app_desc']}</td>
                         <td>{$vo['app_url']}</td>
-                        <td>{$vo['add_time']}</td>
+                        <td>{$vo['code_url']}</td>
+                        <td>{:date('Y-m-d',$vo['add_time'])}</td>
 
                         <td>
                             <span data-url="{:U('edit', array('id' => $vo['id']))}" class="layui-btn edit layui-btn-normal">编辑</span>

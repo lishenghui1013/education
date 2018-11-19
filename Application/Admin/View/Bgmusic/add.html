@@ -1,93 +1,76 @@
 <extend name="Public/base"/>
 <block name="main">
     <fieldset class="layui-elem-field">
-        <legend>app版本管理 - {:(isset($detail['id'])?'编辑':'新增')}</legend>
+        <legend>基础设置 - {:(isset($detail['id'])?'编辑':'新增')}背景音乐</legend>
         <div class="layui-field-box">
-            <form class="layui-form" method="post" action="" id="health_form" enctype=”multipart/form-data”>
+            <form class="layui-form" action="" id="health_form" method="post">
                 <if condition="isset($detail['id'])">
                     <input type="hidden" name="id" value="{$detail['id']}">
                 </if>
+
                 <div class="layui-form-item">
-                    <label class="layui-form-label"><span style="color:red">*</span> 版本号</label>
+                    <label class="layui-form-label"><span style="color:red">*</span> 音乐名称</label>
                     <div class="layui-input-block">
-                        <input type="text" name="app_version" required
-                               value="{:(isset($detail['app_version'])?$detail['app_version']:'')}"
-                               lay-verify="required" placeholder="请输入版本号" class="layui-input">
+                        <input type="text" name="music_name" required
+                               value="{:(isset($detail['music_name'])?$detail['music_name']:'')}" lay-verify="required"
+                               placeholder="请输入音乐名称" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label"><span style="color:red">*</span> 描述</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="app_desc" required
-                               value="{:(isset($detail['app_desc'])?$detail['app_desc']:'')}" lay-verify="required"
-                               placeholder="请输入描述" class="layui-input">
-                    </div>
+                    <label class="layui-form-label">上传音乐</label>
+                    <input type="file" name="music" lay-type="audio" class="layui-upload-file" id="music">
+                    <input type="hidden" name="music_url" id="music_url"
+                           value="{:(isset($detail['music_url'])?$detail['music_url']:'')}"/>
                 </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">APP</label>
-                    <input type="file" name="app" id="app" class="layui-upload-file" lay-type="file"/>
-                    <input type="hidden" name="app_url" id="app_url"
-                           value="{:(isset($detail['app_url'])?$detail['app_url']:'')}"/>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">二维码</label>
-                        <input type="file" name="code" id="code" class="layui-upload-file"/>
-                    <input type="hidden" name="code_url" id="code_url"
-                           value="{:(isset($detail['code_url'])?$detail['code_url']:'')}"/>
+                <div class="layui-form-item" id="audio">
+                    <label class="layui-form-label">听一听</label>
+                    <audio controls>
+                        <source src="{:(isset($detail['music_url'])?$detail['music_url']:'')}" type="audio/ogg" id="ogg">
+                        <source src="{:(isset($detail['music_url'])?$detail['music_url']:'')}" type="audio/mpeg" id="mpeg">
+                        您的浏览器不支持 audio 元素。
+                    </audio>
                 </div>
 
                 <div class="layui-form-item">
                     <div class="layui-input-block">
-
                         <button class="layui-btn" lay-submit lay-filter="admin-form">立即提交</button>
-                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
                     </div>
                 </div>
             </form>
         </div>
     </fieldset>
 </block>
-
 <block name="myScript">
     <script>
-        //上传图片
         layui.use('upload', function () {
             layui.upload({
                 url: '{:U("upload")}' //上传接口
-                , elem: '#app'
+                , elem: '#music'
                 , success: function (res) { //上传成功后的回调
-                    console.log(res.app);
-                    if(res.app!=2){
-                        $("#app_url").val(res.app);
-                    }
-
-                }
-            });
-        });
-        layui.use('upload', function () {
-            layui.upload({
-                url: '{:U("upload")}' //上传接口
-                , elem: '#code'
-                , success: function (res) { //上传成功后的回调
-                    console.log(res.code);
                     if(res!=2){
-                        $("#code_url").val(res.code);
+                        $("#music_url").val(res.music);
+                        var html = '<label class="layui-form-label">听一听</label><audio controls><source src="'+res.music+'" type="audio/ogg" id="ogg">\n' +
+                            '                        <source src="'+res.music+'" type="audio/mpeg" id="mpeg">\n' +
+                            '                        您的浏览器不支持 audio 元素。</audio>';
+                       $("#audio").html(html);
                     }
                 }
             });
         });
-
     </script>
+
     <if condition="isset($detail['id'])">
         <script>
             layui.use('form', function () {
                 var form = layui.form();
                 form.on('submit(admin-form)', function (data) {
+                    //alert(data.field);
                     $.ajax({
                         type: "POST",
-                        url: '{:U("edit")}',
+                        url: '{:U("update")}',
                         data: data.field,
                         success: function (msg) {
+                            //alert(msg);return false;
                             if (msg.code == 1) {
                                 parent.location.reload();
                             } else {
