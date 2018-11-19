@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50723
 File Encoding         : 65001
 
-Date: 2018-11-17 10:59:54
+Date: 2018-11-19 18:11:35
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -66,18 +66,17 @@ CREATE TABLE `api_appversion` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'APP版本表自增id',
   `app_version` varchar(10) NOT NULL COMMENT '版本号',
   `app_desc` varchar(255) NOT NULL COMMENT '描述',
-  `app_url` varchar(255) NOT NULL COMMENT 'APP下载地址',
+  `app_url` varchar(255) DEFAULT NULL COMMENT 'APP下载地址',
   `app_type` varchar(20) NOT NULL DEFAULT 'ANDR' COMMENT 'APP类型:(ISO:苹果;ANDR:安卓)',
   `code_url` varchar(255) DEFAULT NULL COMMENT 'APP二维码图片地址',
   `add_user_id` int(11) unsigned NOT NULL COMMENT '添加人id',
   `add_time` varchar(11) NOT NULL COMMENT '添加时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of api_appversion
 -- ----------------------------
-INSERT INTO `api_appversion` VALUES ('1', 'v1.0', 'jdife', 'http://localhost/education/', 'ANDR', 'fddd', '1', '1563245624');
 
 -- ----------------------------
 -- Table structure for api_areas
@@ -3712,6 +3711,27 @@ INSERT INTO `api_bankname` VALUES ('166', '河北省农村信用社', null, null
 INSERT INTO `api_bankname` VALUES ('168', '上虞农商银行', '', '', '1', '1541834793');
 
 -- ----------------------------
+-- Table structure for api_bg_music
+-- ----------------------------
+DROP TABLE IF EXISTS `api_bg_music`;
+CREATE TABLE `api_bg_music` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '背景音乐自增id',
+  `user_type` varchar(50) DEFAULT NULL COMMENT '用户类型(COM:机构;STU:学生;TEA:老师;)',
+  `user_id` int(11) unsigned DEFAULT NULL COMMENT '用户人id',
+  `music_name` varchar(255) DEFAULT NULL COMMENT '音乐名称',
+  `music_url` varchar(255) NOT NULL COMMENT '背景音乐url地址',
+  `add_id` int(11) unsigned NOT NULL COMMENT '添加人id',
+  `add_time` varchar(11) NOT NULL COMMENT '添加时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='背景音乐表';
+
+-- ----------------------------
+-- Records of api_bg_music
+-- ----------------------------
+INSERT INTO `api_bg_music` VALUES ('1', null, null, '不变的音乐', 'http://localhost/education/Public/uploads/music/5bf2849028a6e.mp3', '1', '1542619988');
+INSERT INTO `api_bg_music` VALUES ('2', null, null, '真实', 'http://localhost/education/Public/uploads/music/5bf284ba42a16.mp3', '1', '1542620351');
+
+-- ----------------------------
 -- Table structure for api_browse
 -- ----------------------------
 DROP TABLE IF EXISTS `api_browse`;
@@ -4295,7 +4315,7 @@ CREATE TABLE `api_fields` (
   `showName` varchar(50) NOT NULL DEFAULT '' COMMENT 'wiki显示用字段',
   PRIMARY KEY (`id`),
   KEY `hash` (`hash`)
-) ENGINE=InnoDB AUTO_INCREMENT=614 DEFAULT CHARSET=utf8 COMMENT='用于保存各个API的字段规则';
+) ENGINE=InnoDB AUTO_INCREMENT=619 DEFAULT CHARSET=utf8 COMMENT='用于保存各个API的字段规则';
 
 -- ----------------------------
 -- Records of api_fields
@@ -4889,6 +4909,11 @@ INSERT INTO `api_fields` VALUES ('610', 'data{}0{}bank_name', '5be64d86695d7', '
 INSERT INTO `api_fields` VALUES ('611', 'data{}0{}logo', '5be64d86695d7', '2', '', '1', '', '银行logo', '1', 'data{}0{}logo');
 INSERT INTO `api_fields` VALUES ('612', 'data{}0{}pic', '5be64d86695d7', '2', '', '1', '', '图片', '1', 'data{}0{}pic');
 INSERT INTO `api_fields` VALUES ('613', 'esponse_status', '5be64d86695d7', '2', '', '1', '', '', '1', 'data{}esponse_status');
+INSERT INTO `api_fields` VALUES ('614', 'data', '5bf28943037e5', '3', '', '1', '', '', '1', 'data');
+INSERT INTO `api_fields` VALUES ('615', 'data', '5bf28943037e5', '9', '', '1', '', '', '1', 'data[]');
+INSERT INTO `api_fields` VALUES ('616', 'data[]{}id', '5bf28943037e5', '1', '', '1', '', '音乐id', '1', 'data[]{}id');
+INSERT INTO `api_fields` VALUES ('617', 'data[]{}music_name', '5bf28943037e5', '2', '', '1', '', '音乐名称', '1', 'data[]{}music_name');
+INSERT INTO `api_fields` VALUES ('618', 'data[]{}music_url', '5bf28943037e5', '2', '', '1', '', '音乐url地址', '1', 'data[]{}music_url');
 
 -- ----------------------------
 -- Table structure for api_goods_category
@@ -4924,7 +4949,7 @@ CREATE TABLE `api_list` (
   `returnStr` text COMMENT '返回数据示例',
   PRIMARY KEY (`id`),
   UNIQUE KEY `hash` (`hash`)
-) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8 COMMENT='用于维护接口信息';
+) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8 COMMENT='用于维护接口信息';
 
 -- ----------------------------
 -- Records of api_list
@@ -4993,6 +5018,7 @@ INSERT INTO `api_list` VALUES ('72', 'UsersCenter/signInDetail', '5bea8d178fedd'
 INSERT INTO `api_list` VALUES ('73', 'Goods/publishCurriculum', '5beb839a5765b', '0', '0', '1', '1', '发布课程', '1', '{\"code\":1,\"msg\":\"\\u64cd\\u4f5c\\u6210\\u529f\",\"data\":{\"response_status\":\"success\"},\"debug\":[\"http:\\/\\/localhost\\/education\\/\"]}');
 INSERT INTO `api_list` VALUES ('74', 'Goods/curriculumList', '5beb841aa84a7', '0', '0', '1', '1', '课程列表', '1', '{\"code\":1,\"msg\":\"\\u64cd\\u4f5c\\u6210\\u529f\",\"data\":{\"0\":{\"id\":\"1\",\"curriculum_name\":\"book\",\"price\":\"5.00\",\"intro\":\"good books;\",\"cover\":null,\"add_time\":\"1542162922\",\"add_id\":\"1\"},\"response_status\":\"success\"}}');
 INSERT INTO `api_list` VALUES ('75', 'Common/uploads', '5beb8a88506e4', '0', '0', '1', '1', '上传文件', '1', '{\"codes\":1}');
+INSERT INTO `api_list` VALUES ('76', 'Background/backgroundMusic', '5bf28943037e5', '0', '0', '1', '1', '背景音乐调取', '1', '{\"code\":1,\"msg\":\"\\u64cd\\u4f5c\\u6210\\u529f\",\"data\":[{\"id\":\"2\",\"music_name\":\"\\u771f\\u5b9e\",\"music_url\":\"http:\\/\\/localhost\\/education\\/Public\\/uploads\\/music\\/5bf284ba42a16.mp3\"}]}');
 
 -- ----------------------------
 -- Table structure for api_menu
@@ -5009,7 +5035,7 @@ CREATE TABLE `api_menu` (
   `icon` varchar(50) NOT NULL DEFAULT '' COMMENT '菜单图标',
   `level` tinyint(2) NOT NULL DEFAULT '0' COMMENT '菜单认证等级',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=246 DEFAULT CHARSET=utf8 COMMENT='目录信息';
+) ENGINE=InnoDB AUTO_INCREMENT=252 DEFAULT CHARSET=utf8 COMMENT='目录信息';
 
 -- ----------------------------
 -- Records of api_menu
@@ -5025,7 +5051,7 @@ INSERT INTO `api_menu` VALUES ('8', '应用列表', '7', 'App/index', '0', '0', 
 INSERT INTO `api_menu` VALUES ('9', '接口列表', '7', 'ApiManage/index', '0', '1', '0', '', '0');
 INSERT INTO `api_menu` VALUES ('10', '字段注解（暂未开放）', '7', 'FieldsInfoManage/index', '0', '2', '1', '', '0');
 INSERT INTO `api_menu` VALUES ('11', '首页', '0', 'Index/index', '0', '0', '0', '', '0');
-INSERT INTO `api_menu` VALUES ('12', '新增菜单', '3', 'Menu/add', '0', '0', '1', '', '0');
+INSERT INTO `api_menu` VALUES ('12', '新增菜单', '3', 'Menu/add', '0', '0', '0', '', '0');
 INSERT INTO `api_menu` VALUES ('13', '编辑菜单', '3', 'Menu/edit', '0', '0', '1', '', '0');
 INSERT INTO `api_menu` VALUES ('14', '隐藏菜单', '3', 'Menu/close', '0', '0', '1', '', '0');
 INSERT INTO `api_menu` VALUES ('15', '显示菜单', '3', 'Menu/open', '0', '0', '1', '', '0');
@@ -5254,6 +5280,12 @@ INSERT INTO `api_menu` VALUES ('242', '添加APP版本', '241', 'Appversion/add'
 INSERT INTO `api_menu` VALUES ('243', '编辑APP版本', '241', 'Appversion/edit', '0', '1', '0', '', '0');
 INSERT INTO `api_menu` VALUES ('244', '删除APP版本', '241', 'Appversion/del', '0', '2', '0', '', '0');
 INSERT INTO `api_menu` VALUES ('245', 'APP版本管理的图片上传', '241', 'Appversion/upload', '0', '3', '0', '', '0');
+INSERT INTO `api_menu` VALUES ('246', '背景音乐', '88', 'Bgmusic/index', '0', '8', '0', '', '0');
+INSERT INTO `api_menu` VALUES ('247', 'ajax获取音乐列表', '246', 'Bgmusic/ajaxGetIndex', '0', '0', '0', '', '0');
+INSERT INTO `api_menu` VALUES ('248', '添加音乐', '246', 'Bgmusic/add', '0', '1', '0', '', '0');
+INSERT INTO `api_menu` VALUES ('249', '编辑音乐信息', '246', 'Bgmusic/update', '0', '2', '0', '', '0');
+INSERT INTO `api_menu` VALUES ('250', '删除音乐记录', '246', 'Bgmusic/delete', '0', '3', '0', '', '0');
+INSERT INTO `api_menu` VALUES ('251', '上传音乐', '246', 'Bgmusic/upload', '0', '4', '0', '', '0');
 
 -- ----------------------------
 -- Table structure for api_myclass
@@ -5508,6 +5540,23 @@ CREATE TABLE `api_ratio` (
 -- ----------------------------
 INSERT INTO `api_ratio` VALUES ('1', 'REC', '100', '1', '1541990320');
 INSERT INTO `api_ratio` VALUES ('3', 'WITH', '10', '1', '1541990726');
+
+-- ----------------------------
+-- Table structure for api_read_expense
+-- ----------------------------
+DROP TABLE IF EXISTS `api_read_expense`;
+CREATE TABLE `api_read_expense` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '阅读扣金币自增id',
+  `user_type` varchar(30) NOT NULL COMMENT '用户类型(COM:机构;STU:学生;TEA:老师;)',
+  `user_id` int(11) unsigned NOT NULL COMMENT '用户id',
+  `item_id` int(11) unsigned NOT NULL COMMENT '阅读内容id',
+  `add_time` varchar(11) NOT NULL COMMENT '添加时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='阅读扣豆币记录表';
+
+-- ----------------------------
+-- Records of api_read_expense
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for api_recharge
@@ -5820,7 +5869,7 @@ CREATE TABLE `api_user_action` (
   `data` text COMMENT '用户提交的数据',
   `url` varchar(200) NOT NULL DEFAULT '' COMMENT '操作URL',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14085 DEFAULT CHARSET=utf8 COMMENT='用户操作日志';
+) ENGINE=InnoDB AUTO_INCREMENT=14539 DEFAULT CHARSET=utf8 COMMENT='用户操作日志';
 
 -- ----------------------------
 -- Records of api_user_action
@@ -19909,6 +19958,460 @@ INSERT INTO `api_user_action` VALUES ('14081', '欢迎页', '1', '我超级用�
 INSERT INTO `api_user_action` VALUES ('14082', '应用列表', '1', '我超级用户', '1542422352', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"huifae0piut8usntli9a3p02m3\"}', 'App/index');
 INSERT INTO `api_user_action` VALUES ('14083', 'APP版本', '1', '我超级用户', '1542422353', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"huifae0piut8usntli9a3p02m3\"}', 'Appversion/index');
 INSERT INTO `api_user_action` VALUES ('14084', '添加APP版本', '1', '我超级用户', '1542422355', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"huifae0piut8usntli9a3p02m3\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14085', '添加APP版本', '1', '我超级用户', '1542423945', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"huifae0piut8usntli9a3p02m3\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14086', 'APP版本管理的图片上传', '1', '我超级用户', '1542423968', '{\"app_version\":\"\",\"app_desc\":\"\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"huifae0piut8usntli9a3p02m3\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14087', 'APP版本管理的图片上传', '1', '我超级用户', '1542428467', '{\"app_version\":\"\",\"app_desc\":\"\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"huifae0piut8usntli9a3p02m3\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14088', '首页', '1', '我超级用户', '1542586540', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14089', '欢迎页', '1', '我超级用户', '1542586540', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14090', '菜单维护', '1', '我超级用户', '1542587478', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Menu/index');
+INSERT INTO `api_user_action` VALUES ('14091', '应用列表', '1', '我超级用户', '1542587480', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14092', 'APP版本', '1', '我超级用户', '1542587482', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14093', '删除APP版本', '1', '我超级用户', '1542587490', '{\"id\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/del');
+INSERT INTO `api_user_action` VALUES ('14094', 'APP版本', '1', '我超级用户', '1542587490', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14095', '添加APP版本', '1', '我超级用户', '1542587491', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14096', 'APP版本管理的图片上传', '1', '我超级用户', '1542587576', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14097', 'APP版本管理的图片上传', '1', '我超级用户', '1542587590', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14098', '添加APP版本', '1', '我超级用户', '1542587596', '{\"app_version\":\"2.0\",\"app_desc\":\"2.0\",\"app\":\"C:\\\\fakepath\\\\app-release.apk\",\"code\":\"C:\\\\fakepath\\\\8ea76356d561818cbbe920d7861e7b40.jpg\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14099', '添加APP版本', '1', '我超级用户', '1542587677', '{\"app_version\":\"2.0\",\"app_desc\":\"2.0\",\"app\":\"C:\\\\fakepath\\\\app-release.apk\",\"code\":\"C:\\\\fakepath\\\\8ea76356d561818cbbe920d7861e7b40.jpg\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14100', '首页', '1', '我超级用户', '1542592673', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14101', '欢迎页', '1', '我超级用户', '1542592673', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14102', '应用列表', '1', '我超级用户', '1542592676', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14103', 'APP版本', '1', '我超级用户', '1542592677', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14104', '添加APP版本', '1', '我超级用户', '1542592680', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14105', 'APP版本管理的图片上传', '1', '我超级用户', '1542592686', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14106', 'APP版本管理的图片上传', '1', '我超级用户', '1542592729', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14107', '首页', '1', '我超级用户', '1542592866', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14108', '欢迎页', '1', '我超级用户', '1542592866', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14109', '应用列表', '1', '我超级用户', '1542592868', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14110', 'APP版本', '1', '我超级用户', '1542592869', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14111', '添加APP版本', '1', '我超级用户', '1542592870', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14112', '首页', '1', '我超级用户', '1542592893', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14113', '欢迎页', '1', '我超级用户', '1542592893', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14114', '首页', '1', '我超级用户', '1542592907', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14115', '欢迎页', '1', '我超级用户', '1542592907', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14116', '应用列表', '1', '我超级用户', '1542592907', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14117', 'APP版本', '1', '我超级用户', '1542592909', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14118', '添加APP版本', '1', '我超级用户', '1542592910', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14119', '首页', '1', '我超级用户', '1542593077', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14120', '欢迎页', '1', '我超级用户', '1542593078', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14121', '应用列表', '1', '我超级用户', '1542593080', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14122', 'APP版本', '1', '我超级用户', '1542593081', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14123', '添加APP版本', '1', '我超级用户', '1542593082', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14124', 'APP版本管理的图片上传', '1', '我超级用户', '1542593085', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14125', 'APP版本管理的图片上传', '1', '我超级用户', '1542593106', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14126', '首页', '1', '我超级用户', '1542593203', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14127', '欢迎页', '1', '我超级用户', '1542593203', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14128', '应用列表', '1', '我超级用户', '1542593204', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14129', 'APP版本', '1', '我超级用户', '1542593206', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14130', '添加APP版本', '1', '我超级用户', '1542593207', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14131', 'APP版本管理的图片上传', '1', '我超级用户', '1542593218', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14132', 'APP版本管理的图片上传', '1', '我超级用户', '1542593272', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14133', 'APP版本管理的图片上传', '1', '我超级用户', '1542593327', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14134', '首页', '1', '我超级用户', '1542593334', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14135', '欢迎页', '1', '我超级用户', '1542593334', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14136', '应用列表', '1', '我超级用户', '1542593336', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14137', 'APP版本', '1', '我超级用户', '1542593336', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14138', 'APP版本', '1', '我超级用户', '1542593337', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14139', '添加APP版本', '1', '我超级用户', '1542593337', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14140', 'APP版本管理的图片上传', '1', '我超级用户', '1542593348', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14141', 'APP版本管理的图片上传', '1', '我超级用户', '1542593419', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14142', '首页', '1', '我超级用户', '1542593445', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14143', '欢迎页', '1', '我超级用户', '1542593445', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14144', '应用列表', '1', '我超级用户', '1542593446', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14145', 'APP版本', '1', '我超级用户', '1542593447', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14146', '添加APP版本', '1', '我超级用户', '1542593448', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14147', 'APP版本管理的图片上传', '1', '我超级用户', '1542593454', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14148', '首页', '1', '我超级用户', '1542593590', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14149', '欢迎页', '1', '我超级用户', '1542593590', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14150', '应用列表', '1', '我超级用户', '1542593591', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14151', 'APP版本', '1', '我超级用户', '1542593593', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14152', 'APP版本', '1', '我超级用户', '1542593593', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14153', '添加APP版本', '1', '我超级用户', '1542593594', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14154', 'APP版本管理的图片上传', '1', '我超级用户', '1542593597', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14155', '首页', '1', '我超级用户', '1542593669', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14156', '欢迎页', '1', '我超级用户', '1542593669', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14157', '应用列表', '1', '我超级用户', '1542593670', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14158', 'APP版本', '1', '我超级用户', '1542593672', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14159', 'APP版本', '1', '我超级用户', '1542593672', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14160', '添加APP版本', '1', '我超级用户', '1542593672', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14161', 'APP版本管理的图片上传', '1', '我超级用户', '1542593678', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14162', '首页', '1', '我超级用户', '1542593997', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14163', '欢迎页', '1', '我超级用户', '1542593997', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14164', '应用列表', '1', '我超级用户', '1542593998', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14165', 'APP版本', '1', '我超级用户', '1542594001', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14166', 'APP版本', '1', '我超级用户', '1542594002', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14167', '添加APP版本', '1', '我超级用户', '1542594003', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14168', 'APP版本管理的图片上传', '1', '我超级用户', '1542594009', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14169', 'APP版本管理的图片上传', '1', '我超级用户', '1542594042', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14170', 'APP版本管理的图片上传', '1', '我超级用户', '1542594142', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14171', 'APP版本管理的图片上传', '1', '我超级用户', '1542594153', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14172', '首页', '1', '我超级用户', '1542594195', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14173', '欢迎页', '1', '我超级用户', '1542594195', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14174', '应用列表', '1', '我超级用户', '1542594196', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14175', 'APP版本', '1', '我超级用户', '1542594197', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14176', '添加APP版本', '1', '我超级用户', '1542594198', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14177', 'APP版本管理的图片上传', '1', '我超级用户', '1542594202', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14178', '首页', '1', '我超级用户', '1542594240', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14179', '欢迎页', '1', '我超级用户', '1542594240', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14180', '应用列表', '1', '我超级用户', '1542594242', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14181', 'APP版本', '1', '我超级用户', '1542594243', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14182', '添加APP版本', '1', '我超级用户', '1542594244', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14183', 'APP版本管理的图片上传', '1', '我超级用户', '1542594251', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14184', 'APP版本管理的图片上传', '1', '我超级用户', '1542594329', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14185', '首页', '1', '我超级用户', '1542594460', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14186', '欢迎页', '1', '我超级用户', '1542594460', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14187', '应用列表', '1', '我超级用户', '1542594460', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14188', 'APP版本', '1', '我超级用户', '1542594462', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14189', '添加APP版本', '1', '我超级用户', '1542594462', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14190', 'APP版本管理的图片上传', '1', '我超级用户', '1542594467', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14191', '首页', '1', '我超级用户', '1542594804', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14192', '欢迎页', '1', '我超级用户', '1542594804', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14193', '应用列表', '1', '我超级用户', '1542594806', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14194', 'APP版本', '1', '我超级用户', '1542594807', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14195', '添加APP版本', '1', '我超级用户', '1542594808', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14196', 'APP版本管理的图片上传', '1', '我超级用户', '1542594815', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14197', 'APP版本管理的图片上传', '1', '我超级用户', '1542594820', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14198', '首页', '1', '我超级用户', '1542594902', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14199', '欢迎页', '1', '我超级用户', '1542594902', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14200', '应用列表', '1', '我超级用户', '1542594905', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14201', 'APP版本', '1', '我超级用户', '1542594906', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14202', '添加APP版本', '1', '我超级用户', '1542594907', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14203', 'APP版本管理的图片上传', '1', '我超级用户', '1542594913', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14204', '首页', '1', '我超级用户', '1542595217', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14205', '欢迎页', '1', '我超级用户', '1542595228', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14206', '首页', '1', '我超级用户', '1542595228', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14207', '欢迎页', '1', '我超级用户', '1542595228', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14208', '应用列表', '1', '我超级用户', '1542595229', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14209', 'APP版本', '1', '我超级用户', '1542595231', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14210', 'APP版本', '1', '我超级用户', '1542595231', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14211', '添加APP版本', '1', '我超级用户', '1542595232', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14212', 'APP版本管理的图片上传', '1', '我超级用户', '1542595241', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14213', '首页', '1', '我超级用户', '1542595516', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14214', '欢迎页', '1', '我超级用户', '1542595516', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14215', '应用列表', '1', '我超级用户', '1542595519', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14216', 'APP版本', '1', '我超级用户', '1542595520', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14217', '添加APP版本', '1', '我超级用户', '1542595522', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14218', 'APP版本管理的图片上传', '1', '我超级用户', '1542595529', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14219', 'APP版本管理的图片上传', '1', '我超级用户', '1542595594', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"a7sja8f5k0mofb4gi52gjsskm2\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14220', '首页', '1', '我超级用户', '1542605518', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14221', '欢迎页', '1', '我超级用户', '1542605518', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14222', '应用列表', '1', '我超级用户', '1542605590', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14223', '接口列表', '1', '我超级用户', '1542605592', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'ApiManage/index');
+INSERT INTO `api_user_action` VALUES ('14224', 'APP版本', '1', '我超级用户', '1542605593', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14225', '添加APP版本', '1', '我超级用户', '1542605595', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14226', '首页', '1', '我超级用户', '1542605882', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14227', '欢迎页', '1', '我超级用户', '1542605882', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14228', '应用列表', '1', '我超级用户', '1542605886', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14229', '新增应用', '1', '我超级用户', '1542605887', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'App/add');
+INSERT INTO `api_user_action` VALUES ('14230', 'APP版本', '1', '我超级用户', '1542605889', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14231', '添加APP版本', '1', '我超级用户', '1542605890', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14232', 'APP版本管理的图片上传', '1', '我超级用户', '1542605909', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14233', 'APP版本管理的图片上传', '1', '我超级用户', '1542605919', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14234', '添加APP版本', '1', '我超级用户', '1542605921', '{\"app_version\":\"1.0\",\"app_desc\":\"1.0\",\"app\":\"\",\"app_url\":\"\",\"code\":\"\",\"code_url\":\"http:\\/\\/localhost\\/education\\/\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14235', 'APP版本', '1', '我超级用户', '1542605921', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14236', '首页', '1', '我超级用户', '1542605925', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14237', '欢迎页', '1', '我超级用户', '1542605925', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14238', '应用列表', '1', '我超级用户', '1542605927', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14239', 'APP版本', '1', '我超级用户', '1542605929', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14240', 'APP版本', '1', '我超级用户', '1542605929', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14241', '添加APP版本', '1', '我超级用户', '1542605942', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14242', 'APP版本管理的图片上传', '1', '我超级用户', '1542605946', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14243', 'APP版本管理的图片上传', '1', '我超级用户', '1542605965', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14244', 'APP版本管理的图片上传', '1', '我超级用户', '1542606069', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14245', 'APP版本管理的图片上传', '1', '我超级用户', '1542606181', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14246', 'APP版本管理的图片上传', '1', '我超级用户', '1542606610', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14247', '首页', '1', '我超级用户', '1542606716', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14248', '欢迎页', '1', '我超级用户', '1542606716', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14249', '应用列表', '1', '我超级用户', '1542606718', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14250', 'APP版本', '1', '我超级用户', '1542606719', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14251', '添加APP版本', '1', '我超级用户', '1542606721', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14252', 'APP版本管理的图片上传', '1', '我超级用户', '1542606727', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14253', '首页', '1', '我超级用户', '1542606816', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14254', '欢迎页', '1', '我超级用户', '1542606816', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14255', '应用列表', '1', '我超级用户', '1542606819', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14256', 'APP版本', '1', '我超级用户', '1542606819', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14257', 'APP版本', '1', '我超级用户', '1542606819', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14258', '添加APP版本', '1', '我超级用户', '1542606820', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14259', 'APP版本管理的图片上传', '1', '我超级用户', '1542606826', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14260', '首页', '1', '我超级用户', '1542606954', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14261', '欢迎页', '1', '我超级用户', '1542606954', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14262', '应用列表', '1', '我超级用户', '1542606954', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14263', 'APP版本', '1', '我超级用户', '1542606955', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14264', '添加APP版本', '1', '我超级用户', '1542606956', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14265', 'APP版本管理的图片上传', '1', '我超级用户', '1542606966', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14266', 'APP版本管理的图片上传', '1', '我超级用户', '1542607011', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14267', '首页', '1', '我超级用户', '1542607018', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14268', '欢迎页', '1', '我超级用户', '1542607018', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14269', '应用列表', '1', '我超级用户', '1542607019', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14270', 'APP版本', '1', '我超级用户', '1542607021', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14271', 'APP版本', '1', '我超级用户', '1542607021', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14272', '添加APP版本', '1', '我超级用户', '1542607021', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14273', 'APP版本管理的图片上传', '1', '我超级用户', '1542607024', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14274', 'APP版本管理的图片上传', '1', '我超级用户', '1542607029', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14275', 'APP版本管理的图片上传', '1', '我超级用户', '1542607087', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14276', '首页', '1', '我超级用户', '1542607115', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14277', '欢迎页', '1', '我超级用户', '1542607115', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14278', '应用列表', '1', '我超级用户', '1542607117', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14279', 'APP版本', '1', '我超级用户', '1542607118', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14280', 'APP版本', '1', '我超级用户', '1542607119', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14281', '添加APP版本', '1', '我超级用户', '1542607120', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14282', 'APP版本管理的图片上传', '1', '我超级用户', '1542607127', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14283', '首页', '1', '我超级用户', '1542607225', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14284', '欢迎页', '1', '我超级用户', '1542607225', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14285', '应用列表', '1', '我超级用户', '1542607226', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14286', 'APP版本', '1', '我超级用户', '1542607227', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14287', '添加APP版本', '1', '我超级用户', '1542607228', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14288', 'APP版本管理的图片上传', '1', '我超级用户', '1542607242', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14289', '首页', '1', '我超级用户', '1542607291', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14290', '欢迎页', '1', '我超级用户', '1542607292', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14291', '应用列表', '1', '我超级用户', '1542607292', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14292', 'APP版本', '1', '我超级用户', '1542607293', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14293', '添加APP版本', '1', '我超级用户', '1542607296', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14294', 'APP版本管理的图片上传', '1', '我超级用户', '1542607301', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14295', '首页', '1', '我超级用户', '1542607330', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14296', '欢迎页', '1', '我超级用户', '1542607330', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14297', '应用列表', '1', '我超级用户', '1542607332', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14298', 'APP版本', '1', '我超级用户', '1542607333', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14299', 'APP版本', '1', '我超级用户', '1542607333', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14300', '添加APP版本', '1', '我超级用户', '1542607334', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14301', 'APP版本管理的图片上传', '1', '我超级用户', '1542607340', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14302', 'APP版本管理的图片上传', '1', '我超级用户', '1542607445', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14303', 'APP版本管理的图片上传', '1', '我超级用户', '1542607513', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14304', 'APP版本管理的图片上传', '1', '我超级用户', '1542607541', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14305', 'APP版本管理的图片上传', '1', '我超级用户', '1542607544', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14306', '添加APP版本', '1', '我超级用户', '1542607545', '{\"app_version\":\"2.0\",\"app_desc\":\"2.0\",\"app\":\"\",\"app_url\":\"\",\"code\":\"\",\"code_url\":\"http:\\/\\/localhost\\/education\\/Public\\/uploads\\/apk\\/5bf252b827b77.jpg\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14307', 'APP版本', '1', '我超级用户', '1542607545', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14308', '首页', '1', '我超级用户', '1542607561', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14309', '欢迎页', '1', '我超级用户', '1542607561', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14310', '应用列表', '1', '我超级用户', '1542607563', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14311', 'APP版本', '1', '我超级用户', '1542607564', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14312', 'APP版本', '1', '我超级用户', '1542607564', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14313', '编辑APP版本', '1', '我超级用户', '1542607565', '{\"id\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/edit');
+INSERT INTO `api_user_action` VALUES ('14314', 'APP版本管理的图片上传', '1', '我超级用户', '1542607569', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14315', '编辑APP版本', '1', '我超级用户', '1542607570', '{\"id\":\"1\",\"app_version\":\"1.0\",\"app_desc\":\"1.0\",\"app\":\"\",\"app_url\":\"http:\\/\\/localhost\\/education\\/Public\\/uploads\\/apk\\/5bf252d171ccf.apk\",\"code\":\"\",\"code_url\":\"http:\\/\\/localhost\\/education\\/\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/edit');
+INSERT INTO `api_user_action` VALUES ('14316', 'APP版本', '1', '我超级用户', '1542607570', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14317', '编辑APP版本', '1', '我超级用户', '1542607574', '{\"id\":\"2\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/edit');
+INSERT INTO `api_user_action` VALUES ('14318', 'APP版本管理的图片上传', '1', '我超级用户', '1542607578', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14319', '编辑APP版本', '1', '我超级用户', '1542607579', '{\"id\":\"2\",\"app_version\":\"2.0\",\"app_desc\":\"2.0\",\"app\":\"\",\"app_url\":\"http:\\/\\/localhost\\/education\\/Public\\/uploads\\/apk\\/5bf252da4c921.apk\",\"code\":\"\",\"code_url\":\"http:\\/\\/localhost\\/education\\/Public\\/uploads\\/apk\\/5bf252b827b77.jpg\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/edit');
+INSERT INTO `api_user_action` VALUES ('14320', 'APP版本', '1', '我超级用户', '1542607579', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14321', '编辑APP版本', '1', '我超级用户', '1542607605', '{\"id\":\"2\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/edit');
+INSERT INTO `api_user_action` VALUES ('14322', 'APP版本管理的图片上传', '1', '我超级用户', '1542607608', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14323', '编辑APP版本', '1', '我超级用户', '1542607609', '{\"id\":\"2\",\"app_version\":\"2.0\",\"app_desc\":\"2.0\",\"app\":\"\",\"app_url\":\"http:\\/\\/localhost\\/education\\/Public\\/uploads\\/apk\\/5bf252da4c921.apk\",\"code\":\"\",\"code_url\":\"http:\\/\\/localhost\\/education\\/Public\\/uploads\\/apk\\/5bf252f890dd4.jpg\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/edit');
+INSERT INTO `api_user_action` VALUES ('14324', 'APP版本', '1', '我超级用户', '1542607609', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14325', '编辑APP版本', '1', '我超级用户', '1542607651', '{\"id\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/edit');
+INSERT INTO `api_user_action` VALUES ('14326', 'APP版本管理的图片上传', '1', '我超级用户', '1542607658', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14327', '编辑APP版本', '1', '我超级用户', '1542607660', '{\"id\":\"1\",\"app_version\":\"1.0\",\"app_desc\":\"1.0\",\"app\":\"\",\"app_url\":\"http:\\/\\/localhost\\/education\\/Public\\/uploads\\/apk\\/5bf252d171ccf.apk\",\"code\":\"\",\"code_url\":\"http:\\/\\/localhost\\/education\\/Public\\/uploads\\/apk\\/5bf2532af23f7.jpg\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/edit');
+INSERT INTO `api_user_action` VALUES ('14328', 'APP版本', '1', '我超级用户', '1542607660', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14329', '首页', '1', '我超级用户', '1542607808', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14330', '欢迎页', '1', '我超级用户', '1542607808', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14331', '应用列表', '1', '我超级用户', '1542607809', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14332', 'APP版本', '1', '我超级用户', '1542607810', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14333', '删除APP版本', '1', '我超级用户', '1542607840', '{\"id\":\"2\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/del');
+INSERT INTO `api_user_action` VALUES ('14334', 'APP版本', '1', '我超级用户', '1542607840', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14335', '添加APP版本', '1', '我超级用户', '1542607843', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14336', 'APP版本管理的图片上传', '1', '我超级用户', '1542607852', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14337', 'APP版本管理的图片上传', '1', '我超级用户', '1542607858', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/upload');
+INSERT INTO `api_user_action` VALUES ('14338', '添加APP版本', '1', '我超级用户', '1542607858', '{\"app_version\":\"30.\",\"app_desc\":\"\\u513f\\u989d\",\"app\":\"\",\"app_url\":\"http:\\/\\/localhost\\/education\\/Public\\/uploads\\/apk\\/5bf253ec5b624.apk\",\"code\":\"\",\"code_url\":\"http:\\/\\/localhost\\/education\\/Public\\/uploads\\/apk\\/5bf253f22bdb8.jpg\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/add');
+INSERT INTO `api_user_action` VALUES ('14339', 'APP版本', '1', '我超级用户', '1542607858', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14340', '删除APP版本', '1', '我超级用户', '1542607871', '{\"id\":\"3\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/del');
+INSERT INTO `api_user_action` VALUES ('14341', 'APP版本', '1', '我超级用户', '1542607872', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14342', '删除APP版本', '1', '我超级用户', '1542607875', '{\"id\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/del');
+INSERT INTO `api_user_action` VALUES ('14343', 'APP版本', '1', '我超级用户', '1542607875', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Appversion/index');
+INSERT INTO `api_user_action` VALUES ('14344', '知识点', '1', '我超级用户', '1542608384', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Knowledge/index');
+INSERT INTO `api_user_action` VALUES ('14345', 'ajax查询知识点列表', '1', '我超级用户', '1542608384', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Knowledge/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14346', '视频', '1', '我超级用户', '1542608385', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Video/index');
+INSERT INTO `api_user_action` VALUES ('14347', 'ajax查询视频列表', '1', '我超级用户', '1542608386', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Video/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14348', '编辑视频', '1', '我超级用户', '1542608557', '{\"id\":\"20\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Video/update');
+INSERT INTO `api_user_action` VALUES ('14349', '视频目录列表', '1', '我超级用户', '1542608719', '{\"video_id\":\"20\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Video/catalog');
+INSERT INTO `api_user_action` VALUES ('14350', 'ajax查询视频目录列表', '1', '我超级用户', '1542608719', '{\"video_id\":\"20\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Video/ajaxGetCatalog');
+INSERT INTO `api_user_action` VALUES ('14351', '查看视频目录', '1', '我超级用户', '1542608732', '{\"id\":\"17\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Video/lookCatalog');
+INSERT INTO `api_user_action` VALUES ('14352', '学生列表', '1', '我超级用户', '1542610379', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Student/index');
+INSERT INTO `api_user_action` VALUES ('14353', 'ajax查询学生列表', '1', '我超级用户', '1542610379', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Student/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14354', '发送通知', '1', '我超级用户', '1542610713', '{\"user_id\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Student/addNotice');
+INSERT INTO `api_user_action` VALUES ('14355', '通知列表', '1', '我超级用户', '1542610956', '{\"user_id\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Student/noticeLIst');
+INSERT INTO `api_user_action` VALUES ('14356', 'ajax获取学生通知列表', '1', '我超级用户', '1542610956', '{\"user_id\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Student/ajaxNoticeList');
+INSERT INTO `api_user_action` VALUES ('14357', '学生列表', '1', '我超级用户', '1542611019', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Student/index');
+INSERT INTO `api_user_action` VALUES ('14358', 'ajax查询学生列表', '1', '我超级用户', '1542611019', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Student/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14359', '通知列表', '1', '我超级用户', '1542611021', '{\"user_id\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Student/noticeLIst');
+INSERT INTO `api_user_action` VALUES ('14360', 'ajax获取学生通知列表', '1', '我超级用户', '1542611022', '{\"user_id\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Student/ajaxNoticeList');
+INSERT INTO `api_user_action` VALUES ('14361', '禁用名单', '1', '我超级用户', '1542611078', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'StopList/index');
+INSERT INTO `api_user_action` VALUES ('14362', 'ajax获取禁用名单列表', '1', '我超级用户', '1542611078', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'StopList/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14363', '提现审核', '1', '我超级用户', '1542611262', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'WithdrawalAudit/index');
+INSERT INTO `api_user_action` VALUES ('14364', 'ajax提现审核列表', '1', '我超级用户', '1542611263', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'WithDrawalAudit/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14365', '注册审核', '1', '我超级用户', '1542611657', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'RegistAudit/index');
+INSERT INTO `api_user_action` VALUES ('14366', 'ajax查询机构注册审核列表', '1', '我超级用户', '1542611657', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'RegistAudit/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14367', '发布审核', '1', '我超级用户', '1542611907', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'PublishAudit/index');
+INSERT INTO `api_user_action` VALUES ('14368', 'ajax查询发布列表', '1', '我超级用户', '1542611907', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'PublishAudit/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14369', '评论审核', '1', '我超级用户', '1542612348', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'CommentAudit/index');
+INSERT INTO `api_user_action` VALUES ('14370', 'ajax查询评价审核列表', '1', '我超级用户', '1542612348', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'CommentAudit/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14371', '菜单维护', '1', '我超级用户', '1542612635', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/index');
+INSERT INTO `api_user_action` VALUES ('14372', '显示菜单', '1', '我超级用户', '1542613036', '{\"id\":\"12\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/open');
+INSERT INTO `api_user_action` VALUES ('14373', '菜单维护', '1', '我超级用户', '1542613036', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/index');
+INSERT INTO `api_user_action` VALUES ('14374', '首页', '1', '我超级用户', '1542613041', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14375', '欢迎页', '1', '我超级用户', '1542613041', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14376', '菜单维护', '1', '我超级用户', '1542613044', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/index');
+INSERT INTO `api_user_action` VALUES ('14377', '菜单维护', '1', '我超级用户', '1542613048', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/index');
+INSERT INTO `api_user_action` VALUES ('14378', '新增菜单', '1', '我超级用户', '1542618097', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/add');
+INSERT INTO `api_user_action` VALUES ('14379', '新增菜单', '1', '我超级用户', '1542618168', '{\"name\":\"\\u80cc\\u666f\\u97f3\\u4e50\",\"fid\":\"88\",\"url\":\"Bgmusic\\/index\",\"sort\":\"9\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/add');
+INSERT INTO `api_user_action` VALUES ('14380', '菜单维护', '1', '我超级用户', '1542618168', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/index');
+INSERT INTO `api_user_action` VALUES ('14381', '新增菜单', '1', '我超级用户', '1542618186', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/add');
+INSERT INTO `api_user_action` VALUES ('14382', '新增菜单', '1', '我超级用户', '1542618302', '{\"name\":\"ajax\\u83b7\\u53d6\\u97f3\\u4e50\\u5217\\u8868\",\"fid\":\"246\",\"url\":\"Bgmusic\\/ajaxGetIndex\",\"sort\":\"9\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/add');
+INSERT INTO `api_user_action` VALUES ('14383', '菜单维护', '1', '我超级用户', '1542618302', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/index');
+INSERT INTO `api_user_action` VALUES ('14384', '编辑菜单', '1', '我超级用户', '1542618314', '{\"id\":\"246\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/edit');
+INSERT INTO `api_user_action` VALUES ('14385', '编辑菜单', '1', '我超级用户', '1542618318', '{\"id\":\"246\",\"name\":\"\\u80cc\\u666f\\u97f3\\u4e50\",\"fid\":\"88\",\"url\":\"Bgmusic\\/index\",\"sort\":\"8\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/edit');
+INSERT INTO `api_user_action` VALUES ('14386', '菜单维护', '1', '我超级用户', '1542618318', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/index');
+INSERT INTO `api_user_action` VALUES ('14387', '编辑菜单', '1', '我超级用户', '1542618321', '{\"id\":\"247\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/edit');
+INSERT INTO `api_user_action` VALUES ('14388', '编辑菜单', '1', '我超级用户', '1542618324', '{\"id\":\"247\",\"name\":\"ajax\\u83b7\\u53d6\\u97f3\\u4e50\\u5217\\u8868\",\"fid\":\"246\",\"url\":\"Bgmusic\\/ajaxGetIndex\",\"sort\":\"0\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/edit');
+INSERT INTO `api_user_action` VALUES ('14389', '菜单维护', '1', '我超级用户', '1542618324', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/index');
+INSERT INTO `api_user_action` VALUES ('14390', '新增菜单', '1', '我超级用户', '1542618330', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/add');
+INSERT INTO `api_user_action` VALUES ('14391', '新增菜单', '1', '我超级用户', '1542618365', '{\"name\":\"\\u6dfb\\u52a0\\u97f3\\u4e50\",\"fid\":\"246\",\"url\":\"Bgmusic\\/add\",\"sort\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/add');
+INSERT INTO `api_user_action` VALUES ('14392', '菜单维护', '1', '我超级用户', '1542618365', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/index');
+INSERT INTO `api_user_action` VALUES ('14393', '新增菜单', '1', '我超级用户', '1542618366', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/add');
+INSERT INTO `api_user_action` VALUES ('14394', '新增菜单', '1', '我超级用户', '1542618406', '{\"name\":\"\\u7f16\\u8f91\\u97f3\\u4e50\\u4fe1\\u606f\",\"fid\":\"246\",\"url\":\"Bgmusic\\/update\",\"sort\":\"2\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/add');
+INSERT INTO `api_user_action` VALUES ('14395', '菜单维护', '1', '我超级用户', '1542618406', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/index');
+INSERT INTO `api_user_action` VALUES ('14396', '新增菜单', '1', '我超级用户', '1542618408', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/add');
+INSERT INTO `api_user_action` VALUES ('14397', '新增菜单', '1', '我超级用户', '1542618433', '{\"name\":\"\\u5220\\u9664\\u97f3\\u4e50\\u8bb0\\u5f55\",\"fid\":\"246\",\"url\":\"Bgmusic\\/delete\",\"sort\":\"3\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/add');
+INSERT INTO `api_user_action` VALUES ('14398', '菜单维护', '1', '我超级用户', '1542618433', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/index');
+INSERT INTO `api_user_action` VALUES ('14399', '新增菜单', '1', '我超级用户', '1542618455', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/add');
+INSERT INTO `api_user_action` VALUES ('14400', '新增菜单', '1', '我超级用户', '1542618493', '{\"name\":\"\\u4e0a\\u4f20\\u97f3\\u4e50\",\"fid\":\"246\",\"url\":\"Bgmusic\\/upload\",\"sort\":\"4\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/add');
+INSERT INTO `api_user_action` VALUES ('14401', '菜单维护', '1', '我超级用户', '1542618493', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Menu/index');
+INSERT INTO `api_user_action` VALUES ('14402', '首页', '1', '我超级用户', '1542618501', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14403', '欢迎页', '1', '我超级用户', '1542618501', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14404', '级别管理', '1', '我超级用户', '1542618504', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Class/index');
+INSERT INTO `api_user_action` VALUES ('14405', 'ajax查询级别列表', '1', '我超级用户', '1542618504', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Class/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14406', '首页', '1', '我超级用户', '1542618543', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14407', '欢迎页', '1', '我超级用户', '1542618544', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14408', '级别管理', '1', '我超级用户', '1542618545', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Class/index');
+INSERT INTO `api_user_action` VALUES ('14409', 'ajax查询级别列表', '1', '我超级用户', '1542618545', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Class/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14410', '背景音乐', '1', '我超级用户', '1542618546', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Bgmusic/index');
+INSERT INTO `api_user_action` VALUES ('14411', 'ajax获取音乐列表', '1', '我超级用户', '1542618546', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Bgmusic/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14412', '添加音乐', '1', '我超级用户', '1542618548', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Bgmusic/add');
+INSERT INTO `api_user_action` VALUES ('14413', '首页', '1', '我超级用户', '1542618880', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14414', '欢迎页', '1', '我超级用户', '1542618881', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14415', '级别管理', '1', '我超级用户', '1542618882', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Class/index');
+INSERT INTO `api_user_action` VALUES ('14416', 'ajax查询级别列表', '1', '我超级用户', '1542618882', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Class/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14417', '背景音乐', '1', '我超级用户', '1542618885', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Bgmusic/index');
+INSERT INTO `api_user_action` VALUES ('14418', 'ajax获取音乐列表', '1', '我超级用户', '1542618885', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Bgmusic/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14419', '添加音乐', '1', '我超级用户', '1542618887', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Bgmusic/add');
+INSERT INTO `api_user_action` VALUES ('14420', '上传音乐', '1', '我超级用户', '1542619431', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Bgmusic/upload');
+INSERT INTO `api_user_action` VALUES ('14421', '首页', '1', '我超级用户', '1542619442', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14422', '欢迎页', '1', '我超级用户', '1542619442', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14423', '级别管理', '1', '我超级用户', '1542619444', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Class/index');
+INSERT INTO `api_user_action` VALUES ('14424', 'ajax查询级别列表', '1', '我超级用户', '1542619444', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Class/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14425', '背景音乐', '1', '我超级用户', '1542619445', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Bgmusic/index');
+INSERT INTO `api_user_action` VALUES ('14426', '背景音乐', '1', '我超级用户', '1542619445', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Bgmusic/index');
+INSERT INTO `api_user_action` VALUES ('14427', 'ajax获取音乐列表', '1', '我超级用户', '1542619445', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Bgmusic/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14428', '添加音乐', '1', '我超级用户', '1542619449', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Bgmusic/add');
+INSERT INTO `api_user_action` VALUES ('14429', '上传音乐', '1', '我超级用户', '1542619457', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Bgmusic/upload');
+INSERT INTO `api_user_action` VALUES ('14430', '首页', '1', '我超级用户', '1542619580', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14431', '欢迎页', '1', '我超级用户', '1542619580', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14432', '级别管理', '1', '我超级用户', '1542619582', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Class/index');
+INSERT INTO `api_user_action` VALUES ('14433', 'ajax查询级别列表', '1', '我超级用户', '1542619582', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Class/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14434', '背景音乐', '1', '我超级用户', '1542619584', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Bgmusic/index');
+INSERT INTO `api_user_action` VALUES ('14435', '背景音乐', '1', '我超级用户', '1542619584', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Bgmusic/index');
+INSERT INTO `api_user_action` VALUES ('14436', 'ajax获取音乐列表', '1', '我超级用户', '1542619584', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Bgmusic/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14437', '添加音乐', '1', '我超级用户', '1542619586', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Bgmusic/add');
+INSERT INTO `api_user_action` VALUES ('14438', '上传音乐', '1', '我超级用户', '1542619610', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Bgmusic/upload');
+INSERT INTO `api_user_action` VALUES ('14439', '上传音乐', '1', '我超级用户', '1542619778', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Bgmusic/upload');
+INSERT INTO `api_user_action` VALUES ('14440', '首页', '1', '我超级用户', '1542619874', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14441', '首页', '1', '我超级用户', '1542619875', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14442', '欢迎页', '1', '我超级用户', '1542619875', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14443', '欢迎页', '1', '我超级用户', '1542619875', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14444', '首页', '1', '我超级用户', '1542619875', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14445', '首页', '1', '我超级用户', '1542619875', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14446', '欢迎页', '1', '我超级用户', '1542619875', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14447', '欢迎页', '1', '我超级用户', '1542619875', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"69d2c09tsbdqer5lha0h0n1am6\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14448', '首页', '1', '我超级用户', '1542619893', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14449', '欢迎页', '1', '我超级用户', '1542619893', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14450', '级别管理', '1', '我超级用户', '1542619895', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Class/index');
+INSERT INTO `api_user_action` VALUES ('14451', 'ajax查询级别列表', '1', '我超级用户', '1542619895', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Class/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14452', '背景音乐', '1', '我超级用户', '1542619896', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/index');
+INSERT INTO `api_user_action` VALUES ('14453', '背景音乐', '1', '我超级用户', '1542619896', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/index');
+INSERT INTO `api_user_action` VALUES ('14454', 'ajax获取音乐列表', '1', '我超级用户', '1542619896', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14455', '添加音乐', '1', '我超级用户', '1542619897', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/add');
+INSERT INTO `api_user_action` VALUES ('14456', '上传音乐', '1', '我超级用户', '1542619911', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/upload');
+INSERT INTO `api_user_action` VALUES ('14457', '添加音乐', '1', '我超级用户', '1542619988', '{\"music_name\":\"\\u771f\\u5b9e\",\"music\":\"\",\"music_url\":\"http:\\/\\/localhost\\/education\\/Public\\/uploads\\/music\\/5bf2830779d6a.mp3\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/add');
+INSERT INTO `api_user_action` VALUES ('14458', '背景音乐', '1', '我超级用户', '1542619989', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/index');
+INSERT INTO `api_user_action` VALUES ('14459', 'ajax获取音乐列表', '1', '我超级用户', '1542619989', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14460', '编辑音乐信息', '1', '我超级用户', '1542620001', '{\"id\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/update');
+INSERT INTO `api_user_action` VALUES ('14461', '添加音乐', '1', '我超级用户', '1542620024', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/add');
+INSERT INTO `api_user_action` VALUES ('14462', '上传音乐', '1', '我超级用户', '1542620032', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/upload');
+INSERT INTO `api_user_action` VALUES ('14463', '首页', '1', '我超级用户', '1542620181', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14464', '欢迎页', '1', '我超级用户', '1542620181', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14465', '级别管理', '1', '我超级用户', '1542620183', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Class/index');
+INSERT INTO `api_user_action` VALUES ('14466', 'ajax查询级别列表', '1', '我超级用户', '1542620183', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Class/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14467', '背景音乐', '1', '我超级用户', '1542620184', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/index');
+INSERT INTO `api_user_action` VALUES ('14468', '背景音乐', '1', '我超级用户', '1542620184', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/index');
+INSERT INTO `api_user_action` VALUES ('14469', 'ajax获取音乐列表', '1', '我超级用户', '1542620184', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14470', '添加音乐', '1', '我超级用户', '1542620185', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/add');
+INSERT INTO `api_user_action` VALUES ('14471', '上传音乐', '1', '我超级用户', '1542620193', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/upload');
+INSERT INTO `api_user_action` VALUES ('14472', '编辑音乐信息', '1', '我超级用户', '1542620248', '{\"id\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/update');
+INSERT INTO `api_user_action` VALUES ('14473', '上传音乐', '1', '我超级用户', '1542620304', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/upload');
+INSERT INTO `api_user_action` VALUES ('14474', '编辑音乐信息', '1', '我超级用户', '1542620328', '{\"id\":\"1\",\"music_name\":\"\\u4e0d\\u53d8\\u7684\\u97f3\\u4e50\",\"music\":\"\",\"music_url\":\"http:\\/\\/localhost\\/education\\/Public\\/uploads\\/music\\/5bf2849028a6e.mp3\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/update');
+INSERT INTO `api_user_action` VALUES ('14475', '背景音乐', '1', '我超级用户', '1542620329', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/index');
+INSERT INTO `api_user_action` VALUES ('14476', 'ajax获取音乐列表', '1', '我超级用户', '1542620329', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14477', '添加音乐', '1', '我超级用户', '1542620335', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/add');
+INSERT INTO `api_user_action` VALUES ('14478', '上传音乐', '1', '我超级用户', '1542620346', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/upload');
+INSERT INTO `api_user_action` VALUES ('14479', '添加音乐', '1', '我超级用户', '1542620351', '{\"music_name\":\"\\u771f\\u5b9e\",\"music\":\"\",\"music_url\":\"http:\\/\\/localhost\\/education\\/Public\\/uploads\\/music\\/5bf284ba42a16.mp3\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/add');
+INSERT INTO `api_user_action` VALUES ('14480', '背景音乐', '1', '我超级用户', '1542620351', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/index');
+INSERT INTO `api_user_action` VALUES ('14481', 'ajax获取音乐列表', '1', '我超级用户', '1542620352', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14482', '编辑音乐信息', '1', '我超级用户', '1542620355', '{\"id\":\"2\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/update');
+INSERT INTO `api_user_action` VALUES ('14483', '上传音乐', '1', '我超级用户', '1542620362', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/upload');
+INSERT INTO `api_user_action` VALUES ('14484', '上传音乐', '1', '我超级用户', '1542620368', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/upload');
+INSERT INTO `api_user_action` VALUES ('14485', '首页', '1', '我超级用户', '1542620613', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14486', '欢迎页', '1', '我超级用户', '1542620613', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14487', '级别管理', '1', '我超级用户', '1542620615', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Class/index');
+INSERT INTO `api_user_action` VALUES ('14488', 'ajax查询级别列表', '1', '我超级用户', '1542620615', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Class/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14489', '背景音乐', '1', '我超级用户', '1542620616', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/index');
+INSERT INTO `api_user_action` VALUES ('14490', 'ajax获取音乐列表', '1', '我超级用户', '1542620616', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14491', '添加音乐', '1', '我超级用户', '1542620618', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/add');
+INSERT INTO `api_user_action` VALUES ('14492', '上传音乐', '1', '我超级用户', '1542620626', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/upload');
+INSERT INTO `api_user_action` VALUES ('14493', '上传音乐', '1', '我超级用户', '1542620635', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/upload');
+INSERT INTO `api_user_action` VALUES ('14494', '上传音乐', '1', '我超级用户', '1542620659', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/upload');
+INSERT INTO `api_user_action` VALUES ('14495', '添加音乐', '1', '我超级用户', '1542620660', '{\"music_name\":\"\\u771f\\u5b9e\",\"music\":\"\",\"music_url\":\"http:\\/\\/localhost\\/education\\/Public\\/uploads\\/music\\/5bf285f309797.mp3\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/add');
+INSERT INTO `api_user_action` VALUES ('14496', '背景音乐', '1', '我超级用户', '1542620660', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/index');
+INSERT INTO `api_user_action` VALUES ('14497', 'ajax获取音乐列表', '1', '我超级用户', '1542620660', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14498', '编辑音乐信息', '1', '我超级用户', '1542620663', '{\"id\":\"3\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/update');
+INSERT INTO `api_user_action` VALUES ('14499', '上传音乐', '1', '我超级用户', '1542620668', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/upload');
+INSERT INTO `api_user_action` VALUES ('14500', '编辑音乐信息', '1', '我超级用户', '1542620672', '{\"id\":\"3\",\"music_name\":\"\\u771f\\u5b9e\",\"music\":\"\",\"music_url\":\"http:\\/\\/localhost\\/education\\/Public\\/uploads\\/music\\/5bf285fc3f507.mp3\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/update');
+INSERT INTO `api_user_action` VALUES ('14501', '背景音乐', '1', '我超级用户', '1542620672', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/index');
+INSERT INTO `api_user_action` VALUES ('14502', 'ajax获取音乐列表', '1', '我超级用户', '1542620672', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14503', '编辑音乐信息', '1', '我超级用户', '1542620676', '{\"id\":\"3\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/update');
+INSERT INTO `api_user_action` VALUES ('14504', '编辑音乐信息', '1', '我超级用户', '1542620683', '{\"id\":\"3\",\"music_name\":\"\\u4e0d\\u53d8\\u7684\\u97f3\\u4e50\",\"music\":\"\",\"music_url\":\"http:\\/\\/localhost\\/education\\/Public\\/uploads\\/music\\/5bf285fc3f507.mp3\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/update');
+INSERT INTO `api_user_action` VALUES ('14505', '背景音乐', '1', '我超级用户', '1542620683', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/index');
+INSERT INTO `api_user_action` VALUES ('14506', 'ajax获取音乐列表', '1', '我超级用户', '1542620683', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14507', '删除音乐记录', '1', '我超级用户', '1542620700', '{\"id\":\"3\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/delete');
+INSERT INTO `api_user_action` VALUES ('14508', '背景音乐', '1', '我超级用户', '1542620701', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/index');
+INSERT INTO `api_user_action` VALUES ('14509', 'ajax获取音乐列表', '1', '我超级用户', '1542620701', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14510', '首页', '1', '我超级用户', '1542620711', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Index/index');
+INSERT INTO `api_user_action` VALUES ('14511', '欢迎页', '1', '我超级用户', '1542620711', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Index/welcome');
+INSERT INTO `api_user_action` VALUES ('14512', '级别管理', '1', '我超级用户', '1542620713', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Class/index');
+INSERT INTO `api_user_action` VALUES ('14513', 'ajax查询级别列表', '1', '我超级用户', '1542620713', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Class/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14514', '背景音乐', '1', '我超级用户', '1542620714', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/index');
+INSERT INTO `api_user_action` VALUES ('14515', '背景音乐', '1', '我超级用户', '1542620714', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/index');
+INSERT INTO `api_user_action` VALUES ('14516', 'ajax获取音乐列表', '1', '我超级用户', '1542620714', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14517', 'ajax获取音乐列表', '1', '我超级用户', '1542620721', '{\"music_name\":\"\\u771f\\u5b9e\",\"curr\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14518', 'ajax获取音乐列表', '1', '我超级用户', '1542620726', '{\"music_name\":\"\\u771f\",\"curr\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14519', 'ajax获取音乐列表', '1', '我超级用户', '1542620733', '{\"music_name\":\"\\u97f3\",\"curr\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Bgmusic/ajaxGetIndex');
+INSERT INTO `api_user_action` VALUES ('14520', '菜单维护', '1', '我超级用户', '1542621471', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'Menu/index');
+INSERT INTO `api_user_action` VALUES ('14521', '应用列表', '1', '我超级用户', '1542621474', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'App/index');
+INSERT INTO `api_user_action` VALUES ('14522', '接口列表', '1', '我超级用户', '1542621478', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'ApiManage/index');
+INSERT INTO `api_user_action` VALUES ('14523', '新增接口', '1', '我超级用户', '1542621507', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'ApiManage/add');
+INSERT INTO `api_user_action` VALUES ('14524', '新增接口', '1', '我超级用户', '1542621587', '{\"apiName\":\"Background\\/backgroundMusic\",\"method\":\"1\",\"hash\":\"5bf28943037e5\",\"accessToken\":\"0\",\"needLogin\":\"0\",\"isTest\":\"1\",\"info\":\"\\u80cc\\u666f\\u97f3\\u4e50\\u8c03\\u53d6\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'ApiManage/add');
+INSERT INTO `api_user_action` VALUES ('14525', '接口列表', '1', '我超级用户', '1542621587', '{\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'ApiManage/index');
+INSERT INTO `api_user_action` VALUES ('14526', '返回字段编辑', '1', '我超级用户', '1542621719', '{\"hash\":\"5bf28943037e5\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'FieldsManage/response');
+INSERT INTO `api_user_action` VALUES ('14527', '批量上传返回字段', '1', '我超级用户', '1542621721', '{\"hash\":\"5bf28943037e5\",\"type\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'FieldsManage/upload');
+INSERT INTO `api_user_action` VALUES ('14528', '批量上传返回字段', '1', '我超级用户', '1542621745', '{\"hash\":\"5bf28943037e5\",\"type\":\"1\",\"jsonStr\":\"{\\n    \\\"code\\\": 1,\\n    \\\"msg\\\": \\\"\\u64cd\\u4f5c\\u6210\\u529f\\\",\\n    \\\"data\\\": [\\n        {\\n            \\\"id\\\": \\\"2\\\",\\n            \\\"music_name\\\": \\\"\\u771f\\u5b9e\\\",\\n            \\\"music_url\\\": \\\"http:\\/\\/localhost\\/education\\/Public\\/uploads\\/music\\/5bf284ba42a16.mp3\\\"\\n        }\\n    ]\\n}\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'FieldsManage/upload');
+INSERT INTO `api_user_action` VALUES ('14529', '返回字段编辑', '1', '我超级用户', '1542621745', '{\"hash\":\"5bf28943037e5\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'FieldsManage/response');
+INSERT INTO `api_user_action` VALUES ('14530', '字段编辑', '1', '我超级用户', '1542621753', '{\"id\":\"616\",\"type\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'FieldsManage/edit');
+INSERT INTO `api_user_action` VALUES ('14531', '字段编辑', '1', '我超级用户', '1542621763', '{\"id\":\"616\",\"hash\":\"5bf28943037e5\",\"type\":\"1\",\"showName\":\"data[]{}id\",\"dataType\":\"1\",\"default\":\"\",\"isMust\":\"1\",\"range\":\"\",\"info\":\"\\u97f3\\u4e50id\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'FieldsManage/edit');
+INSERT INTO `api_user_action` VALUES ('14532', '返回字段编辑', '1', '我超级用户', '1542621763', '{\"hash\":\"5bf28943037e5\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'FieldsManage/response');
+INSERT INTO `api_user_action` VALUES ('14533', '字段编辑', '1', '我超级用户', '1542621766', '{\"id\":\"617\",\"type\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'FieldsManage/edit');
+INSERT INTO `api_user_action` VALUES ('14534', '字段编辑', '1', '我超级用户', '1542621775', '{\"id\":\"617\",\"hash\":\"5bf28943037e5\",\"type\":\"1\",\"showName\":\"data[]{}music_name\",\"dataType\":\"2\",\"default\":\"\",\"isMust\":\"1\",\"range\":\"\",\"info\":\"\\u97f3\\u4e50\\u540d\\u79f0\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'FieldsManage/edit');
+INSERT INTO `api_user_action` VALUES ('14535', '返回字段编辑', '1', '我超级用户', '1542621775', '{\"hash\":\"5bf28943037e5\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'FieldsManage/response');
+INSERT INTO `api_user_action` VALUES ('14536', '字段编辑', '1', '我超级用户', '1542621777', '{\"id\":\"618\",\"type\":\"1\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'FieldsManage/edit');
+INSERT INTO `api_user_action` VALUES ('14537', '字段编辑', '1', '我超级用户', '1542621786', '{\"id\":\"618\",\"hash\":\"5bf28943037e5\",\"type\":\"1\",\"showName\":\"data[]{}music_url\",\"dataType\":\"2\",\"default\":\"\",\"isMust\":\"1\",\"range\":\"\",\"info\":\"\\u97f3\\u4e50url\\u5730\\u5740\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'FieldsManage/edit');
+INSERT INTO `api_user_action` VALUES ('14538', '返回字段编辑', '1', '我超级用户', '1542621786', '{\"hash\":\"5bf28943037e5\",\"Phpstorm-dea4537f\":\"70dd0cd0-cafc-48e3-9a4a-cd5ab8f76c58\",\"PHPSESSID\":\"9osri9lomdfc8l6naops76h895\"}', 'FieldsManage/response');
 
 -- ----------------------------
 -- Table structure for api_user_data
@@ -19926,7 +20429,7 @@ CREATE TABLE `api_user_data` (
 -- ----------------------------
 -- Records of api_user_data
 -- ----------------------------
-INSERT INTO `api_user_data` VALUES ('1', '72', '0', '1542413897', '1');
+INSERT INTO `api_user_data` VALUES ('1', '75', '0', '1542619891', '1');
 
 -- ----------------------------
 -- Table structure for api_user_info
