@@ -668,20 +668,18 @@ class UsersCenter extends Base
         $common = new Common();
         $microtime = $common->getMicrotime();
         $where = array();
-        $data['order'] = date("YmdHis") . $microtime . mt_rand(1000, 9999);//订单号
-        $data['pay_type'] = 'SIGN';//充值方式(W:微信;A:支付宝;SIGN:签到)
-        $data['role_type'] = $param['user_type'];//角色类型(STU:学生;TEA:老师;COM:机构)
+        $data['order'] = $microtime . mt_rand(1000, 9999);//订单号
+        $data['io_type'] = 'SIGN';//收支类型(SIGN:签到;READ:阅读;SHARE:分享;NOSIGN:未签到;PUB:发布;INVITE:邀请;SHOP:购物;PUBGET:发布所得;)
+        $data['user_type'] = $param['user_type'];//角色类型(STU:学生;TEA:老师;COM:机构)
         $data['explain'] = '签到';//说明
         $data['user_id'] = $param['user_id'];//用户id
         $data['add_time'] = time();//添加时间
-        $year = date('Y', $data['add_time']);//年份
-        $moth = date('m', $data['add_time']);//月份
-        $date = date('d', $data['add_time']);//日期
-        $where['_string'] = 'year(FROM_UNIXTIME(add_time,"%Y-%m-%d"))="' . $year . '" and month(FROM_UNIXTIME(add_time,"%Y-%m-%d"))="' . $moth . '" and dayofmonth(FROM_UNIXTIME(add_time,"%Y-%m-%d"))="' . $date . '"';
+        $date = date('Y-m-d', $data['add_time']);//日期
+        $where['_string'] = 'FROM_UNIXTIME(add_time,"%Y-%m-%d")="' . $date . '"';
         $where['user_id'] = $data['user_id'];
         $where['role_type'] = $data['role_type'];
-        $where['pay_type'] = $data['pay_type'];
-        $is_sign = D('api_recharge')->where($where)->select();
+        $where['pay_type'] = $data['io_type'];
+        $is_sign = D('api_bean_io')->where($where)->select();
         if ($is_sign) {
             return array('response_status' => 'signed');//已经签到过了
         }
@@ -690,11 +688,11 @@ class UsersCenter extends Base
         //获取当前日期时间戳
         $curr_time = strtotime(date('Y-m-d', $data['add_time']));
         //查询奖励表中签到记录等级数量
-        $award_list = D('api_award')->field('id,serial_days,award_num,add_time')->where(array('award_type' => 'SIGN'))->order('serial_days desc')->select();
+        $award_list = D('api_award')->field('id,serial_days,num,add_time')->where(array('award_type' => 'SIGN'))->order('serial_days desc')->select();
         $total = count($award_list);
         //查询签到信息
         unset($where['_string']);
-        $signed_info = D('api_recharge')->where($where)->field('id,add_time')->order('add_time desc')->limit(0, $award_list[0]['serial_days'])->select();
+        $signed_info = D('api_bean_io')->where($where)->field('id,add_time')->order('add_time desc')->limit(0, $award_list[0]['serial_days'])->select();
 
         $max = count($signed_info);
         if ($signed_info) {
@@ -711,23 +709,22 @@ class UsersCenter extends Base
         $map['award_type'] = 'SIGN';
         $map['serial_days'] = array('elt', $i);
         $award_info = D('api_award')->where($map)->field('award_num')->order('serial_days desc')->limit(0, 1)->select();//奖励金额
-        $data['gold_num'] = $award_info[0]['award_num'];//奖励金额
-        $data['status'] = 1;//状态
-        $insert = D('api_recharge')->add($data);
+        $data['num'] = $award_info[0]['award_num'];//奖励金额
+        $insert = D('api_bean_io')->add($data);
         if ($insert) {
             if($param['user_type']=='STU'){
-                $balance = D('api_users')->where(array('id'=>$param['user_id']))->getField('balance');
-                $blance = $data['gold_num']+$balance;
-                $res = D('api_users')->where(array('id'=>$param['user_id']))->save(array('balance'=>$blance));
+                $balance = D('api_users')->where(array('id'=>$param['user_id']))->getField('bean_balance');
+                $blance = $data['num']+$balance;
+                $res = D('api_users')->where(array('id'=>$param['user_id']))->save(array('bean_balance'=>$blance));
                 if($res){
                     return array('response_status' => 'success');//success:成功;fail:失败
                 }else{
                     return array('response_status' => 'ufail');//用户表余额未更新成功
                 }
             }else{
-                $balance = D('api_ct_users')->where(array('id'=>$param['user_id']))->getField('balance');
-                $blance = $data['gold_num']+$balance;
-                $res = D('api_ct_users')->where(array('id'=>$param['user_id']))->save(array('balance'=>$blance));
+                $balance = D('api_ct_users')->where(array('id'=>$param['user_id']))->getField('bean_balance');
+                $blance = $data['num']+$balance;
+                $res = D('api_ct_users')->where(array('id'=>$param['user_id']))->save(array('bean_balance'=>$blance));
                 if($res){
                     return array('response_status' => 'success');//success:成功;fail:失败
                 }else{
@@ -748,11 +745,11 @@ class UsersCenter extends Base
     public function signInDetail($param)
     {
         $curr_time = time();//添加时间
-        $where['role_type'] = $param['user_type'];//角色类型(STU:学生;TEA:老师;COM:机构)
+        $where['user_type'] = $param['user_type'];//角色类型(STU:学生;TEA:老师;COM:机构)
         $where['user_id'] = $param['user_id'];//用户id
         $where['pay_type'] = 'SIGN';
         //签到信息
-        $signed_info = D('api_recharge')->field('id,add_time')->where($where)->select();
+        $signed_info = D('api_bean_io')->field('id,add_time')->where($where)->select();
         $signed_info['total'] = count($signed_info);//累计签到多少天
         //连续签到多少天
         //获取当前日期时间戳
@@ -771,14 +768,12 @@ class UsersCenter extends Base
             }
         }
         $signed_info['serial_signed'] = $i;//连续签到天数
-        $year = date('Y', $curr_time);//年份
-        $moth = date('m', $curr_time);//月份
-        $date = date('d', $curr_time);//日期
-        $wheres['_string'] = 'year(FROM_UNIXTIME(add_time,"%Y-%m-%d"))="' . $year . '" and month(FROM_UNIXTIME(add_time,"%Y-%m-%d"))="' . $moth . '" and dayofmonth(FROM_UNIXTIME(add_time,"%Y-%m-%d"))="' . $date . '"';
+        $date = date('Y-m-d', $curr_time);//日期
+        $wheres['_string'] = 'FROM_UNIXTIME(add_time,"%Y-%m-%d")="' . $date . '"';
         $wheres['user_id'] = $param['user_id'];
         $wheres['role_type'] = $param['user_type'];
         $wheres['pay_type'] = 'SIGN';
-        $is_sign = D('api_recharge')->where($wheres)->select();
+        $is_sign = D('api_bean_io')->where($wheres)->select();
         if ($is_sign) {
             $signed_info['signed_status'] = 'SIGNED';//已经签到过了
         } else {
@@ -791,6 +786,149 @@ class UsersCenter extends Base
         } else {
             $signed_info['response_status'] = 'fail';//success:成功;fail:失败
             return $signed_info;
+        }
+    }
+
+    /**
+     * 其他奖励
+     * @author: 李胜辉
+     * @time: 2018/11/13 09:34
+     *
+     */
+    public function otherAward($param)
+    {
+        $common = new Common();
+        $microtime = $common->getMicrotime();
+        $where = array();
+        $data['order'] = $microtime . mt_rand(1000, 9999);//订单号
+        $data['io_type'] = $param['award_type'];//收支类型(SIGN:签到;READ:阅读;SHARE:分享;NOSIGN:未签到;PUB:发布;INVITE:邀请;SHOP:购物;PUBGET:发布所得;)
+        $data['user_type'] = $param['user_type'];//角色类型(STU:学生;TEA:老师;COM:机构)
+        //说明
+        switch($param['award_type']){
+            case 'SHARE':
+                $data['explain'] = '分享';
+                break;
+            case 'PUB':
+                $data['explain'] = '发布';
+                break;
+            case 'INVITE':
+                $data['explain'] = '邀请';
+                break;
+            case 'PUBGET':
+                $data['explain'] = '发布所得';
+                break;
+            default :
+                break;
+        }
+        $data['user_id'] = $param['user_id'];//用户id
+        $data['add_time'] = time();//添加时间
+        $date = date('Y-m-d', $data['add_time']);//日期
+        $where['_string'] = 'FROM_UNIXTIME(add_time,"%Y-%m-%d")="' . $date . '"';
+        $where['user_id'] = $data['user_id'];
+        $where['user_type'] = $data['user_type'];
+        $where['io_type'] = $data['io_type'];
+        $num_total = D('api_bean_io')->where($where)->getField('sum(num) as total');
+        $award_info = D('api_award')->field('id,award_num,limit_max')->where(array('award_type'=>$data['io_type']))->find();
+        if ($num_total>=$award_info['limit_max']) {
+            return array('response_status' => 'maxed');//已达到上限
+        }
+        $data['num'] = $award_info['award_num'];//奖励数量
+        $add = D('api_bean_io')->add($data);
+        if ($add) {
+            if($param['user_type']=='STU'){
+                $balance = D('api_users')->where(array('id'=>$param['user_id']))->getField('bean_balance');
+                $blance = $data['num']+$balance;
+                $res = D('api_users')->where(array('id'=>$param['user_id']))->save(array('bean_balance'=>$blance));
+                if($res){
+                    return array('response_status' => 'success');//success:成功;fail:失败
+                }else{
+                    return array('response_status' => 'ufail');//用户表余额未更新成功
+                }
+            }else{
+                $balance = D('api_ct_users')->where(array('id'=>$param['user_id']))->getField('bean_balance');
+                $blance = $data['num']+$balance;
+                $res = D('api_ct_users')->where(array('id'=>$param['user_id']))->save(array('bean_balance'=>$blance));
+                if($res){
+                    return array('response_status' => 'success');//success:成功;fail:失败
+                }else{
+                    return array('response_status' => 'ufail');//用户表余额未更新成功
+                }
+            }
+        } else {
+            return array('response_status' => 'fail');//success:成功;fail:失败
+        }
+    }
+    /**
+     * 阅读消费豆币
+     * @author: 李胜辉
+     * @time: 2018/11/20 09:34
+     *
+     */
+    public function readExpenseBean($param)
+    {
+        $common = new Common();
+        $microtime = $common->getMicrotime();
+        $where = array();
+        $data['order'] = $microtime . mt_rand(1000, 9999);//订单号
+        $data['io_type'] = $param['award_type'];//收支类型(SIGN:签到;READ:阅读;SHARE:分享;NOSIGN:未签到;PUB:发布;INVITE:邀请;SHOP:购物;PUBGET:发布所得;)
+        $data['user_type'] = $param['user_type'];//角色类型(STU:学生;TEA:老师;COM:机构)
+        //说明
+        $data['explain'] = '阅读';
+        $data['user_id'] = $param['user_id'];//用户id
+        $data['add_time'] = time();//添加时间
+
+        //先查看是否已经阅读并支付过
+        $where['user_id'] = $data['user_id'];//用户id
+        $where['user_type'] = $data['user_type'];//角色类型(STU:学生;TEA:老师;COM:机构)
+        $where['item_id'] = $param['item_id'];//文章id
+        $readed = D('api_read_expense')->where($where)->getField('id');
+        if($readed){
+            return array('response_status' => 'readed');//已阅读过,不用继续支付费用
+        }
+        $award_num = D('api_award')->where(array('award_type'=>$data['io_type']))->getField('award_num');
+        if($param['user_type']=='STU'){
+            $balance = D('api_users')->where(array('id'=>$param['user_id']))->getField('bean_balance');//查询豆币余额
+            if($balance<$award_num){
+                return array('response_status' => 'deficiency');//余额不足
+            }
+            $data['num'] = $award_num;//奖励数量
+            $add = D('api_bean_io')->add($data);
+            if($add){
+                $blance = $balance-$data['num'];
+                $res = D('api_users')->where(array('id'=>$param['user_id']))->save(array('bean_balance'=>$blance));
+                if($res){
+                    $recode['add_time']= $data['add_time'];
+                    $recode['user_type']= $param['user_type'];
+                    $recode['user_id']= $param['user_id'];
+                    $recode['item_id']= $param['item_id'];
+                    D('api_read_expense')->add($recode);
+                    return array('response_status' => 'success');//success:成功;fail:失败
+                }else{
+                    return array('response_status' => 'ufail');//用户表余额未更新成功
+                }
+            }
+
+        }else{
+            $balance = D('api_ct_users')->where(array('id'=>$param['user_id']))->getField('bean_balance');//查询豆币余额
+            if($balance<$award_num){
+                return array('response_status' => 'deficiency');//余额不足
+            }
+            $data['num'] = $award_num;//奖励数量
+            $add = D('api_bean_io')->add($data);
+            if($add){
+                $blance = $balance-$data['num'];
+                $res = D('api_ct_users')->where(array('id'=>$param['user_id']))->save(array('bean_balance'=>$blance));
+                if($res){
+                    $recode['add_time']= $data['add_time'];
+                    $recode['user_type']= $param['user_type'];
+                    $recode['user_id']= $param['user_id'];
+                    $recode['item_id']= $param['item_id'];
+                    D('api_read_expense')->add($recode);
+                    return array('response_status' => 'success');//success:成功;fail:失败
+                }else{
+                    return array('response_status' => 'ufail');//用户表余额未更新成功
+                }
+            }
         }
     }
     /*******************************************************************************************我的金币 结束*******************************************************/

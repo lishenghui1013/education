@@ -32,7 +32,7 @@ class AwardController extends BaseController {
         $start = ($curr - 1) * $limit;//开始
         //查询总条数
         $total = D('api_award as c')->join('left join api_user as u on u.id=c.add_id')->count();//查询满足要求的总记录数
-        $info = D('api_award as c')->join('left join api_user as u on u.id=c.add_id')->field('c.id,c.award_type,c.award_num,c.limit,c.serial_days,u.username,c.add_time')->order('c.id')->limit($start, $limit)->select();
+        $info = D('api_award as c')->join('left join api_user as u on u.id=c.add_id')->field('c.id,c.limit_max,c.award_type,c.award_num,c.limit,c.serial_days,u.username,c.add_time')->order('c.id')->limit($start, $limit)->select();
         foreach ($info as $keys => $values) {
             foreach ($values as $key => $value) {
                 if ($values[$key] === null) {
@@ -44,7 +44,6 @@ class AwardController extends BaseController {
             $data = array(
                 'limit' => $limit,
                 'curr' => $curr,
-                'add_time' => $getInfo['add_time'],
                 'status' => 'success',//查询状态:成功为success,失败为fail
                 'total' => $total,
                 'data' => $info
@@ -53,13 +52,11 @@ class AwardController extends BaseController {
             $data = array(
                 'limit' => $limit,
                 'curr' => $curr,
-                'add_time' => $getInfo['add_time'],
                 'status' => 'fail',
                 'total' => $total,
                 'data' => $info
             );
         }
-
         $this->ajaxReturn($data, 'json');
     }
 
@@ -79,7 +76,7 @@ class AwardController extends BaseController {
         }
     }
     /**
-     * 添加奖励
+     * 添加奖罚记录
      * @author: 李胜辉
      * @time: 2018/11/13 17:32
      */

@@ -1,7 +1,7 @@
 <extend name="Public/base"/>
 <block name="main">
     <fieldset class="layui-elem-field">
-        <legend>基础设置 - {:(isset($detail['id'])?'编辑':'新增')}奖励</legend>
+        <legend>基础设置 - {:(isset($detail['id'])?'编辑':'新增')}奖罚记录</legend>
         <div class="layui-field-box">
             <form class="layui-form" action="" id="health_form" method="post">
                 <if condition="isset($detail['id'])">
@@ -16,19 +16,23 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label"><span style="color:red">*</span> 奖励类型</label>
                     <div class="layui-input-block">
-                        <select name="award_type" lay-verify="">
+                        <select name="award_type" lay-verify="" id="award_type">
                             <option value="">请选择类型</option>
 
-                            <if condition="$detail['award_type'] eq 'SIGN'">
-                                <option value="SIGN" selected>签到</option>
-                                <else/>
-                                <option value="SIGN">签到</option>
-                            </if>
+                            <option value="SIGN"{$detail['award_type']=='SIGN'?' selected':''}>签到</option>
+                            <option value="READ"{$detail['award_type']=='READ'?' selected':''}>阅读</option>
+                            <option value="SHARE"{$detail['award_type']=='SHARE'?' selected':''}>分享</option>
+                            <option value="NOSIGN"{$detail['award_type']=='NOSIGN'?' selected':''}>未签到</option>
+                            <option value="PUB"{$detail['award_type']=='PUB'?' selected':''}>发布</option>
+                            <option value="INVITE"{$detail['award_type']=='INVITE'?' selected':''}>邀请</option>
+                            <option value="SHOP"{$detail['award_type']=='SHOP'?' selected':''}>购物</option>
+                            <option value="PUBGET"{$detail['award_type']=='PUBGET'?' selected':''}>发布所得</option>
 
                         </select>
                     </div>
                 </div>
-                <div class="layui-form-item">
+
+                <div class="layui-form-item" id="limit">
                     <label class="layui-form-label"><span style="color:red">*</span> 规则</label>
                     <div class="layui-input-block">
                         <select name="limit" lay-verify="">
@@ -43,23 +47,31 @@
                         </select>
                     </div>
                 </div>
-                <div class="layui-form-item">
+
+                <div class="layui-form-item" id="serial_days">
                     <label class="layui-form-label"><span style="color:red">*</span> 连续天数</label>
                     <div class="layui-input-block">
-                        <input type="number" name="serial_days" required
-                               value="{:(isset($detail['serial_days'])?$detail['serial_days']:'')}" lay-verify="required"
+                        <input type="number" name="serial_days"
+                               value="{:(isset($detail['serial_days'])?$detail['serial_days']:'')}"
                                placeholder="请输入连续天数" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label"><span style="color:red">*</span> 奖励</label>
                     <div class="layui-input-block">
-                        <input type="text" name="award_num" required
-                               value="{:(isset($detail['award_num'])?$detail['award_num']:'')}" lay-verify="required"
-                               placeholder="请输入奖励金币数量" class="layui-input">
+                        <input type="text" name="award_num"
+                               value="{:(isset($detail['award_num'])?$detail['award_num']:'')}"
+                               placeholder="请输入奖励数量" class="layui-input">
                     </div>
                 </div>
-
+                <div class="layui-form-item" id="limit_max">
+                    <label class="layui-form-label"><span style="color:red">*</span> 奖励上限</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="limit_max"
+                               value="{:(isset($detail['limit_max'])?$detail['limit_max']:'')}"
+                               placeholder="请输入奖励上限数量" class="layui-input">
+                    </div>
+                </div>
 
                 <div class="layui-form-item">
                     <div class="layui-input-block">
@@ -71,6 +83,36 @@
     </fieldset>
 </block>
 <block name="myScript">
+    <script>
+        layui.use(['form'],function(){
+            var form = layui.form();
+            var select = $("#award_type").val();
+            console.log(select);
+            if(select!='SIGN'){
+                $("#limit").addClass('layui-hide');
+                $("#serial_days").addClass('layui-hide');
+                $("#limit_max").removeClass('layui-hide');
+            }else{
+                $("#limit_max").addClass('layui-hide');
+                $("#limit").removeClass('layui-hide');
+                $("#serial_days").removeClass('layui-hide');
+            }
+
+            $("dd").click(function(){
+                console.log('hello');
+                select = $("#award_type").val();
+                if(select!='SIGN'){
+                    $("#limit").addClass('layui-hide');
+                    $("#serial_days").addClass('layui-hide');
+                    $("#limit_max").removeClass('layui-hide');
+                }else{
+                    $("#limit_max").addClass('layui-hide');
+                    $("#limit").removeClass('layui-hide');
+                    $("#serial_days").removeClass('layui-hide');
+                }
+            });
+        });
+    </script>
 
     <if condition="isset($detail['id'])">
         <script>
