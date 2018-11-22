@@ -1,0 +1,119 @@
+<extend name="Public/base"/>
+<block name="main">
+    <fieldset class="layui-elem-field">
+        <legend>基础设置 - {:(isset($detail['id'])?'编辑':'新增')}定时任务</legend>
+        <div class="layui-field-box">
+            <form class="layui-form" action="" id="health_form" method="post">
+                <if condition="isset($detail['id'])">
+                    <input type="hidden" name="id" value="{$detail['id']}">
+                </if>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red">*</span> 定时名称</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="crontab_name" required
+                               value="{:(isset($detail['crontab_name'])?$detail['crontab_name']:'')}" lay-verify="required"
+                               placeholder="请输入定时名称" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red">*</span> 开始时间</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" id="start_time" autocomplete="off" placeholder="开始时间" name="start_time" value="{:(isset($detail['start_time'])?date('Y-m-d H:i:s',$detail['start_time']):'')}" onclick="layui.laydate({elem: this, istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red">*</span> 时间间隔</label>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline" style="width:60px;">
+                            <input type="number" name="hour" min="0" class="layui-input" lay-verify="required" value="{:(isset($detail['hour'])?$detail['hour']:0)}"/>
+                        </div>
+                        <label class="layui-form-label" style="width:10px;margin-left:0;margin-right:0;padding-left:0;padding-right:0;">时</label>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline" style="width:60px;">
+                            <input type="number" name="minute" min="0" max="59" class="layui-input" lay-verify="required" value="{:(isset($detail['minute'])?$detail['minute']:0)}"/>
+                        </div>
+                        <label class="layui-form-label" style="width:10px;margin-left:0;margin-right:0;padding-left:0;padding-right:0;">分</label>
+                    </div>
+                    <div class="layui-inline" >
+                        <div class="layui-input-inline" style="width:60px;">
+                            <input type="number" name="second" min="0" max="59" class="layui-input" lay-verify="required" value="{:(isset($detail['second'])?$detail['second']:0)}"/>
+                        </div>
+                        <label class="layui-form-label" style="width:10px;margin-left:0;margin-right:0;padding-left:0;padding-right:0;">秒</label>
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="admin-form">立即提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </fieldset>
+</block>
+<block name="myScript">
+    <script>
+        layui.use(['form', 'laypage', 'layer', 'laydate'], function () {
+            var form = layui.form(),
+                laydate = layui.laydate;
+        });
+    </script>
+
+    <if condition="isset($detail['id'])">
+        <script>
+            layui.use('form', function () {
+                var form = layui.form();
+                form.on('submit(admin-form)', function (data) {
+                    //alert(data.field);
+                    $.ajax({
+                        type: "POST",
+                        url: '{:U("update")}',
+                        data: data.field,
+                        success: function (msg) {
+                            //alert(msg);return false;
+                            if (msg.code == 1) {
+                                parent.location.reload();
+                            } else {
+                                parent.layer.msg(msg.msg, {
+                                    icon: 5,
+                                    shade: [0.6, '#393D49'],
+                                    time: 1500
+                                });
+                            }
+                        }
+                    });
+                    return false;
+                });
+            });
+        </script>
+        <else/>
+        <script>
+            layui.use('form', function () {
+                var form = layui.form();
+                form.on('submit(admin-form)', function (data) {
+                    $.ajax({
+                        type: "POST",
+                        url: '{:U("add")}',
+                        data: data.field,
+                        success: function (msg) {
+                            if (msg.code == 1) {
+                                parent.location.reload();
+                            } else {
+                                parent.layer.msg(msg.msg, {
+                                    icon: 5,
+                                    shade: [0.6, '#393D49'],
+                                    time: 1500
+                                });
+                            }
+                        }
+                    });
+                    return false;
+                });
+
+            });
+        </script>
+    </if>
+</block>
