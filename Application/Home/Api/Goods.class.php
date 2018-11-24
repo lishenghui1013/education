@@ -72,5 +72,23 @@ class Goods extends Base
             return $res;
         }
     }
+    /**
+     * 课程详情
+     * @author: 李胜辉
+     * @time: 2018/11/23 09:34
+     *
+     */
+    public function curriculumDetail($param)
+    {
+        $id = $param['id'];//课程id
+        $res = D('api_curriculum')->field('id,curriculum_name,price,intro,cover,add_time,add_id,content,category_id,user_type,curriculum_start_time,curriculum_end_time,lesson_time,inventory_num')->where(array('id'=>$id))->find();
+        if ($res) {
+            $res['response_status'] = 'success';//success:成功;fail:失败
+            return $res;
+        } else {
+            $res['response_status'] = 'fail';//success:成功;fail:失败
+            return $res;
+        }
+    }
 
 }

@@ -155,19 +155,20 @@ class CrontabController extends BaseController
         $id = I('post.id');
         $use_status = I('post.use_status');
         $start_time = D('api_crontab')->where(array('id' => $id))->getField('start_time');
-        $use_status = $use_status;
         $arr['use_status'] = intval($use_status);
         $res = D('api_crontab')->where(array('id' => $id))->save($arr);
         if($res){
-            $this->ajaxSuccess('操作成功');
             $stop = time();
-            while($start_time >= $stop){
+            do{
+                ignore_user_abort();//关掉浏览器，PHP脚本也可以继续执行.
+                set_time_limit(0);// 通过set_time_limit(0)可以让程序无限制的执行下去
+                sleep(1);
                 if($start_time == $stop){
                     $stop = open($id);
                 }else{
                     $stop = time();
                 }
-            }
+            }while($start_time >= $stop);
         }else{
             $this->ajaxError('操作失败');
 
@@ -204,7 +205,7 @@ class CrontabController extends BaseController
                 if ($student_ids) {
                     $student_ids = implode(',', $student_ids);
                     $modul = new \Think\Model();
-                    $sql = 'update api_users set bean_balance=beanbalance-' . $deduct_num . ' where id not in (' . $student_ids . ')';
+                    $sql = 'update api_users set bean_balance=bean_balance-' . $deduct_num . ' where id not in (' . $student_ids . ')';
                     $update = $modul->execute($sql);
                     if ($update) {
                         $data = array();
@@ -230,7 +231,105 @@ class CrontabController extends BaseController
                 if ($com_ids) {
                     $com_ids = implode(',', $com_ids);
                     $moduls = new \Think\Model();
-                    $sql = 'update api_ct_users set bean_balance=beanbalance-' . $deduct_num . ' where id not in (' . $com_ids . ')';
+                    $sql = 'update api_ct_users set bean_balance=bean_balance-' . $deduct_num . ' where id not in (' . $com_ids . ')';
+                    $updates = $moduls->execute($sql);
+                    if ($updates) {
+                        $values = '';
+                        $data = array();
+                        $all_data = array();
+                        foreach ($student_ids as $key => $value) {
+                            $microtime = $common->getMicrotime();
+                            $data['num'] = $deduct_num;
+                            $data['io_type'] = 'NOSIGN';
+                            $data['order'] = $microtime . mt_rand(1000, 9999);//订单号;
+                            $data['explain'] = '未签到';
+                            $data['user_type'] = D('api_ct_users')->where(array('id' => $value))->getField('user_type');
+                            $data['user_id'] = $value;
+                            $data['add_time'] = time();
+                            $all_data[] = $data;
+                        }
+                        unset($key, $value);
+                        D('api_bean_io')->addAll($all_data);
+                    }
+                }
+                sleep($interval);
+            } while ($timing['use_staus'] == 1);//当为true时  无限循环
+            return time();
+        }
+    }
+    /**
+     * 开始执行定时任务
+     * @author: 李胜辉
+     * @time: 2018/11/22 09:32
+     */
+    public function start()
+    {
+        ignore_user_abort();//关掉浏览器，PHP脚本也可以继续执行.
+        set_time_limit(0);// 通过set_time_limit(0)可以让程序无限制的执行下去
+        session_write_close();  //主动关闭session，不主动关闭的话，该定时器是一个死循环，会阻塞在这里，导致其它页面打不开
+        $id = I('get.id');
+        $use_status = I('get.use_status');
+        $arr['use_status'] = intval($use_status);
+        $res = D('api_crontab')->where(array('id' => $id))->save($arr);
+        $crontab_info = D('api_crontab')->where(array('id' => $id))->find();
+        $common = new Common();
+        if ($crontab_info['use_status'] == 0) {
+            exit;
+        } else {
+            do {
+                $start_time = D('api_crontab')->where(array('id' => $id))->getField('start_time');
+                $newDate = date("Y-m-d H:i",$start_time);
+                $newDate = str_replace(array(":"," ","-"),"",$newDate);
+                //该定时器的开关，run值为1,则一直执行,run值为0,则中止执行
+                $run = D('api_crontab')->where(array('id' => $id))->getField('use_staus');
+                if(!$run) die('process abort');
+                if($newDate){
+
+                }
+
+
+
+                $timing = M('api_crontab')->where(array('id' => $id))->find();//通过后台控制数据库的数据 来控制此循环
+
+                $interval = $crontab_info['interval'];// 每隔24小时运行
+                //每天没有签到的会员,豆币金额减去相应数额
+                $deduct_num = D('api_award')->where(array('award_type' => 'NOSIGN'))->getField('award_num');
+                $one_day = 60 * 60 * 24;
+                $time = time() - $one_day;
+                $date = date('Y-m-d', $time);//日期
+                $where = array('b.user_type' => 'STU', 'io_type' => 'SIGN');
+                $where['_string'] = 'FROM_UNIXTIME(add_time,"%Y-%m-%d")="' . $date . '"';
+                $student_ids = D('api_bean_io')->where($where)->getField('id', true);
+                if ($student_ids) {
+                    $student_ids = implode(',', $student_ids);
+                    $modul = new \Think\Model();
+                    $sql = 'update api_users set bean_balance=bean_balance-' . $deduct_num . ' where id not in (' . $student_ids . ')';
+                    $update = $modul->execute($sql);
+                    if ($update) {
+                        $data = array();
+                        $all_data = array();
+                        foreach ($student_ids as $key => $value) {
+                            $microtime = $common->getMicrotime();
+                            $data['num'] = $deduct_num;
+                            $data['io_type'] = 'NOSIGN';
+                            $data['order'] = $microtime . mt_rand(1000, 9999);//订单号;
+                            $data['explain'] = '未签到';
+                            $data['user_type'] = 'STU';
+                            $data['user_id'] = $value;
+                            $data['add_time'] = time();
+                            $all_data[] = $data;
+                        }
+                        unset($key, $value);
+                        D('api_bean_io')->addAll($all_data);
+                    }
+                }
+                $wheres = array('b.user_type' => array('neq', 'STU'), 'io_type' => 'SIGN');
+                $wheres['_string'] = 'FROM_UNIXTIME(add_time,"%Y-%m-%d")="' . $date . '"';
+                $com_ids = D('api_bean_io')->where($wheres)->getField('id', true);
+                if ($com_ids) {
+                    $com_ids = implode(',', $com_ids);
+                    $moduls = new \Think\Model();
+                    $sql = 'update api_ct_users set bean_balance=bean_balance-' . $deduct_num . ' where id not in (' . $com_ids . ')';
                     $updates = $moduls->execute($sql);
                     if ($updates) {
                         $values = '';

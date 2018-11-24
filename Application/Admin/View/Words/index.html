@@ -1,55 +1,20 @@
 <extend name="Public/base"/>
 <block name="main">
     <fieldset class="layui-elem-field">
-        <legend>内容管理 - 词组列表</legend>
-        <span class="layui-btn layui-btn-normal api-add" style="margin-left:15px;"><i class="layui-icon">&#xe608;</i> 新增</span>
-        <span class="layui-btn layui-btn-normal batch-add" style="margin-left:30px;"><i class="layui-icon">&#xe608;</i> 批量添加</span>
+        <legend><a href="{:U('Article/index')}">阅读文章</a> - 词组列表</legend>
+        <a class="layui-btn layui-btn-normal" href="{:substr(U('add'),0,-5)}/id/{$id}" style="margin-left:15px;"><i class="layui-icon">&#xe608;</i> 新增</a>
+        <span class="layui-btn layui-btn-normal batch-add" style="margin-left:30px;" data-url="{:U('batchAdd')}" data-id="{$id}"><i class="layui-icon">&#xe608;</i> 批量添加</span>
         <div class="layui-field-box">
             <form class="layui-form" action="" method="post">
                 <div class="layui-form-item">
-                    <div class="layui-inline">
-                        <select name="class_id" id="class_id">
-                            <option value="">请选择级别</option>
-                            <foreach name="class_list" item="vo" key="k">
-                                <if condition="$vo.id eq $class">
-                                    <option value="{$vo['id']}" selected>{$vo['class_name']}</option>
-                                    <else/>
-                                    <option value="{$vo['id']}">{$vo['class_name']}</option>
-                                </if>
-                            </foreach>
-                        </select>
-                    </div>
-                    <div class="layui-inline">
-                        <select name="subject_id" id="subject_id">
-                            <option value="">请选择科目</option>
-                            <foreach name="subject_list" item="vo" key="k">
-                                <if condition="$vo['id'] eq $subject">
-                                    <option value="{$vo['id']}" selected>{$vo['subject_name']}</option>
-                                    <else/>
-                                    <option value="{$vo['id']}">{$vo['subject_name']}</option>
-                                </if>
-                            </foreach>
-                        </select>
-                    </div>
-                    <div class="layui-inline">
-                        <select name="versions_id" id="versions_id">
-                            <option value="">请选择版本</option>
-                            <foreach name="versions_list" item="vo" key="k">
-                                <if condition="$vo['id'] eq $versions">
-                                    <option value="{$vo['id']}" selected>{$vo['versions_name']}</option>
-                                    <else/>
-                                    <option value="{$vo['id']}">{$vo['versions_name']}</option>
-                                </if>
-                            </foreach>
-                        </select>
-                    </div>
 
                     <div class="layui-inline">
+                        <label class="layui-form-label">词组</label>
                         <div class="layui-input-inline" style="width: 300px;">
-                            <input type="text" name="title" placeholder="请输入词组关键词" class="layui-input" value="{$title}" id="title">
+                            <input type="text" name="content" placeholder="请输入词组关键词" class="layui-input" value="{$content}" id="content">
                         </div>
                     </div>
-
+                    <input type="hidden" name="item_id" id="id" value="{$Think.get.id}"/>
                     <div class="layui-inline">
                         <button class="layui-btn" lay-submit lay-filter="search">
                             查询
@@ -57,43 +22,27 @@
                     </div>
                 </div>
             </form>
-            <input type="hidden" name="class_ids" id="class_ids" value=""/>
-            <input type="hidden" name="subject_ids" id="subject_ids" value=""/>
-            <input type="hidden" name="versions_ids" id="versions_ids" value=""/>
-            <input type="hidden" name="titles" id="titles" value=""/>
+            <input type="hidden" name="item_ids" id="ids" value="{$Think.get.id}"/>
+            <input type="hidden" name="contents" id="contents" value=""/>
             <input type="hidden" name="limit" id="limit" value=""/>
             <input type="hidden" name="curr" id="curr" value=""/>
             <input type="hidden" name="total" id="total" value=""/>
             <table class="layui-table" lay-even>
                 <colgroup>
                     <col width="5%">
-                    <col width="10%">
-                    <col>
-                    <col width="5%">
-                    <col width="5%">
-                    <col width="5%">
-                    <col width="10%">
-                    <col width="5%">
-                    <col width="5%">
-                    <col width="5%">
-                    <col width="5%">
-                    <col width="5%">
                     <col width="15%">
+                    <col>
+                    <col width="10%">
+                    <col width="10%">
+                    <col width="20%">
                 </colgroup>
                 <thead>
                 <tr>
                     <th>ID</th>
-                    <th>标题</th>
-                    <th>内容简要</th>
-                    <th>级别</th>
-                    <th>科目</th>
-                    <th>版本</th>
-                    <th>发布时间</th>
+                    <th>词组</th>
+                    <th>来源</th>
+                    <th>添加时间</th>
                     <th>发布人</th>
-                    <th>阅读量</th>
-                    <th>收藏量</th>
-                    <th>分享量</th>
-                    <th>状态</th>
                     <th>操作</th>
                 </tr>
                 </thead>
@@ -141,75 +90,62 @@
                     var html = '';
                     var data = msg.data;
                     if (msg.status == 'success') {
+                        console.log(msg);
                         for (var x in data) {
                             var str_status = '';
                             var add_time = '';
-                            var audit_time = '';
                             var button = '';
-                            var title = data[x].title;
                             var content = data[x].content;
-                            if (data[x].show_status == 1) {
-                                button = '<span class="layui-btn layui-btn-danger confirm" data-info="你确定下线当前项么？"\n' +
-                                    '                            data-id="'+data[x].id+'" data-url="{:U(\'close\')}">下线</span>';
-                                str_status = '<span style="color:green;">上线</span>'
-                            } else if (data[x].show_status == 2) {
-                                button = '<span class="layui-btn confirm" data-info="你确定上线当前项么？" data-id="'+data[x].id+'"\n' +
-                                    '                            data-url="{:U(\'open\')}">上线</span>';
-                                str_status = '<span style="color:red;">下线</span>'
-                            } else {
-                                str_status = '<span style="color:#0000FF;">未知</span>'
-                            }
-                            if (data[x].pub_time != '') {
-                                add_time = new Date(data[x].pub_time * 1000).format("yyyy-MM-dd");
+                            var title = data[x].title;
+                            if (data[x].add_time != '') {
+                                add_time = new Date(data[x].add_time * 1000).format("yyyy-MM-dd");
                             } else {
                                 add_time = '--';
-                            }
-                            if (content.length >= 30) {
-                                content = content.substr(0, 20) + '...';
                             }
                             if (title.length >= 30) {
                                 title = title.substr(0, 20) + '...';
                             }
+                            if (content.length >= 30) {
+                                content = content.substr(0, 20) + '...';
+                            }
 
-                            html += '<tr><td>' + data[x].id + '</td><td><span title="'+data[x].title+'">' + title + '</span></td><td><span title="' + data[x].content + '">' + content + '</span></td><td>'
-                                + data[x].class_name + '</td><td>' + data[x].subject_name + '</td><td>'+ data[x].versions_name + '</td><td>' + add_time + '</td><td>'
-                                + data[x].username + '</td><td>' + data[x].read_num + '</td><td>' + data[x].collect_num + '</td><td>'+ data[x].share_num + '</td><td>'+ str_status + '</td><td>'
+                            html += '<tr><td>' + data[x].id + '</td><td><span title="'+data[x].content+'">' + content + '</span></td><td><span title="' + data[x].title + '">' + title + '</span></td><td>'
+                                 + add_time + '</td><td>'
+                                + data[x].username + '</td><td>'
                                 +button+ '<span class="layui-btn edit" data-id="' + data[x].id + '"data-url="{:U(\'update\')}">编辑</span>' +
-                                '<span class="layui-btn layui-btn-danger look" data-id="' + data[x].id + '"data-url="{:U(\'look\')}">查看</span>' + '</td></tr>'
+                                '<span class="layui-btn layui-btn-danger confirm" data-info="你确定要删除么？" data-id="' + data[x].id + '"data-url="{:U(\'delete\')}">删除</span>' + '</td></tr>'
                         }
 
                     } else {
-                        html = '<tr><td colspan="13" style="text-align:center;">暂无数据</td></tr>'
+                        html = '<tr><td colspan="6" style="text-align:center;">暂无数据</td></tr>'
 
                     }
                     $("#tbody").html(html);
                     $("#curr").val(msg.curr);
                     $("#limit").val(msg.limit);
                     $("#total").val(msg.total);
-
-
                     $('.edit').on('click', function () {
                         var ownObj = $(this);
                         var url = ownObj.attr('data-url').slice(0,-5)+'/id/'+ownObj.attr('data-id');
                         layer.open({
-                            title: '编辑',
+                            content: '编辑',
                             type: 2,
                             area: ['80%', '80%'],
                             maxmin: true,
                             content: url
                         });
                     });
-                    $('.look').on('click', function () {
+                    /*$('.look').on('click', function () {
                         var ownObj = $(this);
                         var url = ownObj.attr('data-url').slice(0,-5)+'/id/'+ownObj.attr('data-id');
                         layer.open({
-                            title: '编辑',
+                            content: '编辑',
                             type: 2,
                             area: ['80%', '80%'],
                             maxmin: true,
                             content: url
                         });
-                    });
+                    });*/
                     $('.confirm').on('click', function () {
                         var ownObj = $(this);
                         layer.confirm(ownObj.attr('data-info'), {
@@ -260,10 +196,8 @@
 
                         var object = new Object();
                         object.curr = obj.curr;
-                        object.class_id = $("#class_ids").val();
-                        object.subject_id = $("#subject_ids").val();
-                        object.versions_id = $("#versions_ids").val();
-                        object.title = $("#titles").val();
+                        object.content = $("#contents").val();
+                        object.item_id = $("#ids").val();
                         ajaxlist(object);
                     }
                 }
@@ -273,14 +207,14 @@
         layui.use(['form', 'laypage', 'layer', 'laydate'], function () {
             var form = layui.form(),
                 laydate = layui.laydate;
-            ajaxlist();
+            var object = new Object();
+            object.item_id = $("#id").val();
+            ajaxlist(object);
             pagenum();
 
             form.on('submit(search)', function (data) {
-                $("#class_ids").val($("#class_id").val());
-                $("#subject_ids").val($("#subject_id").val());
-                $("#versions_ids").val($("#versions_id").val());
-                $("#titles").val($("#title").val());
+
+                $("#contents").val($("#content").val());
                 var object = data.field;
                 object.curr = 1;
                 ajaxlist(object);
@@ -290,7 +224,7 @@
 
             $('.api-add').on('click', function () {
                 var index = layer.open({
-                    title: '添加记录',
+                    content: '添加记录',
                     type: 2,
                     area: ['60%', '100%'],
                     maxmin: true,
@@ -298,12 +232,14 @@
                 });
             });
             $('.batch-add').on('click', function () {
+                var ownObj = $(this);
+                var url = ownObj.attr('data-url').slice(0,-5)+'/item_id/'+ownObj.attr('data-id');
                 var index = layer.open({
                     title: '批量添加记录',
                     type: 2,
                     area: ['40%', '40%'],
                     maxmin: true,
-                    content: '{:U("batchAdd")}'
+                    content: url
                 });
 
             });

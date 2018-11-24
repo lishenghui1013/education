@@ -8,6 +8,7 @@
 namespace Admin\Controller;
 
 use Think\log;
+use Home\Api\Common;
 class ArticleController extends BaseController {
     /**
      * 列表页
@@ -149,7 +150,6 @@ class ArticleController extends BaseController {
         if (IS_POST) {
             $data = I('post.');
             $data['pub_userid'] = session('uid');
-            /*print_r($data);die;*/
             $data['show_status'] = $data['show_status'] == 'on' ? 1 : 2;
             $data['pub_time'] = time();
             $res = D('api_article_publish')->add($data);
@@ -266,6 +266,10 @@ class ArticleController extends BaseController {
      * @time: 2018/11/16 17:32
      *
      */
+    const CURL_TIMEOUT = 20;
+    const URL = 'http://openapi.youdao.com/api';
+    const APP_KEY = '1baeb55ce326cf32';  //替换为您的应用ID
+    const SEC_KEY = 'mGsITpcCqpGicOm0Xr0jmafvzAUpQgnq';  //替换为您的密钥
     public function imports()
     {
 
@@ -298,11 +302,29 @@ class ArticleController extends BaseController {
                 $highestRow = $sheet->getHighestRow();//获取总行数
                 $highestColumn = $sheet->getHighestColumn();//取得总列数
                 $datas = array();
+                $common = new Common();
+
                 for ($i = 3; $i <= $highestRow; $i++) {
                     $data['title'] = $objPHPExcel->getActiveSheet()->getCell("A" . $i)->getValue();
                     $data['pub_userid'] = session('uid');
                     $data['pub_time'] = time();
+
                     $data['content'] = $objPHPExcel->getActiveSheet()->getCell("B" . $i)->getValue();
+
+                    $query = $data['content'];//查询内容
+                    $from = 'EN';//要翻译的语言
+                    $to = 'zh-CHS';//翻译成什么语言
+                    $args = array(
+                        'q' => $query,
+                        'appKey' => self::APP_KEY,
+                        'salt' => rand(10000, 99999),
+                        'from' => $from,
+                        'to' => $to
+                    );
+                    $args['sign'] = $common->buildSign(self::APP_KEY, $query, $args['salt'], self::SEC_KEY);
+                    $ret = $common->call(self::URL, $args);
+                    $ret = json_decode($ret, true);
+                    $data['translate_content'] = $ret['translation'][0]?$ret['translation'][0]:'';
                     $data['price'] = $objPHPExcel->getActiveSheet()->getCell("C" . $i)->getValue();
                     $data['show_status'] = $objPHPExcel->getActiveSheet()->getCell("D" . $i)->getValue();
                     $data['article_type'] = $objPHPExcel->getActiveSheet()->getCell("E" . $i)->getValue();

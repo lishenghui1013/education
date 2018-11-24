@@ -121,9 +121,34 @@ class Common extends Base
     const URL = 'http://openapi.youdao.com/api';
     const APP_KEY = '1baeb55ce326cf32';  //替换为您的应用ID
     const SEC_KEY = 'mGsITpcCqpGicOm0Xr0jmafvzAUpQgnq';  //替换为您的密钥
-
     /**
-     * 有道智云 翻译入口
+     * 有道智云 公共翻译入口
+     * @author: 李胜辉
+     * @time: 2018/11/24 09:34
+     * @param: $query 查询内容
+     * @param: $from 要翻译的语言
+     * @param: $to 翻译成什么语言
+     */
+    public function commonTranslate($param)
+    {
+
+        $query = $param['query'];//查询内容
+        $from = $param['from'] ? $param['from'] : 'EN';//要翻译的语言
+        $to = $param['to'] ? $param['to'] : 'zh-CHS';//翻译成什么语言
+        $args = array(
+            'q' => $query,
+            'appKey' => self::APP_KEY,
+            'salt' => rand(10000, 99999),
+            'from' => $from,
+            'to' => $to
+        );
+        $args['sign'] = $this->buildSign(self::APP_KEY, $query, $args['salt'], self::SEC_KEY);
+        $ret = $this->call(self::URL, $args);
+        $ret = json_decode($ret, true);
+        return $ret;
+    }
+    /**
+     * 有道智云 生词翻译入口
      * @author: 李胜辉
      * @time: 2018/11/05 09:34
      * @param: $query 查询内容
@@ -155,7 +180,6 @@ class Common extends Base
         );
         $args['sign'] = $this->buildSign(self::APP_KEY, $query, $args['salt'], self::SEC_KEY);
         $ret = $this->call(self::URL, $args);
-        print_r($ret);exit;
         $is_have = D('api_new_words')->where($where)->getField('id');
         if($is_have){
             $ret['add_status']='Y';//已经添加
@@ -449,5 +473,54 @@ class Common extends Base
         $str_microtime = intval($arr_microtime[1]).intval($arr_microtime[0]*1000000);
         return $str_microtime;
     }
+    /*******************************************************************************************地址 结束*******************************************************/
+    /**
+     * 获取省份列表
+     * @author: 李胜辉
+     * @time: 2018/11/12 09:34
+     */
+    public function provinceList()
+    {
+        $listInfo = D('api_provinces')->select();
+        ApiLog::setApiInfo($listInfo);
+        if (empty($listInfo)) {
+            Response::error(ReturnCode::INVALID, '暂无数据');
+        }
+        return $listInfo;
+    }
+
+    /**
+     * 城市列表
+     * @author: 李胜辉
+     * @time: 2018/11/12 09:34
+     */
+    public function cityList($param)
+    {
+        $province_num = $param['province_num'];//省份编号
+        $listInfo = D('api_cities')->where(array('provinceid' => $province_num))->select();
+        ApiLog::setApiInfo($listInfo);
+        if (empty($listInfo)) {
+            Response::error(ReturnCode::INVALID, '暂无数据');
+        }
+        return $listInfo;
+    }
+    /**
+     * 县区列表
+     * @author: 李胜辉
+     * @time: 2018/11/12 09:34
+     */
+    public function countyList($param)
+    {
+        $city_num = $param['city_num'];//城市编号
+        $listInfo = D('api_areas')->where(array('cityid' => $city_num))->select();
+        ApiLog::setApiInfo($listInfo);
+        if (empty($listInfo)) {
+            Response::error(ReturnCode::INVALID, '暂无数据');
+        }
+        return $listInfo;
+    }
+
+
+    /*******************************************************************************************地址 结束*******************************************************/
 
 }

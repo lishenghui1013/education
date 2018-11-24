@@ -66,15 +66,7 @@
                     <label class="layui-form-label">封面</label>
 
                     <input name="file" class="layui-upload-file" type="file">
-                    <!--<blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
-                        预览图：
-                        <div class="layui-upload-list" id="demo2">
-                            <if condition="$detail['cover'] neq ''">
-                                <img style="width:150px;height:150px;margin-left:5px" src="{$detail['cover']}">
-                            </if>
 
-                        </div>
-                    </blockquote>-->
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">预览图：</label>
@@ -130,17 +122,10 @@
 
                     </div>
                 </div>
-                <!--<div class="layui-form-item layui-form-text">
-                    <label class="layui-form-label">价格</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="price"
-                               value="{:(isset($detail['price'])?$detail['price']:'')}" placeholder="请输入价格"
-                               class="layui-input">
-                    </div>
-                </div>-->
+
                 <input type="hidden" name="article_type" value="ARTICLE"/>
 
-                <div class="layui-form-item layui-form-text">
+                <div class="layui-form-item layui-form-text" id="er">
                     <label class="layui-form-label">内容</label>
                     <div class="layui-input-block">
                         <textarea id="editor"
@@ -151,14 +136,43 @@
                             var ue = UE.getEditor("editor");
 
                         </script>
-                        <!-- <input type="text" name="content" value="{:(isset($detail['content'])?$detail['content']:'')}" placeholder="请输入内容" class="layui-input">  -->
+
                     </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <span id="translate" style="    display: inline-block;
+    height: 38px;
+    line-height: 38px;
+    padding: 0 18px;
+    background-color: #009688;
+    color: #fff;
+    white-space: nowrap;
+    text-align: center;
+    font-size: 14px;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    opacity: .9;">翻译</span>
+                    </div>
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">翻译</label>
+                    <div class="layui-input-block" id="translate_content">
+                        <textarea id="teditor"
+                                  name="translate_content">{:(isset($detail['translate_content'])?$detail['translate_content']:'')}</textarea>
+
+                    </div>
+                    <script>
+                        var tue = UE.getEditor("teditor");
+
+                    </script>
                 </div>
 
 
                 <div class="layui-form-item">
                     <div class="layui-input-block">
-                        <button class="layui-btn" lay-submit lay-filter="admin-form">立即提交</button>
+                        <button class="layui-btn" lay-submit lay-filter="admin-form" name="submit">立即提交</button>
                         <button type="reset" class="layui-btn layui-btn-primary">重置</button>
                     </div>
                 </div>
@@ -168,19 +182,37 @@
 </block>
 <block name="myScript">
     <script>
-        layui.use('upload', function () {
+        layui.use(['upload'], function () {
             layui.upload({
                 url: '{:U("upload")}' //上传接口
                 , success: function (res) { //上传成功后的回调
-
                     var l = $("img").length;
                     img = res;
-
                     var html = '<dd class="item_img" id="' + img.imgid + '">'
                         + '<img style="margin-left:5px;width:150px;height:150px" src="' + img.url + '" /><input type="hidden" name="cover" value="' + img.url + '">';
-
                     $('#demo2').html(html);
                 }
+            });
+            $("#translate").click(function(){
+                var content = ue.body.innerText;
+                $.ajax({
+                    type: "POST",
+                    url: 'http://localhost/education/api/5bf8c07fe9f1b.html',
+                    data: {query:content},
+                    success: function (msg) {
+                        if (msg.data.errorCode == 0) {
+                            tue.body.innerText = msg.data.translation[0];
+                            $("textarea[name='translate_content']").html(msg.data.translation[0])
+                        } else {
+                            parent.layer.msg('错误', {
+                                icon: 5,
+                                shade: [0.6, '#393D49'],
+                                time: 1500
+                            });
+                        }
+                    }
+                });
+
             });
 
 

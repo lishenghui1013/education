@@ -1040,8 +1040,218 @@ class UsersCenter extends Base
         }
     }
     /*******************************************************************************************分享 结束*******************************************************/
-    /*******************************************************************************************银行卡 开始*******************************************************/
+    /*******************************************************************************************我的订单 开始*******************************************************/
+
+    /**
+     * 评价商品
+     * @author: 李胜辉
+     * @time: 2018/11/14 09:34
+     *
+     */
+    public function commentGoods($param)
+    {
+        $data['goods_id'] = $param['goods_id']; //商品id
+        $data['goods_type'] = $param['goods_type']?$param['goods_type']:'';//商品类型
+        $data['comment_content'] = $param['comment_content']?$param['comment_content']:'';//详情
+        $data['pic'] = $param['pic']?$param['pic']:'';//图片
+        $data['category_id'] = $param['category_id']?$param['category_id']:'';//分类id
+        $data['user_type'] = $param['user_type'];//评价人类型(STU:学生TEA:老师COM:机构SYS:平台;)
+        $data['add_id'] = $param['add_id'];//添加人id
+        $data['add_time'] = time();//添加时间
+        $res = D('api_goods_comment')->add($data);
+        if ($res) {
+            return array('response_status' => 'success');//success:成功;fail:失败
+        } else {
+            return array('response_status' => 'fail');//success:成功;fail:失败
+        }
+    }
+    /**
+     * 我的订单列表
+     * @author: 李胜辉
+     * @time: 2018/11/14 09:34
+     *
+     */
+    public function myOrderList($param)
+    {
+        $pagenum = $param['pagenum'] ? $param['pagenum'] : 1;//当前页
+        $limit = $param['limit'] ? $param['limit'] : 10;//每页显示条数
+        $start = ($pagenum - 1) * $limit;
+        $data['user_type'] = $param['user_type']; //用户类型(COM:机构;TEA:老师;STU:学生)
+        $category_id = $param['category_id']?$param['category_id']:'';//分类id
+        $user_id = $param['user_id']?$param['user_id']:'';//用户id
+        $order_status = $param['order_status']?$param['order_status']:'';//订单状态(W:待付款;Y:已付款;C:已关闭;S:已发货;CD:已评价;N:已收货;F:完成;R:退货中;RS:退款成功)
+        $where = array();
+        if($category_id!=''){
+            $where['category_id'] = $category_id;
+        }
+        if($user_id!=''){
+            $where['o.add_id'] = $user_id;
+        }
+        if($order_status!=''){
+            $where['o.order_status'] = $order_status;
+        }
+        $res = D('api_order as o')->join('left join api_curriculum as c on c.id=o.goods_id')->field('o.id,o.order_no,o.goods_id,o.unit_price,o.total_price,o.goods_num,o.add_time,o.order_status,c.curriculum_name,c.price,c.cover,c.category_id')->where($where)->limit($start,$limit)->select();
+        if ($res) {
+            $res['response_status'] = 'success';//success:成功;fail:失败
+            return $res;
+        } else {
+            $res['response_status'] = 'fail';//success:成功;fail:失败
+            return $res;
+        }
+    }
+    /**
+     * 我的订单详情
+     * @author: 李胜辉
+     * @time: 2018/11/23 09:34
+     *
+     */
+    public function myOrderDetail($param)
+    {
+        $id = $param['id'];//订单id
+
+        $res = D('api_order as o')->join('left join api_curriculum as c on c.id=o.goods_id')->field('o.id,o.order_no,o.goods_id,o.unit_price,o.total_price,o.goods_num,o.add_time,o.order_status,c.curriculum_name,c.price,c.cover,c.category_id')->where(array('o.id'=>$id,'o.order_status'=>array('neq','C')))->find();
+        if ($res) {
+            $res['response_status'] = 'success';//success:成功;fail:失败
+            return $res;
+        } else {
+            $res['response_status'] = 'fail';//success:成功;fail:失败
+            return $res;
+        }
+    }
+    /**
+     * 确认收货
+     * @author: 李胜辉
+     * @time: 2018/11/23 09:34
+     *
+     */
+    public function confirmGet($param)
+    {
+        $id = $param['id'];//订单id
+        $data['order_status'] = 'N';
+        $res = D('api_order')->where(array('id'=>$id))->save($data);
+        if ($res) {
+            $res['response_status'] = 'success';//success:成功;fail:失败
+            return $res;
+        } else {
+            $res['response_status'] = 'fail';//success:成功;fail:失败
+            return $res;
+        }
+    }
+    /**
+     * 删除订单
+     * @author: 李胜辉
+     * @time: 2018/11/23 09:34
+     *
+     */
+    public function deleteOrder($param)
+    {
+        $id = $param['id'];//订单id
+        $data['order_status'] = 'C';
+        $res = D('api_order')->where(array('id'=>$id))->save($data);
+        if ($res) {
+            $res['response_status'] = 'success';//success:成功;fail:失败
+            return $res;
+        } else {
+            $res['response_status'] = 'fail';//success:成功;fail:失败
+            return $res;
+        }
+    }
+    /**
+     * 退课
+     * @author: 李胜辉
+     * @time: 2018/11/23 09:34
+     *
+     */
+    public function refund($param)
+    {
+        $id = $param['id'];//订单id
+        $data['order_status'] = 'R';
+        $res = D('api_order')->where(array('id'=>$id))->save($data);
+        if ($res) {
+            $res['response_status'] = 'success';//success:成功;fail:失败
+            return $res;
+        } else {
+            $res['response_status'] = 'fail';//success:成功;fail:失败
+            return $res;
+        }
+    }
+    /*******************************************************************************************我的订单 结束*******************************************************/
+    /*******************************************************************************************商家的订单 开始*******************************************************/
 
 
-    /*******************************************************************************************银行卡 结束*******************************************************/
+    /**
+     * 商家的订单列表
+     * @author: 李胜辉
+     * @time: 2018/11/14 09:34
+     *
+     */
+    public function storeOrderList($param)
+    {
+        $pagenum = $param['pagenum'] ? $param['pagenum'] : 1;//当前页
+        $limit = $param['limit'] ? $param['limit'] : 10;//每页显示条数
+        $start = ($pagenum - 1) * $limit;
+        $data['user_type'] = $param['user_type']; //用户类型(COM:机构;TEA:老师;STU:学生)
+        $category_id = $param['category_id']?$param['category_id']:'';//分类id
+        $user_id = $param['user_id']?$param['user_id']:'';//用户id
+        $order_status = $param['order_status']?$param['order_status']:'';//订单状态(W:待付款;Y:已付款;C:已关闭;S:已发货;CD:已评价;N:已收货;F:完成;R:退货中;RS:退款成功)
+        $where = array();
+        if($category_id!=''){
+            $where['c.category_id'] = $category_id;
+        }
+        if($user_id!=''){
+            $where['c.add_id'] = $user_id;
+        }
+        if($order_status!=''){
+            $where['o.order_status'] = $order_status;
+        }
+        $res = D('api_order as o')->join('left join api_curriculum as c on c.id=o.goods_id')->field('o.id,o.order_no,o.goods_id,o.unit_price,o.total_price,o.goods_num,o.add_time,o.order_status,c.curriculum_name,c.price,c.cover,c.category_id')->where($where)->limit($start,$limit)->select();
+        if ($res) {
+            $res['response_status'] = 'success';//success:成功;fail:失败
+            return $res;
+        } else {
+            $res['response_status'] = 'fail';//success:成功;fail:失败
+            return $res;
+        }
+    }
+    /**
+     * 商家的订单详情
+     * @author: 李胜辉
+     * @time: 2018/11/23 09:34
+     *
+     */
+    public function storeOderDetail($param)
+    {
+        $id = $param['id'];//订单id
+        $res = D('api_order as o')->join('left join api_curriculum as c on c.id=o.goods_id')->field('o.id,o.order_no,o.goods_id,o.unit_price,o.total_price,o.goods_num,o.add_time,o.order_status,c.curriculum_name,c.price,c.cover,c.category_id')->where(array('o.id'=>$id,'o.order_status'=>array('neq','C')))->find();
+        if ($res) {
+            $res['response_status'] = 'success';//success:成功;fail:失败
+            return $res;
+        } else {
+            $res['response_status'] = 'fail';//success:成功;fail:失败
+            return $res;
+        }
+    }
+    /**
+     * 发货
+     * @author: 李胜辉
+     * @time: 2018/11/23 09:34
+     *
+     */
+    public function shipments($param)
+    {
+        $id = $param['id'];//订单id
+        $data['order_status'] = 'S';
+        $res = D('api_order')->where(array('id'=>$id))->save($data);
+        if ($res) {
+            $res['response_status'] = 'success';//success:成功;fail:失败
+            return $res;
+        } else {
+            $res['response_status'] = 'fail';//success:成功;fail:失败
+            return $res;
+        }
+    }
+
+
+
+    /*******************************************************************************************商家的订单 结束*******************************************************/
 }

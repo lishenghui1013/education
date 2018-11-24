@@ -1,0 +1,50 @@
+<extend name="Public/base"/>
+<block name="main">
+    <fieldset class="layui-elem-field">
+        <legend><a href="{:U('Article/index')}">阅读文章</a> - <a href="{:U('Words/index')}">词组管理</a> - 编辑词组</legend>
+        <div class="layui-field-box">
+
+            <form class="layui-form" action="" id="health_form" method="post">
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color:red"></span> </label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="content" value="{$detail['content']}" id="content" class="layui-input"/>
+                        <input type="hidden" name="item_id" value="{$detail['id']}" class="layui-input"/>
+                    </div>
+                    <div class="layui-input-inline">
+                        <span class="layui-btn" lay-submit lay-filter="admin-form">修改</span>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </fieldset>
+</block>
+<block name="myScript">
+    <script>
+        layui.use('form', function () {
+            var form = layui.form();
+            form.on('submit(admin-form)', function (data) {
+                $.ajax({
+                    type: "POST",
+                    url: '{:U("update")}',
+                    data: data.field,
+                    success: function (msg) {
+                        if (msg.code == 1) {
+                            parent.location.reload();
+                        } else {
+                            parent.layer.msg(msg.msg, {
+                                icon: 5,
+                                shade: [0.6, '#393D49'],
+                                time: 1500
+                            });
+                        }
+                    }
+                });
+                return false;
+            });
+
+        });
+    </script>
+
+</block>
