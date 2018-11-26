@@ -277,13 +277,22 @@ class CrontabController extends BaseController
             exit;
         } else {
             do {
-                $start_time = D('api_crontab')->where(array('id' => $id))->getField('start_time');
-                $newDate = date("Y-m-d H:i",$start_time);
-                $newDate = str_replace(array(":"," ","-"),"",$newDate);
+                $controle_info = D('api_crontab')->where(array('id' => $id))->find();
+                $start_time = $controle_info['start_time'];//开始时间
+                $intervl = $controle_info['intervl'];//间隔时间
+                //时
+                $hour = date('H',$start_time)*60*60;
+
+                //分
+                $minute = date('i',$start_time)*60;
+                //秒
+                $second = date('s',$start_time);
+                //现在时间
+                $now_time = time();
                 //该定时器的开关，run值为1,则一直执行,run值为0,则中止执行
-                $run = D('api_crontab')->where(array('id' => $id))->getField('use_staus');
+                $run = $controle_info['use_staus'];//执行状态(1:执行;0:停止)
                 if(!$run) die('process abort');
-                if($newDate){
+                if($start_time==$now_time || ($start_time>$now_time && $start_time%60==$second )){
 
                 }
 
@@ -351,8 +360,7 @@ class CrontabController extends BaseController
                     }
                 }
                 sleep($interval);
-            } while ($timing['use_staus'] == 1);//当为true时  无限循环
-            return time();
+            } while (true);//当为true时  无限循环
         }
     }
 
