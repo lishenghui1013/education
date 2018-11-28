@@ -86,6 +86,29 @@ class Common extends Base
         $param['add_time'] = time();
         $res = D('api_collect')->add($param);
         if ($res) {
+            $model = new Model();
+            $item_category = $param['item_category'];
+            switch ($item_category){
+                case 'ART':
+                    $sql = 'update api_article_publish set collect_num=collect_num+1 where id='.$param['item_id'];
+                    $model->query($sql);
+                    break;
+                case 'VID':
+                    $sql = 'update api_video_content set collect_num=collect_num+1 where id='.$param['item_id'];
+                    $model->query($sql);
+                    break;
+                case 'TEX':
+                    $sql = 'update api_textbook_content set collect_num=collect_num+1 where id='.$param['item_id'];
+                    $model->query($sql);
+                    break;
+                case 'OTHER':
+                    $sql = 'update api_publish_content set collect_num=collect_num+1 where id='.$param['item_id'];
+                    $model->query($sql);
+                    break;
+                default :
+                    break;
+            }
+
             return array('response_status' => 'success');//success:成功;fail:失败
         } else {
             return array('response_status' => 'fail');//success:成功;fail:失败

@@ -197,7 +197,7 @@
                 var content = ue.body.innerText;
                 $.ajax({
                     type: "POST",
-                    url: 'http://localhost/education/api/5bf8c07fe9f1b.html',
+                    url: '/education/api/5bf8c07fe9f1b.html',
                     data: {query:content},
                     success: function (msg) {
                         if (msg.data.errorCode == 0) {

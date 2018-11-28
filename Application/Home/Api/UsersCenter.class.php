@@ -14,6 +14,7 @@ use Home\ORG\Crypt;
 use Home\ORG\Response;
 use Home\ORG\ReturnCode;
 use Home\Api\Common;
+use Think\Model;
 
 class UsersCenter extends Base
 {
@@ -930,6 +931,9 @@ class UsersCenter extends Base
                 }
             }
         }
+        $sql = 'update api_publish_content set read_num=read_num+1 where id='.$param['item_id'];
+        $model = new Model();
+        $model->query($sql);
     }
     /*******************************************************************************************我的金币 结束*******************************************************/
     /*******************************************************************************************用户资料 开始*******************************************************/
@@ -1029,10 +1033,33 @@ class UsersCenter extends Base
         $id = $param['item_id'] ? $param['item_id'] : '';//分享内容id
         $info = D('api_appversions')->field('id,app_versions,app_url,app_type,code_url')->where(array('app_versions' => $app_versions))->find();
         if ($info) {
+            $model = new Model();
+            $item_category = $param['pub_type'];
+            switch ($item_category){
+                case 'ART':
+                    $sql = 'update api_article_publish set share_num=share_num+1 where id='.$param['item_id'];
+                    $model->query($sql);
+                    break;
+                case 'VID':
+                    $sql = 'update api_video_content set share_num=share_num+1 where id='.$param['item_id'];
+                    $model->query($sql);
+                    break;
+                case 'TEX':
+                    $sql = 'update api_textbook_content set share_num=share_num+1 where id='.$param['item_id'];
+                    $model->query($sql);
+                    break;
+                case 'PUB':
+                    $sql = 'update api_publish_content set share_num=share_num+1 where id='.$param['item_id'];
+                    $model->query($sql);
+                    break;
+                default :
+                    break;
+            }
             $info['response_status'] = 'success';//success:成功;fail:失败
             $info['pub_type'] = $type;
             $info['is_catalog'] = $is_catalog;
             $info['item_id'] = $id;
+
             return $info;
         } else {
             $info['response_status'] = 'fail';//success:成功;fail:失败
