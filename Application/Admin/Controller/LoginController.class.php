@@ -73,6 +73,10 @@ class LoginController extends BaseController
             //去除多余的
             $info['phone'] = $data['phone'];
             $info['sex'] = $data['sex'];
+            $data['updateTime']=time();
+            if($data['password']=='******'){
+                unset($data['password']);
+            }
             unset($data['phone'], $data['sex']);
             $res = D('ApiUser')->where(array('id' => session('uid')))->save($data);
             if ($res === false) {
