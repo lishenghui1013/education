@@ -180,15 +180,10 @@ class ArticleController extends BaseController {
      */
     public function update()
     {
-        //获取网站根目录$url
-        $PHP_SELF = $_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_NAME'];
-        $str = substr($PHP_SELF, 1);
-        $url = 'http://' . $_SERVER['HTTP_HOST'] . '/' . substr($str, 0, strpos($str, '/') + 1);
-        //拼接图片url地址
 
         if (IS_GET) {
             $id = I('get.id');
-            $listInfo = D('api_article_publish')->where("id='$id'")->find();
+            $listInfo = D('api_article_publish')->where(array('id'=>$id))->find();
             //查询级别列表
             $class_list = D('api_class')->field('id,class_name')->order('id asc')->select();
             //查询版本列表
@@ -203,6 +198,7 @@ class ArticleController extends BaseController {
             $this->display('add');
         } elseif (IS_POST) {
             $postData = I('post.');
+           /* print_r(json_encode($postData));exit;*/
             $postData['show_status'] = $postData['show_status'] == 'on' ? 1 : 2;
 
             $res = D('api_article_publish')->where(array('id' => $postData['id']))->save($postData);

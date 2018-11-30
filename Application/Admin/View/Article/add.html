@@ -156,6 +156,7 @@
     opacity: .9;">翻译</span>
                     </div>
                 </div>
+
                 <div class="layui-form-item layui-form-text">
                     <label class="layui-form-label">翻译</label>
                     <div class="layui-input-block" id="translate_content">
@@ -169,7 +170,7 @@
                     </script>
                 </div>
 
-
+                <input type="hidden" name="translate_content" value="{:(isset($detail['translate_content'])?$detail['translate_content']:'')}"/>
                 <div class="layui-form-item">
                     <div class="layui-input-block">
                         <button class="layui-btn" lay-submit lay-filter="admin-form" name="submit">立即提交</button>
@@ -201,8 +202,10 @@
                     data: {query:content},
                     success: function (msg) {
                         if (msg.data.errorCode == 0) {
+                            /*console.log(msg.data.translation[0]);*/
                             tue.body.innerText = msg.data.translation[0];
-                            $("textarea[name='translate_content']").html(msg.data.translation[0])
+                            $("textarea[name='translate_content']").html(msg.data.translation[0]);
+                            $("input[name='translate_content']").val(msg.data.translation[0]);
                         } else {
                             parent.layer.msg('错误', {
                                 icon: 5,
@@ -213,6 +216,10 @@
                     }
                 });
 
+            });
+            tue.addListener("contentChange",function(){
+                var translate_content = tue.getContent();
+                $("input[name='translate_content']").val(translate_content);
             });
 
 
