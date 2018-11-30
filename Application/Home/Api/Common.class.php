@@ -41,9 +41,14 @@ class Common extends Base
      * @time: 2018/11/05 09:34
      *
      */
-    public function classList()
+    public function classList($param)
     {
-        $list = D('api_class')->field('id,class_name')->select();
+        $class_type = $param['class_type']?$param['class_type']:'';//年级分类(SMALL:小学;JUN:初中;HIGHT:高中;UNI:大学;COLL:专科;GRAD:研究生;)
+        $where = array();
+        if($class_type){
+            $where['class_type'] = $class_type;
+        }
+        $list = D('api_class')->field('id,class_name,class_type')->where($where)->select();
         if ($list) {
             $list['response_status'] = 'success';//success:成功;fail:失败
             return $list;
