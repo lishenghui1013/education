@@ -25,12 +25,14 @@ class Common extends Base
      */
     public function subjectList()
     {
-        $list = D('api_subject')->field('id,subject_name')->select();
-        if ($list) {
+        $list['datas'] = D('api_subject')->field('id,subject_name')->select();
+        if ($list['datas']) {
             $list['response_status'] = 'success';//success:成功;fail:失败
+            $list['res_msg'] = '成功';
             return $list;
         } else {
             $list['response_status'] = 'fail';//success:成功;fail:失败
+            $list['res_msg'] = '失败';
             return $list;
         }
     }
@@ -51,9 +53,11 @@ class Common extends Base
         $list = D('api_class')->field('id,class_name,class_type')->where($where)->select();
         if ($list) {
             $list['response_status'] = 'success';//success:成功;fail:失败
+            $list['res_msg'] = '成功';
             return $list;
         } else {
             $list['response_status'] = 'fail';//success:成功;fail:失败
+            $list['res_msg'] = '失败';
             return $list;
         }
     }
@@ -66,12 +70,14 @@ class Common extends Base
      */
     public function versionsList()
     {
-        $list = D('api_versions')->field('id,versions_name')->select();
-        if ($list) {
+        $list['datas'] = D('api_versions')->field('id,versions_name')->select();
+        if ($list['datas']) {
             $list['response_status'] = 'success';//success:成功;fail:失败
+            $list['res_msg'] = '成功';
             return $list;
         } else {
             $list['response_status'] = 'fail';//success:成功;fail:失败
+            $list['res_msg'] = '失败';
             return $list;
         }
     }
@@ -114,9 +120,9 @@ class Common extends Base
                     break;
             }
 
-            return array('response_status' => 'success');//success:成功;fail:失败
+            return array('response_status' => 'success','res_msg'=>'成功');//success:成功;fail:失败
         } else {
-            return array('response_status' => 'fail');//success:成功;fail:失败
+            return array('response_status' => 'fail','res_msg'=>'失败');//success:成功;fail:失败
         }
     }
     /**
@@ -136,9 +142,9 @@ class Common extends Base
 
         $res = D('api_comment')->add($data);
         if ($res) {
-            return array('response_status' => 'success');//success:成功;fail:失败
+            return array('response_status' => 'success','res_msg'=>'成功');//success:成功;fail:失败
         } else {
-            return array('response_status' => 'fail');//success:成功;fail:失败
+            return array('response_status' => 'fail','res_msg'=>'失败');//success:成功;fail:失败
         }
     }
 
@@ -337,9 +343,9 @@ class Common extends Base
         $data['add_time'] = time();//添加时间
         $res = D('api_new_words')->data($data)->add();
         if ($res) {
-            return array('response_status' => 'success');//success:成功;fail:失败
+            return array('response_status' => 'success','res_msg'=>'成功');//success:成功;fail:失败
         } else {
-            return array('response_status' => 'fail');//success:成功;fail:失败
+            return array('response_status' => 'fail','res_msg'=>'失败');//success:成功;fail:失败
         }
     }
 
@@ -353,9 +359,9 @@ class Common extends Base
         $id = $param['id'];//生词id
         $res = D('api_new_words')->where(array('id' => $id))->delete();
         if ($res) {
-            return array('response_status' => 'success');//success:成功;fail:失败
+            return array('response_status' => 'success','res_msg'=>'成功');//success:成功;fail:失败
         } else {
-            return array('response_status' => 'fail');//success:成功;fail:失败
+            return array('response_status' => 'fail','res_msg'=>'失败');//success:成功;fail:失败
         }
     }
 
@@ -398,16 +404,19 @@ class Common extends Base
         }
         if ($user_id !== '') {
             $where['add_suerid'] = $user_id;
-            $list = D('api_new_words')->field('id,new_words,translate,source,add_time')->where($where)->order('id desc')->limit($start, $limit)->select();
-            if ($list) {
+            $list['datas'] = D('api_new_words')->field('id,new_words,translate,source,add_time')->where($where)->order('id desc')->limit($start, $limit)->select();
+            if ($list['datas']) {
                 $list['response_status'] = 'success';//success:成功;fail:失败
+                $list['res_msg'] = '成功';
                 return $list;
             } else {
                 $list['response_status'] = 'fail';//success:成功;fail:失败
+                $list['res_msg'] = '失败';
                 return $list;
             }
         } else {
             $list['response_status'] = 'lack';//缺少参数
+            $list['res_msg'] = '缺少参数';
             return $list;
         }
     }
@@ -509,10 +518,14 @@ class Common extends Base
      */
     public function provinceList()
     {
-        $listInfo = D('api_provinces')->select();
-        ApiLog::setApiInfo($listInfo);
-        if (empty($listInfo)) {
-            Response::error(ReturnCode::INVALID, '暂无数据');
+        $listInfo['datas'] = D('api_provinces')->select();
+        ApiLog::setApiInfo($listInfo['datas']);
+        if (empty($listInfo['datas'])) {
+            $listInfo['response_status']='success';
+            $listInfo['res_msg'] = '暂无数据';
+        }else{
+            $listInfo['response_status']='success';
+            $listInfo['res_msg'] = '成功';
         }
         return $listInfo;
     }
@@ -525,10 +538,14 @@ class Common extends Base
     public function cityList($param)
     {
         $province_num = $param['province_num'];//省份编号
-        $listInfo = D('api_cities')->where(array('provinceid' => $province_num))->select();
-        ApiLog::setApiInfo($listInfo);
-        if (empty($listInfo)) {
-            Response::error(ReturnCode::INVALID, '暂无数据');
+        $listInfo['datas'] = D('api_cities')->where(array('provinceid' => $province_num))->select();
+        ApiLog::setApiInfo($listInfo['datas']);
+        if (empty($listInfo['datas'])) {
+            $listInfo['response_status']='success';
+            $listInfo['res_msg'] = '暂无数据';
+        }else{
+            $listInfo['response_status']='success';
+            $listInfo['res_msg'] = '成功';
         }
         return $listInfo;
     }
@@ -540,10 +557,14 @@ class Common extends Base
     public function countyList($param)
     {
         $city_num = $param['city_num'];//城市编号
-        $listInfo = D('api_areas')->where(array('cityid' => $city_num))->select();
-        ApiLog::setApiInfo($listInfo);
-        if (empty($listInfo)) {
-            Response::error(ReturnCode::INVALID, '暂无数据');
+        $listInfo['datas'] = D('api_areas')->where(array('cityid' => $city_num))->select();
+        ApiLog::setApiInfo($listInfo['datas']);
+        if (empty($listInfo['datas'])) {
+            $listInfo['response_status']='success';
+            $listInfo['res_msg'] = '暂无数据';
+        }else{
+            $listInfo['response_status']='success';
+            $listInfo['res_msg'] = '成功';
         }
         return $listInfo;
     }

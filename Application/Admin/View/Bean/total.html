@@ -1,0 +1,220 @@
+<extend name="Public/base"/>
+<block name="main">
+
+    <fieldset class="layui-elem-field">
+        <legend>订单管理 - 豆币汇总</legend>
+        <div class="layui-field-box">
+            <form class="layui-form" id="form-admin-add" action="">
+                <div class="layui-form-item">
+                    <!--<div class="layui-inline">
+                        <label class="layui-form-label"> 年份</label>
+                        <div class="layui-input-inline" style="width: 100px;">
+                            <input class="layui-input" name="year" placeholder="查询年份" onclick="layui.laydate({elem: this, festival: true, format: 'YYYY'})" id="year">
+                        </div>
+                    </div>-->
+                    <!--<div class="layui-inline">
+                        <label class="layui-form-label"> 月份</label>
+                        <div class="layui-input-inline" style="width: 100px;">
+                            <input class="layui-input" name="month" placeholder="查询月份" onclick="layui.laydate({elem: this, festival: true})" id="month">
+                        </div>
+                    </div>-->
+                    <!--<div class="layui-inline">
+                        <label class="layui-form-label"> 日期</label>
+                        <div class="layui-input-inline" style="width: 100px;">
+                            <input class="layui-input" name="day" placeholder="查询月份" onclick="layui.laydate({elem: '#day', festival: true, format: 'YYYY-MM-DD'})" id="day">
+                        </div>
+                    </div>-->
+                    <div class="layui-inline">
+                        <label class="layui-form-label"> 用户类型</label>
+                        <div class="layui-input-inline">
+                            <select name="user_type" lay-search="" id="user_type">
+                                <option value="">请选择</option>
+                                <option value="">请选择</option>
+                                <option value="TEA">老师</option>
+                                <option value="COM">机构</option>
+
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label"> 机构名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="com_name" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input" id="com_name">
+                        </div>
+                    </div>
+                    <div class="layui-inline" id="search">
+                        <span class="layui-btn sub" lay-submit lay-filter="search">查询</span>
+                    </div>
+                </div>
+            </form>
+            <input type="hidden" name="years" id="years" value=""/>
+            <input type="hidden" name="months" id="months" value=""/>
+            <input type="hidden" name="days" id="days" value=""/>
+            <input type="hidden" name="user_types" id="user_types" value=""/>
+            <input type="hidden" name="com_names" id="com_names" value=""/>
+            <input type="hidden" name="limit" id="limit" value=""/>
+            <input type="hidden" name="curr" id="curr" value=""/>
+            <input type="hidden" name="total" id="total" value=""/>
+            <table class="layui-table" id="list-admin" lay-even>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>用户名</th>
+                    <th>电话</th>
+                    <th>用户类型</th>
+                    <th>支出</th>
+                    <th>收入</th>
+                    <th>余额</th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+
+                </tbody>
+            </table>
+            <div id="demo"></div>
+        </div>
+
+    </fieldset>
+</block>
+
+
+<block name="myScript">
+    <script>
+        Date.prototype.format = function (format) {
+            var o = {
+                "M+": this.getMonth() + 1, //month
+                "d+": this.getDate(), //day
+                "h+": this.getHours(), //hour
+                "m+": this.getMinutes(), //minute
+                "s+": this.getSeconds(), //second
+                "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
+                "S": this.getMilliseconds() //millisecond
+            }
+
+            if (/(y+)/.test(format)) {
+                format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            }
+
+            for (var k in o) {
+                if (new RegExp("(" + k + ")").test(format)) {
+                    format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+                }
+            }
+            return format;
+        }
+    </script>
+    <script>
+        function ajaxlist(object) {
+            $.ajax({
+                type: "POST",
+                url: "{:U('ajaxComTotal')}",
+                data: object,
+                async: false,
+                success: function (msg) {
+                    var html = '';
+                    var data = msg.data;
+                    if (msg.status == 'success') {
+                        for (var x in data) {
+                            var add_time = '';
+                            var user_type = '';
+                            if (data[x].add_time != '') {
+                                add_time = new Date(data[x].add_time * 1000).format("yyyy-MM-dd");
+                            } else {
+                                add_time = '--';
+                            }
+                            if (data[x].user_type != '') {
+                                switch (data[x].user_type) {
+                                    case 'STU':
+                                        user_type = '学生';
+                                        break;
+                                    case 'TEA':
+                                        user_type = '老师';
+                                        break;
+                                    case 'COM':
+                                        user_type = '机构';
+                                        break;
+                                    default :
+                                        break;
+                                }
+
+                            }
+                            html += '<tr><td>' + data[x].id + '</td><td>' + data[x].com_name + '</td><td>' + data[x].phone + '</td><td>' + user_type + '</td><td>'
+                                + data[x].expend_total + '</td><td>'+ data[x].income_total + '</td><td>'
+                                +data[x].bean_balance+ '</td></tr>'
+                        }
+
+                    } else {
+                        html = '<tr><td colspan="7" style="text-align:center;">暂无数据</td></tr>'
+
+                    }
+                    $("#tbody").html(html);
+                    $("#curr").val(msg.curr);
+                    $("#limit").val(msg.limit);
+                    $("#total").val(msg.total);
+                    
+                }
+            });
+        }
+
+        function pagenum() {
+            var curr = $("#curr").val(); //获取当前分页数
+            var limit = $("#limit").val(); //每页显示条数
+            var total = $("#total").val(); //总条数
+            var page = Math.ceil(total / limit);
+            var laypage = layui.laypage
+                , layer = layui.layer;
+
+            if (curr == '') { //为空时赋值1
+                curr = 1;
+            }
+
+            laypage({
+                cont: 'demo'
+                , curr: curr
+                , pages: page //控制器转过来的页数
+                , groups: 5
+                , first: '首页'
+                , jump: function (obj, first) {
+                    if (!first) {  //跳转必须放在这个里边，不然无限刷新
+
+                        var object = new Object();
+                        object.curr = obj.curr;
+                        object.user_type = $("#user_types").val();
+                        object.year = $("#years").val();
+                        object.month = $("#months").val();
+                        object.day = $("#days").val();
+                        object.com_name = $("#com_names").val();
+                        ajaxlist(object);
+                    }
+                }
+            });
+        }
+
+        layui.use(['form', 'laypage', 'layer', 'laydate'], function () {
+            var form = layui.form(),
+                laydate = layui.laydate;
+            ajaxlist();
+            pagenum();
+
+            form.on('submit(search)', function (data) {
+                $("#user_types").val($("#user_type").val());
+                $("#years").val($("#year").val());
+                $("#months").val($("#month").val());
+                $("#days").val($("#day").val());
+                $("#com_names").val($("#com_name").val());
+                var object = data.field;
+                object.curr = 1;
+                object.user_type = $("#user_types").val();
+                object.year = $("#years").val();
+                object.month = $("#months").val();
+                object.day = $("#days").val();
+                object.com_name = $("#com_names").val();
+                ajaxlist(object);
+                pagenum();
+                return false;
+            });
+
+        });
+    </script>
+</block>

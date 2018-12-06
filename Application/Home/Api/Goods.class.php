@@ -41,9 +41,9 @@ class Goods extends Base
         $data['add_time'] = time();//添加时间
         $res = D('api_curriculum')->add($data);
         if ($res) {
-            return array('response_status' => 'success');//success:成功;fail:失败
+            return array('response_status' => 'success','res_msg'=>'成功');//success:成功;fail:失败
         } else {
-            return array('response_status' => 'fail');//success:成功;fail:失败
+            return array('response_status' => 'fail','res_msg'=>'失败');//success:成功;fail:失败
         }
     }
     /**
@@ -63,12 +63,14 @@ class Goods extends Base
         if($category_id!=''){
             $where['category_id'] = $category_id;
         }
-        $res = D('api_curriculum')->field('id,curriculum_name,price,intro,cover,add_time,add_id')->where($where)->limit($start,$limit)->select();
-        if ($res) {
+        $res['datas'] = D('api_curriculum')->field('id,curriculum_name,price,intro,cover,add_time,add_id')->where($where)->limit($start,$limit)->select();
+        if ($res['datas']) {
             $res['response_status'] = 'success';//success:成功;fail:失败
+            $res['res_msg'] = '成功';
             return $res;
         } else {
             $res['response_status'] = 'fail';//success:成功;fail:失败
+            $res['res_msg'] = '失败';
             return $res;
         }
     }
@@ -84,9 +86,11 @@ class Goods extends Base
         $res = D('api_curriculum')->field('id,curriculum_name,price,intro,cover,add_time,add_id,content,category_id,user_type,curriculum_start_time,curriculum_end_time,lesson_time,inventory_num')->where(array('id'=>$id))->find();
         if ($res) {
             $res['response_status'] = 'success';//success:成功;fail:失败
+            $res['res_msg'] = '成功';
             return $res;
         } else {
             $res['response_status'] = 'fail';//success:成功;fail:失败
+            $res['res_msg'] = '失败';
             return $res;
         }
     }

@@ -33,31 +33,31 @@ class Users extends Base
         $preg = '/^1[3456789]\d{9}$/';
         $preg_pass = '/^[\da-zA-Z]{6,20}$/';
         if(!$param['phone']){
-            return array('response_status' => 'nophone');//手机号不能为空
+            return array('response_status' => 'nophone','res_msg'=>'手机号不能为空');//手机号不能为空
         }
         if(!preg_match_all($preg,$param['phone'])){
-            return array('response_status' => 'pherror');//手机号格式不正确
+            return array('response_status' => 'pherror','res_msg'=>'手机号格式不正确');//手机号格式不正确
         }
         if(!$param['password']){
-            return array('response_status' => 'nopass');//密码不能为空
+            return array('response_status' => 'nopass','res_msg'=>'密码不能为空');//密码不能为空
         }
         if(!preg_match_all($preg_pass,$param['password'])){
-            return array('response_status' => 'perror');//密码格式不正确
+            return array('response_status' => 'perror','res_msg'=>'密码格式不正确');//密码格式不正确
         }
         if(!$user_type){
-            return array('response_status' => 'notype');//注册类型不能为空
+            return array('response_status' => 'notype','res_msg'=>'注册类型不能为空');//注册类型不能为空
         }
         if($input_code===''||$send_code===''){
-            return array('response_status' => 'nocode');//验证码为空
+            return array('response_status' => 'nocode','res_msg'=>'验证码为空');//验证码为空
         }
         if($input_code!=$send_code){
-            return array('response_status' => 'neqcode');//输入验证码不正确
+            return array('response_status' => 'neqcode','res_msg'=>'输入验证码不正确');//输入验证码不正确
         }
 
         if($user_type == 'STU'){
             $is_phone = D('api_users')->field('id')->where(array('phone'=>$param['phone']))->select();
             if($is_phone){
-                return array('response_status' => 'hasphone');//手机号已经注册
+                return array('response_status' => 'hasphone','res_msg'=>'手机号已经注册');//手机号已经注册
             }
             $data['login_first'] ='Y';
             $insert = D('api_users')->add($data);
@@ -66,18 +66,18 @@ class Users extends Base
                 $data['user_type'] = 'TEA';
                 $insert_teacher = D('api_ct_users')->add($data);
                 if ($insert_teacher) {
-                    return array('response_status' => 'success');//success:成功;fail:失败
+                    return array('response_status' => 'success','res_msg'=>'成功');//success:成功;fail:失败
                 } else {
-                    return array('response_status' => 'tfail');//机构表添加失败
+                    return array('response_status' => 'tfail','res_msg'=>'机构表添加失败');//机构表添加失败
                 }
             }else{
-                return array('response_status' => 'fail');//success:成功;fail:失败
+                return array('response_status' => 'fail','res_msg'=>'失败');//success:成功;fail:失败
             }
 
         }else{
             $is_phone = D('api_ct_users')->field('id')->where(array('phone'=>$param['phone']))->select();
             if($is_phone){
-                return array('response_status' => 'hasphone');//手机号已经注册
+                return array('response_status' => 'hasphone','res_msg'=>'手机号已经注册');//手机号已经注册
             }
             $data['user_type'] = $user_type;
             if($user_type == 'TEA'){
@@ -87,19 +87,19 @@ class Users extends Base
                     $data['login_first'] ='N';
                     $insert_stu = D('api_users')->add($data);
                     if ($insert_stu) {
-                        return array('response_status' => 'success');//success:成功;fail:失败
+                        return array('response_status' => 'success','res_msg'=>'成功');//success:成功;fail:失败
                     } else {
-                        return array('response_status' => 'sfail');//学生表添加失败
+                        return array('response_status' => 'sfail','res_msg'=>'学生表添加失败');//学生表添加失败
                     }
                 }else{
-                    return array('response_status' => 'fail');//success:成功;fail:失败
+                    return array('response_status' => 'fail','res_msg'=>'失败');//success:成功;fail:失败
                 }
             }else{
                 $insert = D('api_ct_users')->add($data);
                 if ($insert) {
-                    return array('response_status' => 'success');//success:成功;fail:失败
+                    return array('response_status' => 'success','res_msg'=>'成功');//success:成功;fail:失败
                 } else {
-                    return array('response_status' => 'fail');//success:成功;fail:失败
+                    return array('response_status' => 'fail','res_msg'=>'失败');//success:成功;fail:失败
                 }
             }
         }
@@ -121,27 +121,27 @@ class Users extends Base
         $preg = '/^1[3456789]\d{9}$/';
         $preg_pass = '/^[\da-zA-Z]{6,20}$/';
         if(!$param['phone']){
-            return array('response_status' => 'nophone');//手机号不能为空
+            return array('response_status' => 'nophone','res_msg'=>'手机号不能为空');//手机号不能为空
         }
         if(!preg_match_all($preg,$param['phone'])){
-            return array('response_status' => 'pherror');//手机号格式不正确
+            return array('response_status' => 'pherror','res_msg'=>'手机号格式不正确');//手机号格式不正确
         }
         if(!$param['password']){
-            return array('response_status' => 'nopass');//密码不能为空
+            return array('response_status' => 'nopass','res_msg'=>'密码不能为空');//密码不能为空
         }
         if(!preg_match_all($preg_pass,$param['password'])){
-            return array('response_status' => 'perror');//密码格式不正确
+            return array('response_status' => 'perror','res_msg'=>'密码格式不正确');//密码格式不正确
         }
         if($input_code===''||$send_code===''){
-            return array('response_status' => 'nocode');//验证码为空
+            return array('response_status' => 'nocode','res_msg'=>'验证码为空');//验证码为空
         }
         if($input_code!=$send_code){
-            return array('response_status' => 'neqcode');//输入验证码不正确
+            return array('response_status' => 'neqcode','res_msg'=>'输入验证码不正确');//输入验证码不正确
         }
         if($user_type == 'STU'){
             $is_phone = D('api_users')->field('id')->where(array('phone'=>$param['phone']))->select();
             if($is_phone){
-                return array('response_status' => 'hasphone');//手机号已经注册
+                return array('response_status' => 'hasphone','res_msg'=>'手机号已经注册');//手机号已经注册
             }
             $data['login_first'] ='Y';
             $insert = D('api_users')->add($data);
@@ -150,17 +150,17 @@ class Users extends Base
                 $data['user_type'] = 'TEA';
                 $insert_teacher = D('api_ct_users')->add($data);
                 if ($insert_teacher) {
-                    return array('response_status' => 'success');//success:成功;fail:失败
+                    return array('response_status' => 'success','res_msg'=>'成功');//success:成功;fail:失败
                 } else {
-                    return array('response_status' => 'tfail');//机构表添加失败
+                    return array('response_status' => 'tfail','res_msg'=>'机构注册失败');//机构注册失败
                 }
             }else{
-                return array('response_status' => 'fail');//success:成功;fail:失败
+                return array('response_status' => 'fail','res_msg'=>'失败');//success:成功;fail:失败
             }
         }else{
             $is_phone = D('api_ct_users')->field('id')->where(array('phone'=>$param['phone']))->select();
             if($is_phone){
-                return array('response_status' => 'hasphone');//手机号已经注册
+                return array('response_status' => 'hasphone','res_msg'=>'手机号已经注册');//手机号已经注册
             }
             $data['user_type'] = $param['user_type'];
             if($user_type == 'TEA'){
@@ -170,19 +170,19 @@ class Users extends Base
                     $data['login_first'] ='N';
                     $insert_stu = D('api_users')->add($data);
                     if ($insert_stu) {
-                        return array('response_status' => 'success');//success:成功;fail:失败
+                        return array('response_status' => 'success','res_msg'=>'成功');//success:成功;fail:失败
                     } else {
-                        return array('response_status' => 'sfail');//学生表添加失败
+                        return array('response_status' => 'sfail','res_msg'=>'学生身份注册失败');//学生身份注册失败
                     }
                 }else{
-                    return array('response_status' => 'fail');//success:成功;fail:失败
+                    return array('response_status' => 'fail','res_msg'=>'失败');//success:成功;fail:失败
                 }
             }else{
                 $insert = D('api_ct_users')->add($data);
                 if ($insert) {
-                    return array('response_status' => 'success');//success:成功;fail:失败
+                    return array('response_status' => 'success','res_msg'=>'成功');//success:成功;fail:失败
                 } else {
-                    return array('response_status' => 'fail');//success:成功;fail:失败
+                    return array('response_status' => 'fail','res_msg'=>'失败');//success:成功;fail:失败
                 }
             }
         }
@@ -216,21 +216,25 @@ class Users extends Base
                     switch ($teacher_info['audit_status']){
                         case 'S':
                             $teacher_info['login_status'] = 'success';//success:成功;fail:失败
+                            $teacher_info['res_msg'] = '成功';
                             break;
                         case 'F':
                             $teacher_info['login_status'] = 'f';//审核状态为拒绝
+                            $teacher_info['res_msg'] = '审核状态为拒绝';
                             break;
                         case 'W':
                             $teacher_info['login_status'] = 'wait';//待审核
+                            $teacher_info['res_msg'] = '待审核';
                             break;
                         default :
                             $teacher_info['login_status'] = 'fail';//success:成功;fail:失败
+                            $teacher_info['res_msg'] = '失败';
                             break;
                     }
 
                     return $teacher_info;
                 } else {
-                    return array('login_status' => 'uperror');//账号或密码错误
+                    return array('login_status' => 'uperror','res_msg'=>'账号或密码错误');//账号或密码错误
                 }
             }
         } else {
@@ -239,20 +243,24 @@ class Users extends Base
                 switch ($com_info['audit_status']){
                     case 'S':
                         $com_info['login_status'] = 'success';//success:成功;fail:失败
+                        $com_info['res_msg'] = '成功';
                         break;
                     case 'F':
                         $com_info['login_status'] = 'f';//审核状态为拒绝
+                        $com_info['res_msg'] = '审核状态为拒绝';
                         break;
                     case 'W':
                         $com_info['login_status'] = 'wait';//待审核
+                        $com_info['res_msg'] = '待审核';
                         break;
                     default :
                         $com_info['login_status'] = 'fail';//success:成功;fail:失败
+                        $com_info['res_msg'] = '失败';
                         break;
                 }
                 return $com_info;
             } else {
-                return array('login_status' => 'uperror');//账号或密码错误
+                return array('login_status' => 'uperror','res_msg'=>'账号或密码错误');//账号或密码错误
             }
         }
 
@@ -274,13 +282,13 @@ class Users extends Base
         $pcre = '/^1[3456789]\d{9}$/';
 
         if (!preg_match_all($pcre, $phone)) {
-            return array('response_status' => 'perror');//手机号格式不正确
+            return array('response_status' => 'perror','res_msg'=>'手机号格式不正确');//手机号格式不正确
         }
         if (empty($verify_code) && empty($sys_code)) {
-            return array('response_status' => 'null');//请填写验证码
+            return array('response_status' => 'null','res_msg'=>'请填写验证码');//请填写验证码
         }
         if ($verify_code != $sys_code) {
-            return array('response_status' => 'error');//验证码输入不正确
+            return array('response_status' => 'error','res_msg'=>'验证码输入不正确');//验证码输入不正确
         }
         $user_info = D('api_users')->field('id,login_first,phone,user_name,icon,balance,nickname')->where(array('phone' => $phone, 'use_status' => 1))->find();//先查询学生表
         if ($user_info) { //如果有该账户
@@ -295,10 +303,11 @@ class Users extends Base
                 if ($teacher_info) {
 
                     $teacher_info['login_status'] = 'success';//success:成功;fail:失败
+                    $teacher_info['res_msg'] = '成功';
                     Response::debug($teacher_info);
                     return $teacher_info;
                 } else {
-                    return array('login_status' => 'uperror');//账号或密码错误
+                    return array('login_status' => 'uperror','res_msg'=>'账号或密码错误');//账号或密码错误
                 }
             }
         } else {
@@ -306,10 +315,11 @@ class Users extends Base
             if ($com_info) { //如果机构表中有该用户
 
                 $com_info['login_status'] = 'success';//success:成功;fail:失败
+                $com_info['res_msg'] = '成功';
                 Response::debug($com_info);
                 return $com_info;
             } else {
-                return array('login_status' => 'uperror');//账号或密码错误
+                return array('login_status' => 'uperror','res_msg'=>'账号或密码错误');//账号或密码错误
             }
         }
 
@@ -333,7 +343,7 @@ class Users extends Base
             if($com_info){
                 $user_type = 'COM';//用户类型(COM:机构;TEA:老师;STU:学生)
             }else{
-               return array('response_status' => 'nouser');//请注册,还不是会员
+               return array('response_status' => 'nouser','res_msg'=>'请注册,还不是会员');//请注册,还不是会员
             }
         }
         $verify_code = $param['input_code'];//用户输入的验证码
@@ -342,13 +352,13 @@ class Users extends Base
         $preg = '/^1[3456789]\d{9}$/';//手机号正则
         $preg_pass = '/^[\da-zA-Z]{6,20}$/';//密码正则
         if ($phone == '' || !preg_match($preg, $phone)) {
-            return array('response_status' => 'pherror');//手机号格式不正确
+            return array('response_status' => 'pherror','res_msg'=>'手机号格式不正确');//手机号格式不正确
         }
         if ($verify_code == '' || $verify_code != $sys_code) {
-            return array('response_status' => 'cerror');//验证码不正确
+            return array('response_status' => 'cerror','res_msg'=>'验证码不正确');//验证码不正确
         }
         if ($param['password'] == '' || !preg_match($preg_pass, $param['password'])) {
-            return array('response_status' => 'pserror');//密码格式不正确
+            return array('response_status' => 'pserror','res_msg'=>'密码格式不正确');//密码格式不正确
         }
         Response::debug($phone . '+' . $param['password'] . '+' . $password);
         switch ($user_type) {
@@ -357,26 +367,26 @@ class Users extends Base
                 $res = D('api_users')->where(array('phone' => $phone))->save($data);
                 $teacher = D('api_ct_users')->where(array('phone' => $phone))->save($data);
                 if ($res && $teacher) {
-                    return array('response_status' => "success");//修改成功
+                    return array('response_status' => "success",'res_msg'=>'修改成功');//修改成功
                 } else {
-                    return array('response_status' => "fail");//修改失败
+                    return array('response_status' => "fail",'res_msg'=>'修改失败');//修改失败
                 }
                 break;
             case 'COM': //机构
                 $user_info = D('api_ct_users')->field('id')->where(array('phone' => $phone,'user_type'=>'COM'))->find();//查询老师表记录
                 if (!$user_info) {
-                    return array('response_status' => 'no');//此用户不存在
+                    return array('response_status' => 'no','res_msg'=>'此用户不存在');//此用户不存在
                 }
                 $data['password'] = $password;
                 $com = D('api_ct_users')->where(array('phone' => $phone,'id'=>$user_info->id))->save($data);
                 if ($com) {
-                    return array('response_status' => "success");//修改成功
+                    return array('response_status' => "success",'res_msg'=>'修改成功');//修改成功
                 } else {
-                    return array('response_status' => "fail");//修改失败
+                    return array('response_status' => "fail",'res_msg'=>'修改失败');//修改失败
                 }
                 break;
             default:
-                return array('response_status' => "fail");//修改失败
+                return array('response_status' => "fail",'res_msg'=>'修改失败');//修改失败
                 break;
         }
     }

@@ -75,11 +75,22 @@
                             } else {
                                 add_time = '--';
                             }
-                            if(data[x].ratio_type=='REC'){
-                                ratio_type = '充值';
-                            }
-                            if(data[x].ratio_type=='WITH'){
-                                ratio_type = '提现';
+
+                            if(data[x].ratio_type != ''){
+                                switch(data[x].ratio_type){
+                                    case 'REC':
+                                        ratio_type = '充值';
+                                        break;
+                                    case 'WITH':
+                                        ratio_type = '提现';
+                                        break;
+                                    case 'CWITH':
+                                        ratio_type = '允许提现比例';
+                                        break;
+                                    case 'RAKE':
+                                        ratio_type = '抽成';
+                                        break;
+                                }
                             }
 
                             html += '<tr><td>' + data[x].id + '</td><td>' + ratio_type + '</td><td>' + data[x].ratio + '</td><td>'+ data[x].username + '</td><td>'

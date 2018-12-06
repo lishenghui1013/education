@@ -4,14 +4,14 @@ return array(
     'URL_MODEL' => 2,
 
     'APP_VERSION' => 'v1.0',
-    'APP_NAME'    => '教育APP',
+    'APP_NAME'    => '奥国书院',
 
     'LOAD_EXT_CONFIG'=>'const',
 
     'USER_ADMINISTRATOR' => array(1,2),
     'AUTH_KEY' => 'I&TC{pft>L,C`wFQ>&#ROW>k{Kxlt1>ryW(>r<#R',
 
-    'COMPANY_NAME' => '石家庄兴诺信息技术有限公司开发维护团队',
+    'COMPANY_NAME' => '石家庄奥国信息咨询有限公司开发维护团队',
 
     'URL_ROUTER_ON'   => true,
     'URL_ROUTE_RULES' => array(

@@ -1,0 +1,297 @@
+<extend name="Public/base"/>
+<block name="main">
+
+    <fieldset class="layui-elem-field">
+        <legend>订单管理 - 订单列表</legend>
+        <div class="layui-field-box">
+            <form class="layui-form" id="form-admin-add" action="">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label"> 时间</label>
+                        <div class="layui-input-inline" style="width: 300px;">
+
+                            <input class="layui-input" name="date" placeholder="查询日期" onclick="layui.laydate({elem: this, festival: true,format: 'YYYY-MM-DD'})" id="date">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label"> 卖家名称</label>
+                        <div class="layui-input-inline" style="width: 300px;">
+                            <input type="text" name="com_name" placeholder="请输入卖家名称" class="layui-input" value=""
+                                   id="com_name">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label"> 订单状态</label>
+                        <div class="layui-input-inline">
+                            <select name="order_status" lay-search="" id="order_status">
+                                <option value="">请选择</option>订单状态(W:待付款;Y:已付款;C:已关闭;S:已发货;CD:已评价;N:已收货;F:完成;R:退货中;RS:退款成功)
+                                <option value="">请选择</option>
+                                <option value="W">待付款</option>
+                                <option value="Y">已付款</option>
+                                <option value="C">已关闭</option>
+                                <option value="S">已发货</option>
+                                <option value="CD">已评价</option>
+                                <option value="N">已收货</option>
+                                <option value="F">完成</option>
+                                <option value="R">退货中</option>
+                                <option value="RS">退款成功</option>
+
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="layui-inline" id="search">
+                        <span class="layui-btn sub" lay-submit lay-filter="search">查询</span>
+                    </div>
+                </div>
+            </form>
+            <input type="hidden" name="dates" id="dates" value=""/>
+            <input type="hidden" name="com_names" id="com_names" value=""/>
+            <input type="hidden" name="rimit_statuss" id="rimit_statuss" value=""/>
+            <input type="hidden" name="limit" id="limit" value=""/>
+            <input type="hidden" name="curr" id="curr" value=""/>
+            <input type="hidden" name="total" id="total" value=""/>
+            <table class="layui-table" id="list-admin" lay-even>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>卖家信息</th>
+                    <th>商品信息</th>
+                    <th>买家信息</th>
+                    <th>总价</th>
+                    <th>订单号</th>
+                    <th>下单时间</th>
+                    <th>付款时间</th>
+                    <th>订单状态</th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+
+                </tbody>
+            </table>
+            <div id="demo"></div>
+        </div>
+
+    </fieldset>
+</block>
+
+
+<block name="myScript">
+    <script>
+        Date.prototype.format = function (format) {
+            var o = {
+                "M+": this.getMonth() + 1, //month
+                "d+": this.getDate(), //day
+                "h+": this.getHours(), //hour
+                "m+": this.getMinutes(), //minute
+                "s+": this.getSeconds(), //second
+                "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
+                "S": this.getMilliseconds() //millisecond
+            }
+
+            if (/(y+)/.test(format)) {
+                format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            }
+
+            for (var k in o) {
+                if (new RegExp("(" + k + ")").test(format)) {
+                    format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+                }
+            }
+            return format;
+        }
+
+    </script>
+    <script>
+        function ajaxlist(object) {
+            $.ajax({
+                type: "POST",
+                url: "{:U('ajaxGetIndex')}",
+                data: object,
+                async: false,
+                success: function (msg) {
+                    var html = '';
+                    var data = msg.data;
+                    if (msg.status == 'success') {
+                        for (var x in data) {
+                            var add_time = '';
+                            var seller_info = '',
+                                purchaser_info = '',
+                                goods_info = '',
+                                payment_time = '',
+                                order_status = '',
+                                seller_user_type = '',
+                                user_type = '';
+
+                            var rake_ratio = $("#rake_ratio").text();
+                            rake_ratio = rake_ratio/100*data[x].total_price;
+                            rake_ratio = rake_ratio.toFixed(2);
+                            var to_com = (parseInt(data[x].total_price*100)-parseInt(rake_ratio*100))/100;
+                            to_com = to_com.toFixed(2);
+                            if (data[x].add_time != '') {
+                                add_time = new Date(data[x].add_time * 1000).format("yyyy-MM-dd hh:mm:ss");
+                            }
+                            if (data[x].payment_time != '') {
+                                payment_time = new Date(data[x].payment_time * 1000).format("yyyy-MM-dd hh:mm:ss");
+                            }
+                            switch (data[x].order_status){
+                                case 'W':
+                                    order_status = '待付款';
+                                    break;
+                                case 'Y':
+                                    order_status = '已付款';
+                                    break;
+                                case 'C':
+                                    order_status = '已关闭';
+                                    break;
+                                case 'S':
+                                    order_status = '已发货';
+                                    break;
+                                case 'CD':
+                                    order_status = '已评价';
+                                    break;
+                                case 'N':
+                                    order_status = '已收货';
+                                    break;
+                                case 'F':
+                                    order_status = '完成';
+                                    break;
+                                case 'RS':
+                                    order_status = '退款成功';
+                                    break;
+                                case 'R':
+                                    order_status = '退货中';
+                                    break;
+                                default :
+                                    break;
+                            }
+                            switch (data[x].seller_user_type){
+                                case 'STU':
+                                    seller_user_type = '学生';
+                                    break;
+                                case 'TEA':
+                                    seller_user_type = '老师';
+                                    break;
+                                case 'COM':
+                                    seller_user_type = '机构';
+                                    break;
+                                default :
+                                    break;
+                            }
+                            switch (data[x].user_type){
+                                case 'STU':
+                                    user_type = '学生';
+                                    break;
+                                case 'TEA':
+                                    user_type = '老师';
+                                    break;
+                                case 'COM':
+                                    user_type = '机构';
+                                    break;
+                                default :
+                                    break;
+                            }
+                            //卖家信息
+                            seller_info = '<p>卖家:' + data[x].seller_name + '</p><p>电话:' + data[x].seller_phone + '</p><p>类型:' + seller_user_type + '</p><p>';
+                            // 买家信息
+                            purchaser_info = '<p>买家:' + data[x].purchaser_name + '</p>' + '<p>电话:' + data[x].purchaser_phone + '</p>' + '<p>类型:' + user_type + '</p>';
+                            //商品信息
+                            goods_info = '<p>商品:' + data[x].curriculum_name + '</p><p>单价:' + data[x].unit_price + '</p><p>数量:' + data[x].goods_num + '</p>';
+
+                            html += '<tr><td>' + data[x].id + '</td><td>' + seller_info + '</td><td>' + goods_info + '</td><td>' + purchaser_info + '</td><td>'
+                                + data[x].total_price + '</td><td>' + data[x].order_no + '</td><td>' + add_time + '</td><td>' + payment_time + '</td><td>' + order_status
+                                +'</td></tr>'
+                        }
+
+                    } else {
+                        html = '<tr><td colspan="9" style="text-align:center;">暂无数据</td></tr>'
+
+                    }
+                    $("#tbody").html(html);
+                    $("#curr").val(msg.curr);
+                    $("#limit").val(msg.limit);
+                    $("#total").val(msg.total);
+
+
+                    $('.confirm').on('click', function () {
+                        var ownObj = $(this);
+                        layer.confirm(ownObj.attr('data-info'), {
+                            btn: ['确定', '取消'] //按钮
+                        }, function () {
+                            $.ajax({
+                                type: "POST",
+                                url: ownObj.attr('data-url'),
+                                data: {id: ownObj.attr('data-id')},
+                                success: function (msg) {
+                                    if (msg.code == 1) {
+                                        location.reload();
+                                    } else {
+                                        layer.msg(msg.msg, {
+                                            icon: 5,
+                                            shade: [0.6, '#393D49'],
+                                            time: 1500
+                                        });
+                                    }
+                                }
+                            });
+                        });
+                    });
+                }
+            });
+        }
+
+        function pagenum() {
+            var curr = $("#curr").val(); //获取当前分页数
+            var limit = $("#limit").val(); //每页显示条数
+            var total = $("#total").val(); //总条数
+            var page = Math.ceil(total / limit);
+            var laypage = layui.laypage
+                , layer = layui.layer;
+
+            if (curr == '') { //为空时赋值1
+                curr = 1;
+            }
+
+            laypage({
+                cont: 'demo'
+                , curr: curr
+                , pages: page //控制器转过来的页数
+                , groups: 5
+                , first: '首页'
+                , jump: function (obj, first) {
+                    if (!first) {  //跳转必须放在这个里边，不然无限刷新
+
+                        var object = new Object();
+                        object.curr = obj.curr;
+                        object.com_name = $("#com_names").val();
+                        object.date = $("#dates").val();
+                        object.rimit_status = $("#rimit_statuss").val();
+                        ajaxlist(object);
+                    }
+                }
+            });
+        }
+
+        layui.use(['form', 'laypage', 'layer', 'laydate'], function () {
+            var form = layui.form(),
+                laydate = layui.laydate;
+            ajaxlist();
+            pagenum();
+
+            form.on('submit(search)', function (data) {
+                $("#com_names").val($("#com_name").val());
+                $("#dates").val($("#date").val());
+                $("#rimit_statuss").val($("#rimit_status").val());
+                var object = data.field;
+                object.curr = 1;
+                object.com_name = $("#com_names").val();
+                object.date = $("#dates").val();
+                object.rimit_status = $("#rimit_statuss").val();
+                ajaxlist(object);
+                pagenum();
+                return false;
+            });
+
+        });
+    </script>
+</block>
