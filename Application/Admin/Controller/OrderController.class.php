@@ -5,10 +5,12 @@
  * Date: 2018/12/04
  * Time: 17:32
  */
+
 namespace Admin\Controller;
 
 
-class OrderController extends BaseController {
+class OrderController extends BaseController
+{
     /**
      * 列表页
      * @author: 李胜辉
@@ -48,17 +50,17 @@ class OrderController extends BaseController {
         $info = D('api_order as o')->join('left join api_curriculum as c on c.id=o.goods_id')->join('left join api_ct_users as u on u.id=c.add_id')->field('o.*,c.curriculum_name,c.user_type as seller_user_type,u.com_name as seller_name,u.phone as seller_phone')->where($where)->order('o.id desc')->limit($start, $limit)->select();
         foreach ($info as $keys => $values) {
 
-            if($values['user_type']=='STU'){
-                $user_info= D('api_users')->field('user_name,phone')->where(array('id'=>$values['add_id']))->find();
+            if ($values['user_type'] == 'STU') {
+                $user_info = D('api_users')->field('user_name,phone')->where(array('id' => $values['add_id']))->find();
                 $info[$keys]['purchaser_name'] = $user_info['user_name'];
                 $info[$keys]['purchaser_phone'] = $user_info['phone'];
-            }else{
-                $user_info= D('api_ct_users')->field('user_name,com_name,phone')->where(array('id'=>$values['add_id']))->find();
+            } else {
+                $user_info = D('api_ct_users')->field('user_name,com_name,phone')->where(array('id' => $values['add_id']))->find();
                 $info[$keys]['purchaser_name'] = $user_info['com_name'];
                 $info[$keys]['purchaser_phone'] = $user_info['phone'];
             }
 
-            $card_info = D('api_bankcard as b')->join('left join api_bankname as n on n.id=b.bank_id')->field('b.phone,b.user_name,b.bank_card,n.bank_name')->where(array('b.default'=>'Y','b.user_type'=>$goods_info['user_type'],'b.user_id'=>$goods_info['add_id']))->find();
+            $card_info = D('api_bankcard as b')->join('left join api_bankname as n on n.id=b.bank_id')->field('b.phone,b.user_name,b.bank_card,n.bank_name')->where(array('b.default' => 'Y', 'b.user_type' => $goods_info['user_type'], 'b.user_id' => $goods_info['add_id']))->find();
             $info[$keys]['bank_phone'] = $card_info['phone'];
             $info[$keys]['true_name'] = $card_info['user_name'];
             $info[$keys]['bank_name'] = $card_info['bank_name'];
@@ -92,12 +94,14 @@ class OrderController extends BaseController {
 
         $this->ajaxReturn($data, 'json');
     }
+
     public function rimitIndex()
     {
-        $rake_ratio = D('api_ratio')->where(array('ratio_type'=>'RAKE'))->getField('ratio');
-        $this->assign('rake_ratio',$rake_ratio);
+        $rake_ratio = D('api_ratio')->where(array('ratio_type' => 'RAKE'))->getField('ratio');
+        $this->assign('rake_ratio', $rake_ratio);
         $this->display();
     }
+
     /**
      * ajax打款列表页
      * @author: 李胜辉
@@ -115,9 +119,9 @@ class OrderController extends BaseController {
         $where = array();
         $where['o.order_type'] = 'CUR';//订单类型为课程
         $where['o.order_status'] = 'Y';//已付款
-         if ($com_name != '') {
-             $where['u.com_name'] = array('like', '%' . $com_name . '%');
-         }
+        if ($com_name != '') {
+            $where['u.com_name'] = array('like', '%' . $com_name . '%');
+        }
         if ($date != '') {
             $where['_string'] = 'FROM_UNIXTIME(o.payment_time,"%Y-%m-%d")="' . $date . '"';
         }
@@ -129,17 +133,17 @@ class OrderController extends BaseController {
         $info = D('api_order as o')->join('left join api_curriculum as c on c.id=o.goods_id')->join('left join api_ct_users as u on u.id=c.add_id')->field('o.*,c.curriculum_name,c.user_type as seller_user_type,u.com_name as seller_name,u.phone as seller_phone')->where($where)->order('o.id desc')->limit($start, $limit)->select();
         foreach ($info as $keys => $values) {
 
-            if($values['user_type']=='STU'){
-                $user_info= D('api_users')->field('user_name,phone')->where(array('id'=>$values['add_id']))->find();
+            if ($values['user_type'] == 'STU') {
+                $user_info = D('api_users')->field('user_name,phone')->where(array('id' => $values['add_id']))->find();
                 $info[$keys]['purchaser_name'] = $user_info['user_name'];
                 $info[$keys]['purchaser_phone'] = $user_info['phone'];
-            }else{
-                $user_info= D('api_ct_users')->field('user_name,com_name,phone')->where(array('id'=>$values['add_id']))->find();
+            } else {
+                $user_info = D('api_ct_users')->field('user_name,com_name,phone')->where(array('id' => $values['add_id']))->find();
                 $info[$keys]['purchaser_name'] = $user_info['com_name'];
                 $info[$keys]['purchaser_phone'] = $user_info['phone'];
             }
 
-            $card_info = D('api_bankcard as b')->join('left join api_bankname as n on n.id=b.bank_id')->field('b.phone,b.user_name,b.bank_card,n.bank_name')->where(array('b.default'=>'Y','b.user_type'=>$goods_info['user_type'],'b.user_id'=>$goods_info['add_id']))->find();
+            $card_info = D('api_bankcard as b')->join('left join api_bankname as n on n.id=b.bank_id')->field('b.phone,b.user_name,b.bank_card,n.bank_name')->where(array('b.default' => 'Y', 'b.user_type' => $goods_info['user_type'], 'b.user_id' => $goods_info['add_id']))->find();
             $info[$keys]['bank_phone'] = $card_info['phone'];
             $info[$keys]['true_name'] = $card_info['user_name'];
             $info[$keys]['bank_name'] = $card_info['bank_name'];
@@ -181,16 +185,31 @@ class OrderController extends BaseController {
      */
     public function rimit()
     {
-            $id = I('post.id');
-            $data = array('pay_to_com'=>'Y','pay_to_time'=>time());
+        $id = I('post.id');
+        $num = I('post.num');
+        $user_id = D('api_order as o')->join('left join api_crriculum as c on c.id=o.goods_id')->where(array('o.id' => $id))->getField('add_id');
+        $money = D('api_ct_users')->where(array('id' => $user_id))->getField('money');
+        if(intval($money*100)>=intval($num*100)){
+            $data = array('pay_to_com' => 'Y', 'pay_to_time' => time());
             $res = D('api_order')->where(array('id' => $id))->save($data);
             if ($res === false) {
                 $this->ajaxError('操作失败');
             } else {
-                $this->ajaxSuccess('编辑成功');
+                $update_data = (intval($money * 100) - intval($num * 100)) / 100;
+                $update = D('api_ct_users')->where(array('id' => $id))->save(array('money' => $update_data));
+                if ($update) {
+                    $this->ajaxSuccess('操作成功');
+                } else {
+                    $this->ajaxError('操作失败');
+                }
             }
+        }else{
+            $this->ajaxError('余额不足');
+        }
+
 
     }
+
     /**
      * 取消打款
      * @author: 李胜辉
@@ -199,7 +218,7 @@ class OrderController extends BaseController {
     public function unRimit()
     {
         $id = I('post.id');
-        $data = array('pay_to_com'=>'N','pay_to_time'=>'');
+        $data = array('pay_to_com' => 'N', 'pay_to_time' => '');
         $res = D('api_order')->where(array('id' => $id))->save($data);
         if ($res === false) {
             $this->ajaxError('操作失败');

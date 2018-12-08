@@ -1,0 +1,256 @@
+<extend name="Public/base"/>
+<block name="main">
+
+    <fieldset class="layui-elem-field">
+        <legend>机构管理 - 课程审核</legend>
+        <div class="layui-field-box">
+            <form class="layui-form" id="form-admin-add" action="">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label"> 机构名称</label>
+                        <div class="layui-input-inline" style="width: 300px;">
+
+                            <input type="text" name="com_name" placeholder="请输入机构名称" class="layui-input" value="" id="com_name">
+                        </div>
+                    </div>
+
+                    <div class="layui-inline">
+                        <input class="layui-input" placeholder="请选择日期"
+                               onclick="layui.laydate({elem: this, festival: true})" value="" name="add_time"
+                               id="add_time" autocomplete="off">
+                    </div>
+                    <div class="layui-inline">
+                        <select name="audit_status" id="audit_status">
+                            <option value="">选择状态</option>
+                            <option value="">全部状态</option>
+                            <option value="W">待审核</option>
+                            <option value="S">已通过</option>
+                            <option value="F">未通过</option>
+
+                        </select>
+                    </div>
+                    <div class="layui-inline" id="search">
+                        <span class="layui-btn sub" lay-submit lay-filter="search">查询</span>
+                    </div>
+                </div>
+            </form>
+            <input type="hidden" name="com_names" id="com_names" value=""/>
+            <input type="hidden" name="add_times" id="add_times" value=""/>
+            <input type="hidden" name="audit_statuss" id="audit_statuss" value=""/>
+            <input type="hidden" name="limit" id="limit" value=""/>
+            <input type="hidden" name="curr" id="curr" value=""/>
+            <input type="hidden" name="total" id="total" value=""/>
+            <table class="layui-table" id="list-admin" lay-even>
+                <thead>
+                <colgroup>
+                    <col width="5%">
+                    <col width="15%">
+                    <col width="10%">
+                    <col width="20%">
+                    <col width="10%">
+                    <col width="5%">
+                    <col width="10%">
+                    <col width="5%">
+                    <col width="20%">
+                </colgroup>
+                <tr>
+                    <th>ID</th>
+                    <th>发布机构</th>
+                    <th>发布名称</th>
+                    <th>内容简介</th>
+                    <th>发布时间</th>
+                    <th>审核人</th>
+                    <th>审核时间</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+
+                </tbody>
+            </table>
+            <div id="demo"></div>
+        </div>
+
+    </fieldset>
+</block>
+
+
+<block name="myScript">
+    <script>
+        Date.prototype.format = function (format) {
+            var o = {
+                "M+": this.getMonth() + 1, //month
+                "d+": this.getDate(), //day
+                "h+": this.getHours(), //hour
+                "m+": this.getMinutes(), //minute
+                "s+": this.getSeconds(), //second
+                "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
+                "S": this.getMilliseconds() //millisecond
+            }
+
+            if (/(y+)/.test(format)) {
+                format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            }
+
+            for (var k in o) {
+                if (new RegExp("(" + k + ")").test(format)) {
+                    format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+                }
+            }
+            return format;
+        }
+
+    </script>
+    <script>
+        function ajaxlist(object){
+            $.ajax({
+                type: "POST",
+                url: "{:U('ajaxGetIndex')}",
+                data: object,
+                async:false,
+                success: function (msg) {
+                    console.log(msg);
+                    var html = '';
+                    var data = msg.data;
+                    if (msg.status == 'success') {
+                        for (var x in data) {
+                            var str_status = '';
+                            var add_time = '';
+                            var audit_time = '';
+                            var curriculum_name = data[x].curriculum_name;
+                            var content = data[x].intro;
+                            if (data[x].audit_status == 'S') {
+                                str_status = '<span style="color:green;">已通过</span>'
+                            } else if (data[x].audit_status == 'R') {
+                                str_status = '<span style="color:red;">未通过</span>'
+                            } else {
+                                str_status = '<span style="color:#0000FF;">待审核</span>'
+                            }
+                            if (data[x].add_time != '') {
+                                add_time = new Date(data[x].add_time * 1000).format("yyyy-MM-dd");
+                            } else {
+                                add_time = '--';
+                            }
+                            if (data[x].audit_time != '') {
+                                audit_time = new Date(data[x].audit_time * 1000).format("yyyy-MM-dd");
+                            } else {
+                                audit_time = '--';
+                            }
+                            if (content.length >= 30) {
+                                content = content.substr(0, 20) + '...';
+                            }
+                            if (curriculum_name.length >= 30) {
+                                curriculum_name = curriculum_name.substr(0, 20) + '...';
+                            }
+
+                            html += '<tr><td>' + data[x].id + '</td><td>' + data[x].com_name + '</td><td><span curriculum_name="'+data[x].curriculum_name+'">' + curriculum_name + '</span></td><td><span curriculum_name="'+data[x].intro+'">'
+                                + content + '</span></td><td>' + add_time + '</td><td>'
+                                + data[x].username + '</td><td>' + audit_time + '</td><td>' + str_status + '</td><td>'
+                                + '<span class="layui-btn confirm" data-info="你确定通过审核吗？" data-id="' + data[x].id + '"data-url="{:U(\'open\')}">通过</span>' +
+                                '<span class="layui-btn confirm" data-info="你确定拒绝审核吗？" data-id="' + data[x].id + '"data-url="{:U(\'close\')}">拒绝</span>' +
+                                '<span data-url="{:U(\'look\')}" data-id="'+data[x].id+'"  class="layui-btn look layui-btn-normal">查看</span></td></tr>'
+                        }
+
+                    } else {
+                        html = '<tr><td colspan="9" style="text-align:center;">暂无数据</td></tr>'
+
+                    }
+                    $("#tbody").html(html);
+                    $("#curr").val(msg.curr);
+                    $("#limit").val(msg.limit);
+                    $("#total").val(msg.total);
+                    $('.look').on('click', function () {
+                        var ownObj = $(this);
+                        var url = ownObj.attr('data-url').slice(0,-5)+'/id/'+ownObj.attr('data-id');
+                        layer.open({
+                            title: '编辑',
+                            type: 2,
+                            area: ['60%', '80%'],
+                            maxmin: true,
+                            content: url
+                        });
+                    });
+
+                    $('.confirm').on('click', function () {
+                        var ownObj = $(this);
+                        layer.confirm(ownObj.attr('data-info'), {
+                            btn: ['确定', '取消'] //按钮
+                        }, function () {
+                            $.ajax({
+                                type: "POST",
+                                url: ownObj.attr('data-url'),
+                                data: {id: ownObj.attr('data-id')},
+                                success: function (msg) {
+                                    if (msg.code == 1) {
+                                        location.reload();
+                                    } else {
+                                        layer.msg(msg.msg, {
+                                            icon: 5,
+                                            shade: [0.6, '#393D49'],
+                                            time: 1500
+                                        });
+                                    }
+                                }
+                            });
+                        });
+                    });
+                }
+            });
+        }
+        function pagenum(){
+            var curr = $("#curr").attr('value'); //获取当前分页数
+            var limit = $("#limit").val(); //每页显示条数
+            var total = $("#total").val(); //总条数
+            var page = Math.ceil(total / limit);
+            var laypage = layui.laypage
+                , layer = layui.layer;
+
+            if (curr == '') { //为空时赋值1
+                curr = 1;
+            }
+
+            laypage({
+                cont: 'demo'
+                , curr: curr
+                , pages: page //控制器转过来的页数
+                ,groups:5
+                ,first:'首页'
+                , jump: function (obj, first) {
+                    if (!first) {  //跳转必须放在这个里边，不然无限刷新
+
+                        var object = new Object();
+                        object.curr = obj.curr;
+                        object.com_name = $("#com_names").val();
+                        object.add_time = $("#add_times").val();
+                        object.audit_status = $("#audit_statuss").val();
+                        ajaxlist(object);
+                    }
+                }
+            });
+        }
+
+        layui.use(['form', 'laypage', 'layer', 'laydate'], function () {
+            var form = layui.form(),
+                laydate = layui.laydate;
+            ajaxlist();
+            pagenum();
+
+            form.on('submit(search)', function (data) {
+                $("#com_names").val($("#com_name").val());
+                $("#add_times").val($("#add_time").val());
+                $("#audit_statuss").val($("#audit_status").val());
+                var object = data.field;
+                object.curr = 1;
+                object.com_name = $("#com_names").val();
+                object.add_time = $("#add_times").val();
+                object.audit_status = $("#audit_statuss").val();
+                ajaxlist(object);
+                pagenum();
+                return false;
+            });
+
+
+        });
+    </script>
+</block>

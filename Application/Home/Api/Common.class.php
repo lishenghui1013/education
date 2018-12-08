@@ -47,18 +47,24 @@ class Common extends Base
     {
         $class_type = $param['class_type']?$param['class_type']:'';//年级分类(SMALL:小学;JUN:初中;HIGHT:高中;UNI:大学;COLL:专科;GRAD:研究生;)
         $where = array();
-        if($class_type){
-            $where['class_type'] = $class_type;
+        $data = array();
+        $types = array('SMALL','JUN','HIGHT','UNI','COLL','GRAD');
+        if($types){
+            foreach($types as $key=>$value){
+                $where['class_type'] = $value;
+                $data[$value] = D('api_class')->field('id,class_name,class_type')->where($where)->select();
+            }
+            unset($key,$value);
         }
-        $list = D('api_class')->field('id,class_name,class_type')->where($where)->select();
-        if ($list) {
-            $list['response_status'] = 'success';//success:成功;fail:失败
-            $list['res_msg'] = '成功';
-            return $list;
+
+        if ($data) {
+            $data['response_status'] = 'success';//success:成功;fail:失败
+            $data['res_msg'] = '成功';
+            return $data;
         } else {
-            $list['response_status'] = 'fail';//success:成功;fail:失败
-            $list['res_msg'] = '失败';
-            return $list;
+            $data['response_status'] = 'fail';//success:成功;fail:失败
+            $data['res_msg'] = '失败';
+            return $data;
         }
     }
 

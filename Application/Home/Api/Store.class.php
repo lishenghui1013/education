@@ -27,7 +27,27 @@ class Store extends Base
     public function slideshow($param)
     {
         $pic_type = $param['pic_type'];//轮播图类型('COM':机构;'STU':学生;'TEA':老师;)
-        $list['datas'] = D('api_slideshow as s')->join('left join api_publish as p on p.id=s.publish_id')->field('s.id,s.publish_id,p.cover')->where(array('pic_type' => $pic_type))->order('id desc')->select();
+        $list['datas'] = D('api_slideshow as s')->join('left join api_publish as p on p.id=s.publish_id')->field('s.id,s.publish_id,p.cover')->where(array('s.pic_type' => $pic_type))->order('s.id desc')->select();
+        if (empty($list['datas'])) {
+            $list['response_status'] = 'fail';//success:成功;fail:失败
+            $list['res_msg'] = '失败';
+        }else{
+            $list['response_status'] = 'success';//success:成功;fail:失败
+            $list['res_msg'] = '成功';
+        }
+        return $list;
+
+    }
+    /**
+     * 平台轮播图
+     * @author: 李胜辉
+     * @time: 2018/12/08 10:34
+     *
+     */
+    public function terraceSlideshow($param)
+    {
+        $pic_type = $param['pic_type']?$param['pic_type']:'STOR';//轮播图类型('COM':机构;'STU':学生;'TEA':老师;STOR:商城平台)
+        $list['datas'] = D('api_slideshow as s')->join('left join api_publish as p on p.id=s.publish_id')->field('s.id,s.publish_id,p.cover')->where(array('s.pic_type' => $pic_type))->order('s.id desc')->select();
         if (empty($list['datas'])) {
             $list['response_status'] = 'fail';//success:成功;fail:失败
             $list['res_msg'] = '失败';

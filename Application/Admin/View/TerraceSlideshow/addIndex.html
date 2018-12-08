@@ -1,0 +1,208 @@
+<extend name="Public/base"/>
+<block name="main">
+
+    <fieldset class="layui-elem-field">
+        <legend>平台轮播 - <a href="{:U('index')}" target="_self" style="color:blue;cursor:pointer;">轮播列表</a> - 课程列表</legend>
+        <div class="layui-field-box">
+            <form class="layui-form" id="form-admin-add" action="">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label"> 课程标题</label>
+                        <div class="layui-input-inline" style="width: 200px;">
+
+                            <input type="text" name="curriculum_name" placeholder="请输入课程标题" class="layui-input" value="" id="curriculum_name">
+                        </div>
+                    </div>
+                    <div class="layui-inline" id="search">
+                        <div class="layui-input-inline">
+                        <span class="layui-btn sub" lay-submit lay-filter="search">查询</span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <input type="hidden" name="curriculum_names" id="curriculum_names" value=""/>
+            <input type="hidden" name="limit" id="limit" value=""/>
+            <input type="hidden" name="curr" id="curr" value=""/>
+            <input type="hidden" name="total" id="total" value=""/>
+            <table class="layui-table" id="list-admin" lay-even>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>标题</th>
+                    <th>内容简介</th>
+                    <th>缩略图</th>
+                    <th>发布人</th>
+                    <th>发布人类型</th>
+                    <th>发布时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+
+                </tbody>
+            </table>
+            <div id="demo"></div>
+        </div>
+
+    </fieldset>
+</block>
+
+
+<block name="myScript">
+    <script>
+        Date.prototype.format = function (format) {
+            var o = {
+                "M+": this.getMonth() + 1, //month
+                "d+": this.getDate(), //day
+                "h+": this.getHours(), //hour
+                "m+": this.getMinutes(), //minute
+                "s+": this.getSeconds(), //second
+                "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
+                "S": this.getMilliseconds() //millisecond
+            }
+
+            if (/(y+)/.test(format)) {
+                format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            }
+
+            for (var k in o) {
+                if (new RegExp("(" + k + ")").test(format)) {
+                    format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+                }
+            }
+            return format;
+        }
+
+    </script>
+    <script>
+        function ajaxlist(object){
+            $.ajax({
+                type: "POST",
+                url: "{:U('ajaxAddIndex')}",
+                data: object,
+                async:false,
+                success: function (msg) {
+                    var html = '';
+                    var data = msg.data;
+                    if (msg.status == 'success') {
+                        for (var x in data) {
+                            var str_status = '';
+                            var add_time = '';
+                            var user_type = '',item_type = '';
+                            switch(data[x].user_type){
+                                case 'COM':
+                                    user_type = '机构';
+                                    break;
+                                case 'TEA':
+                                    user_type = '老师';
+                                    break;
+                                case 'STU':
+                                    user_type = '学生';
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            if (data[x].slideshow_status == 'Y') {
+                                str_status = '<span class="layui-btn confirm" data-info="你确定要取消吗?" data-id="' + data[x].id + '" data-url="{:U(\'cancel\')}">取消</span>';
+                            } else if (data[x].slideshow_status == 'N') {
+                                str_status = '<span class="layui-btn confirm" data-info="你确定要设置当前项为轮播图吗?" data-id="' + data[x].id + '" data-url="{:U(\'add\')}">设为轮播</span>';
+                            }
+                            if (data[x].add_time != '') {
+                                add_time = new Date(data[x].add_time * 1000).format("yyyy-MM-dd");
+                            } else {
+                                add_time = '';
+                            }
+
+
+                            html += '<tr><td>' + data[x].id + '</td><td>' + data[x].curriculum_name + '</td><td>' + data[x].intro + '</td><td><img src="'
+                                + data[x].cover + '" style="height:60px;width:80px;" /></td><td>' + data[x].com_name + '</td><td>'
+                                + user_type + '</td><td>' + add_time + '</td><td>'
+                                + str_status + '</td></tr>'
+                        }
+
+                    } else {
+                        html = '<tr><td colspan="8" style="text-align:center;">暂无数据</td></tr>'
+
+                    }
+                    $("#tbody").html(html);
+                    $("#curr").val(msg.curr);
+                    $("#limit").val(msg.limit);
+                    $("#total").val(msg.total);
+
+                    $('.confirm').on('click', function () {
+                        var ownObj = $(this);
+                        layer.confirm(ownObj.attr('data-info'), {
+                            btn: ['确定', '取消'] //按钮
+                        }, function () {
+                            $.ajax({
+                                type: "POST",
+                                url: ownObj.attr('data-url'),
+                                data: {id: ownObj.attr('data-id')},
+                                success: function (msg) {
+                                    if (msg.code == 1) {
+                                        location.reload();
+                                    } else {
+                                        layer.msg(msg.msg, {
+                                            icon: 5,
+                                            shade: [0.6, '#393D49'],
+                                            time: 1500
+                                        });
+                                    }
+                                }
+                            });
+                        });
+                    });
+                }
+            });
+        }
+        function pagenum(){
+            var curr = $("#curr").attr('value'); //获取当前分页数
+            var limit = $("#limit").val(); //每页显示条数
+            var total = $("#total").val(); //总条数
+            var page = Math.ceil(total / limit);
+            var laypage = layui.laypage
+                , layer = layui.layer;
+
+            if (curr == '') { //为空时赋值1
+                curr = 1;
+            }
+
+            laypage({
+                cont: 'demo'
+                , curr: curr
+                , pages: page //控制器转过来的页数
+                ,groups:5
+                ,first:'首页'
+                , jump: function (obj, first) {
+                    if (!first) {  //跳转必须放在这个里边，不然无限刷新
+
+                        var object = new Object();
+                        object.curr = obj.curr;
+                        object.curriculum_name = $("#curriculum_names").val();
+                        ajaxlist(object);
+                    }
+                }
+            });
+        }
+
+        layui.use(['form', 'laypage', 'layer', 'laydate'], function () {
+            var form = layui.form(),
+                laydate = layui.laydate;
+            ajaxlist();
+            pagenum();
+
+            form.on('submit(search)', function (data) {
+                $("#curriculum_names").val($("#curriculum_name").val());
+                var object = data.field;
+                object.curr = 1;
+                object.curriculum_name = $("#curriculum_names").val();
+                ajaxlist(object);
+                pagenum();
+                return false;
+            });
+
+
+        });
+    </script>
+</block>

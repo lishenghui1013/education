@@ -60,6 +60,7 @@ class Goods extends Base
         $data['user_type'] = $param['user_type']; //用户类型(COM:机构;TEA:老师;STU:学生)
         $category_id = $param['category_id']?$param['category_id']:'';//分类id
         $where = array();
+        $where['audit_status']='S';
         if($category_id!=''){
             $where['category_id'] = $category_id;
         }
