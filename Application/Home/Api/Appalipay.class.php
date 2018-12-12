@@ -83,5 +83,6 @@ class Appalipay extends Base{
         $str = $Client->getSignContentUrlencode($param);
 
         return array('url'=>$str);
+
     }
 }
