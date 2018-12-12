@@ -88,6 +88,6 @@ class AppCalipay extends Base{
         $param['sign'] = $sign;
         $str = $Client->getSignContentUrlencode($param);
 
-        return array('url'=>$str);
+        Response::success(array('url'=>$str));
     }
 }

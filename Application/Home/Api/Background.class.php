@@ -26,15 +26,12 @@ class Background extends Base
      */
     public function backgroundMusic()
     {
-        $listInfo['datas'] = D('api_bg_music')->field('id,music_name,music_url')->order('id desc')->select();
-        if (empty($listInfo['datas'])) {
-            $listInfo['response_status']='success';
-            $listInfo['res_msg'] = '暂无数据';
+        $listInfo = D('api_bg_music')->field('id,music_name,music_url')->order('id desc')->select();
+        if (empty($listInfo)) {
+            Response::error(-1,'暂无数据');
         }else{
-            $listInfo['response_status']='success';
-            $listInfo['res_msg'] = '成功';
+            Response::success($listInfo);
         }
-        return $listInfo;
     }
 
 

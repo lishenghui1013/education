@@ -25,15 +25,11 @@ class Common extends Base
      */
     public function subjectList()
     {
-        $list['datas'] = D('api_subject')->field('id,subject_name')->select();
-        if ($list['datas']) {
-            $list['response_status'] = 'success';//success:成功;fail:失败
-            $list['res_msg'] = '成功';
-            return $list;
+        $list= D('api_subject')->field('id,subject_name')->select();
+        if ($list) {
+            Response::success($list);
         } else {
-            $list['response_status'] = 'fail';//success:成功;fail:失败
-            $list['res_msg'] = '失败';
-            return $list;
+            Response::error(-1,'暂无数据');
         }
     }
 
@@ -58,13 +54,9 @@ class Common extends Base
         }
 
         if ($data) {
-            $data['response_status'] = 'success';//success:成功;fail:失败
-            $data['res_msg'] = '成功';
-            return $data;
+            Response::success($data);
         } else {
-            $data['response_status'] = 'fail';//success:成功;fail:失败
-            $data['res_msg'] = '失败';
-            return $data;
+            Response::error(-1,'暂无数据');
         }
     }
 
@@ -76,15 +68,11 @@ class Common extends Base
      */
     public function versionsList()
     {
-        $list['datas'] = D('api_versions')->field('id,versions_name')->select();
-        if ($list['datas']) {
-            $list['response_status'] = 'success';//success:成功;fail:失败
-            $list['res_msg'] = '成功';
-            return $list;
+        $list = D('api_versions')->field('id,versions_name')->select();
+        if ($list) {
+            Response::success($list);
         } else {
-            $list['response_status'] = 'fail';//success:成功;fail:失败
-            $list['res_msg'] = '失败';
-            return $list;
+            Response::error(-1,'暂无数据');
         }
     }
     /**
@@ -126,9 +114,9 @@ class Common extends Base
                     break;
             }
 
-            return array('response_status' => 'success','res_msg'=>'成功');//success:成功;fail:失败
+            Response::success(array());
         } else {
-            return array('response_status' => 'fail','res_msg'=>'失败');//success:成功;fail:失败
+            Response::error(-1,'收藏失败');
         }
     }
     /**
@@ -148,9 +136,9 @@ class Common extends Base
 
         $res = D('api_comment')->add($data);
         if ($res) {
-            return array('response_status' => 'success','res_msg'=>'成功');//success:成功;fail:失败
+            Response::success(array('id'=>$res));
         } else {
-            return array('response_status' => 'fail','res_msg'=>'失败');//success:成功;fail:失败
+            Response::error(-1,'评论失败');
         }
     }
 
@@ -185,7 +173,12 @@ class Common extends Base
         $args['sign'] = $this->buildSign(self::APP_KEY, $query, $args['salt'], self::SEC_KEY);
         $ret = $this->call(self::URL, $args);
         $ret = json_decode($ret, true);
-        return $ret;
+        if($ret){
+            Response::success($ret);
+        }else{
+          Response::error(-1,'未查到数据');
+        }
+
     }
     /**
      * 有道智云 生词翻译入口
@@ -227,7 +220,11 @@ class Common extends Base
             $ret['add_status']='N';//已经添加
         }
         $ret = json_decode($ret, true);
-        return $ret;
+        if($ret){
+            Response::success($ret);
+        }else{
+            Response::error(-1,'未查到数据');
+        }
     }
 
 
@@ -348,10 +345,11 @@ class Common extends Base
         $data['add_userid'] = $param['add_userid'];//添加生词的用户id
         $data['add_time'] = time();//添加时间
         $res = D('api_new_words')->data($data)->add();
-        if ($res) {
-            return array('response_status' => 'success','res_msg'=>'成功');//success:成功;fail:失败
-        } else {
-            return array('response_status' => 'fail','res_msg'=>'失败');//success:成功;fail:失败
+
+        if($res){
+            Response::success(array('id'=>$res));
+        }else{
+            Response::error(-1,'添加失败');
         }
     }
 
@@ -364,10 +362,10 @@ class Common extends Base
     {
         $id = $param['id'];//生词id
         $res = D('api_new_words')->where(array('id' => $id))->delete();
-        if ($res) {
-            return array('response_status' => 'success','res_msg'=>'成功');//success:成功;fail:失败
-        } else {
-            return array('response_status' => 'fail','res_msg'=>'失败');//success:成功;fail:失败
+        if($res){
+            Response::success(array('del_num'=>$res));
+        }else{
+            Response::error(-1,'删除失败');
         }
     }
 
@@ -410,20 +408,14 @@ class Common extends Base
         }
         if ($user_id !== '') {
             $where['add_suerid'] = $user_id;
-            $list['datas'] = D('api_new_words')->field('id,new_words,translate,source,add_time')->where($where)->order('id desc')->limit($start, $limit)->select();
-            if ($list['datas']) {
-                $list['response_status'] = 'success';//success:成功;fail:失败
-                $list['res_msg'] = '成功';
-                return $list;
+            $list = D('api_new_words')->field('id,new_words,translate,source,add_time')->where($where)->order('id desc')->limit($start, $limit)->select();
+            if ($list) {
+                Response::success($list);
             } else {
-                $list['response_status'] = 'fail';//success:成功;fail:失败
-                $list['res_msg'] = '失败';
-                return $list;
+                Response::error(-1,'暂无数据');
             }
         } else {
-            $list['response_status'] = 'lack';//缺少参数
-            $list['res_msg'] = '缺少参数';
-            return $list;
+            Response::error(-2,'缺少参数userid');
         }
     }
 
@@ -478,13 +470,13 @@ class Common extends Base
      */
     public function sendCodes($param)
     {
-        $phone = $param['phone'];//手机号
+        $phone = $param['phone']?$param['phone']:'';//手机号
         $code = $this->buildCodes();//验证码
         $res = SmsDemo::sendSms($phone,$code);
         if($res['Message']=='OK'){
-            return array('response_status'=>'success','code'=>$code);//成功发送
+            Response::success(array());
         }else{
-            return array('response_status'=>'fail');//发送失败
+            Response::error(-1,'发送失败');
         }
     }
 
@@ -524,16 +516,13 @@ class Common extends Base
      */
     public function provinceList()
     {
-        $listInfo['datas'] = D('api_provinces')->select();
-        ApiLog::setApiInfo($listInfo['datas']);
-        if (empty($listInfo['datas'])) {
-            $listInfo['response_status']='success';
-            $listInfo['res_msg'] = '暂无数据';
+        $listInfo = D('api_provinces')->select();
+        ApiLog::setApiInfo($listInfo);
+        if (empty($listInfo)) {
+            Response::error(-1,'暂无数据');
         }else{
-            $listInfo['response_status']='success';
-            $listInfo['res_msg'] = '成功';
+            Response::success($listInfo);
         }
-        return $listInfo;
     }
 
     /**
@@ -544,16 +533,13 @@ class Common extends Base
     public function cityList($param)
     {
         $province_num = $param['province_num'];//省份编号
-        $listInfo['datas'] = D('api_cities')->where(array('provinceid' => $province_num))->select();
-        ApiLog::setApiInfo($listInfo['datas']);
-        if (empty($listInfo['datas'])) {
-            $listInfo['response_status']='success';
-            $listInfo['res_msg'] = '暂无数据';
+        $listInfo = D('api_cities')->where(array('provinceid' => $province_num))->select();
+        ApiLog::setApiInfo($listInfo);
+        if (empty($listInfo)) {
+            Response::error(-1,'暂无数据');
         }else{
-            $listInfo['response_status']='success';
-            $listInfo['res_msg'] = '成功';
+            Response::success($listInfo);
         }
-        return $listInfo;
     }
     /**
      * 县区列表
@@ -563,16 +549,13 @@ class Common extends Base
     public function countyList($param)
     {
         $city_num = $param['city_num'];//城市编号
-        $listInfo['datas'] = D('api_areas')->where(array('cityid' => $city_num))->select();
-        ApiLog::setApiInfo($listInfo['datas']);
-        if (empty($listInfo['datas'])) {
-            $listInfo['response_status']='success';
-            $listInfo['res_msg'] = '暂无数据';
+        $listInfo = D('api_areas')->where(array('cityid' => $city_num))->select();
+        ApiLog::setApiInfo($listInfo);
+        if (empty($listInfo)) {
+            Response::error(-1,'暂无数据');
         }else{
-            $listInfo['response_status']='success';
-            $listInfo['res_msg'] = '成功';
+            Response::success($listInfo);
         }
-        return $listInfo;
     }
 
 

@@ -41,9 +41,9 @@ class Goods extends Base
         $data['add_time'] = time();//添加时间
         $res = D('api_curriculum')->add($data);
         if ($res) {
-            return array('response_status' => 'success','res_msg'=>'成功');//success:成功;fail:失败
+            Response::success(array('id'=>$res));
         } else {
-            return array('response_status' => 'fail','res_msg'=>'失败');//success:成功;fail:失败
+            Response::error(-1,'发布失败');
         }
     }
     /**
@@ -64,15 +64,11 @@ class Goods extends Base
         if($category_id!=''){
             $where['category_id'] = $category_id;
         }
-        $res['datas'] = D('api_curriculum')->field('id,curriculum_name,price,intro,cover,add_time,add_id')->where($where)->limit($start,$limit)->select();
-        if ($res['datas']) {
-            $res['response_status'] = 'success';//success:成功;fail:失败
-            $res['res_msg'] = '成功';
-            return $res;
+        $res = D('api_curriculum')->field('id,curriculum_name,price,intro,cover,add_time,add_id')->where($where)->limit($start,$limit)->select();
+        if ($res) {
+            Response::success($res);
         } else {
-            $res['response_status'] = 'fail';//success:成功;fail:失败
-            $res['res_msg'] = '失败';
-            return $res;
+            Response::error(-1,'暂无数据');
         }
     }
     /**
@@ -86,13 +82,9 @@ class Goods extends Base
         $id = $param['id'];//课程id
         $res = D('api_curriculum')->field('id,curriculum_name,price,intro,cover,add_time,add_id,content,category_id,user_type,curriculum_start_time,curriculum_end_time,lesson_time,inventory_num')->where(array('id'=>$id))->find();
         if ($res) {
-            $res['response_status'] = 'success';//success:成功;fail:失败
-            $res['res_msg'] = '成功';
-            return $res;
+            Response::success($res);
         } else {
-            $res['response_status'] = 'fail';//success:成功;fail:失败
-            $res['res_msg'] = '失败';
-            return $res;
+            Response::error(-1,'暂无数据');
         }
     }
 

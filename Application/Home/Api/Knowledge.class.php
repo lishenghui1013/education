@@ -48,15 +48,11 @@ class Knowledge extends Base
         if ($article_type !== '') {
             $where['article_type'] = $article_type;
         }
-        $list['datas'] = D('api_article_publish')->field('id,title,content,collect_num,read_num,share_num')->where($where)->order('id desc')->limit($start, $limit)->select();
-        if ($list['datas']) {
-            $list['response_status'] = 'success';//success:成功;fail:失败
-            $list['res_msg'] = '成功';
-            return $list;
+        $list = D('api_article_publish')->field('id,title,content,collect_num,read_num,share_num')->where($where)->order('id desc')->limit($start, $limit)->select();
+        if ($list) {
+            Response::success($list);
         } else {
-            $list['response_status'] = 'fail';//success:成功;fail:失败
-            $list['res_msg'] = '失败';
-            return $list;
+           Response::error(-1,'暂无数据');
         }
     }
 
@@ -75,18 +71,12 @@ class Knowledge extends Base
             $where['id'] = $id;
             $detail = D('api_article_publish')->field('id,title,content,read_num,collect_num,share_num,pub_time')->where($where)->find();
             if ($detail) {
-                $detail['response_status'] = 'success';//success:成功;fail:失败
-                $detail['res_msg'] = '成功';
-                return $detail;
+                Response::success($detail);
             } else {
-                $detail['response_status'] = 'fail';//success:成功;fail:失败
-                $detail['res_msg'] = '失败';
-                return $detail;
+                Response::error(-1,'暂无数据');
             }
         } else {
-            $detail['response_status'] = 'lack';//缺少参数
-            $detail['res_msg'] = '缺少参数';
-            return $detail;
+            Response::error(-2,'缺少参数id');
         }
     }
 
@@ -118,15 +108,11 @@ class Knowledge extends Base
         if ($versions_id !== '') {
             $where['versions_id'] = $versions_id;
         }
-        $list['datas'] = D('api_textbook')->field('id,title,cover')->where($where)->order('id desc')->limit($start, $limit)->select();
-        if ($list['datas']) {
-            $list['response_status'] = 'success';//success:成功;fail:失败
-            $list['res_msg'] = '成功';
-            return $list;
+        $list = D('api_textbook')->field('id,title,cover')->where($where)->order('id desc')->limit($start, $limit)->select();
+        if ($list) {
+            Response::success($list);
         } else {
-            $list['response_status'] = 'fail';//success:成功;fail:失败
-            $list['res_msg'] = '失败';
-            return $list;
+            Response::error(-1,'暂无数据');
         }
     }
 
@@ -145,18 +131,14 @@ class Knowledge extends Base
             $where['id'] = $textbook_id;
             $detail = D('api_textbook')->field('title,cover,intro,read_num,collect_num,share_num,pub_time')->where($where)->find();
             if ($detail) {
-                $detail['response_status'] = 'success';//success:成功;fail:失败
-                $detail['res_msg'] = '成功';
+                Response::success($detail);
 
             } else {
-                $detail['response_status'] = 'fail';//success:成功;fail:失败
-                $detail['res_msg'] = '失败';
+                Response::error(-1,'暂无数据');
             }
         } else {
-            $detail['response_status'] = 'lack';//缺少参数
-            $detail['res_msg'] = '缺少参数';
+            Response::error(-2,'缺少参数');
         }
-        return $detail;
     }
 
     /**
@@ -187,20 +169,14 @@ class Knowledge extends Base
         }
         if ($textbook_id !== '') {
             $where['textbook_id'] = $textbook_id;
-            $list['datas'] = D('api_textbook_content')->field('id,title')->where($where)->order('sort asc')->limit($start, $limit)->select();
-            if ($list['datas']) {
-                $list['response_status'] = 'success';//success:成功;fail:失败
-                $list['res_msg'] = '成功';
-                return $list;
+            $list = D('api_textbook_content')->field('id,title')->where($where)->order('sort asc')->limit($start, $limit)->select();
+            if ($list) {
+               Response::success($list);
             } else {
-                $list['response_status'] = 'fail';//success:成功;fail:失败
-                $list['res_msg'] = '失败';
-                return $list;
+                Response::error(-1,'暂无数据');
             }
         } else {
-            $list['response_status'] = 'lack';//缺少参数
-            $list['res_msg'] = '缺少参数';
-            return $list;
+            Response::error(-2,'缺少参数');
         }
     }
 
@@ -219,16 +195,12 @@ class Knowledge extends Base
             $where['id'] = $id;
             $detail = D('api_textbook_content')->field('id,title,content,price,read_num,collect_num,share_num,pub_time')->where($where)->find();
             if ($detail) {
-                $detail['response_status'] = 'success';//success:成功;fail:失败
-                $detail['res_msg'] = '成功';
-                return $detail;
+                Response::success($detail);
             } else {
-                $detail['response_status'] = 'fail';//success:成功;fail:失败
-                $detail['res_msg'] = '失败';
+                Response::error(-1,'暂无数据');
             }
         } else {
-            $detail['response_status'] = 'lack';//缺少参数
-            $detail['res_msg'] = '缺少参数';
+            Response::error(-2,'缺少参数id');
         }
     }
 
@@ -259,15 +231,11 @@ class Knowledge extends Base
         if ($versions_id !== '') {
             $where['versions_id'] = $versions_id;
         }
-        $list['datas'] = D('api_video')->field('id,title,intro,cover,collect_num,read_num,share_num,pub_time')->where($where)->order('id desc')->limit($start, $limit)->select();
-        if ($list['datas']) {
-            $list['response_status'] = 'success';//success:成功;fail:失败
-            $list['res_msg'] = '成功';
-            return $list;
+        $list = D('api_video')->field('id,title,intro,cover,collect_num,read_num,share_num,pub_time')->where($where)->order('id desc')->limit($start, $limit)->select();
+        if ($list) {
+            Response::success($list);
         } else {
-            $list['response_status'] = 'fail';//success:成功;fail:失败
-            $list['res_msg'] = '失败';
-            return $list;
+            Response::error(-1,'暂无数据');
         }
     }
 
@@ -286,18 +254,13 @@ class Knowledge extends Base
             $where['id'] = $video_id;
             $detail = D('api_video')->field('id,title,cover,intro,read_num,collect_num,share_num,pub_time')->where($where)->find();
             if ($detail) {
-                $detail['response_status'] = 'success';//success:成功;fail:失败
-                $detail['res_msg'] = '成功';
-
+                Response::success($detail);
             } else {
-                $detail['response_status'] = 'fail';//success:成功;fail:失败
-                $detail['res_msg'] = '失败';
+                Response::error(-1,'暂无数据');
             }
         } else {
-            $detail['response_status'] = 'lack';//缺少参数
-            $detail['res_msg'] = '缺少参数';
+            Response::error(-2,'缺少参数');
         }
-        return $detail;
     }
 
     /**
@@ -328,20 +291,14 @@ class Knowledge extends Base
         }
         if ($video_id !== '') {
             $where['video_id'] = $video_id;
-            $list['datas'] = D('api_video_content')->field('id,title')->where($where)->order('sort asc')->limit($start, $limit)->select();
-            if ($list['datas']) {
-                $list['response_status'] = 'success';//success:成功;fail:失败
-                $list['res_msg'] = '成功';
-                return $list;
+            $list = D('api_video_content')->field('id,title')->where($where)->order('sort asc')->limit($start, $limit)->select();
+            if ($list) {
+                Response::success($list);
             } else {
-                $list['response_status'] = 'fail';//success:成功;fail:失败
-                $list['res_msg'] = '失败';
-                return $list;
+                Response::error(-1,'暂无数据');
             }
         } else {
-            $list['response_status'] = 'lack';//缺少参数
-            $list['res_msg'] = '缺少参数';
-            return $list;
+            Response::error(-2,'缺少参数');
         }
     }
 
@@ -360,18 +317,12 @@ class Knowledge extends Base
             $where['id'] = $id;
             $detail = D('api_video_content')->field('id,title,video_id,video_url,sort,price,read_num,collect_num,share_num,pub_time')->where($where)->find();
             if ($detail) {
-                $detail['response_status'] = 'success';//success:成功;fail:失败
-                $detail['res_msg'] = '成功';
-                return $detail;
+                Response::success($detail);
             } else {
-                $detail['response_status'] = 'fail';//success:成功;fail:失败
-                $detail['res_msg'] = '失败';
-                return $detail;
+                Response::error(-1,'暂无数据');
             }
         } else {
-            $detail['response_status'] = 'lack';//缺少参数
-            $detail['res_msg'] = '缺少参数';
-            return $detail;
+            Response::error(-2,'缺少参数');
         }
     }
 

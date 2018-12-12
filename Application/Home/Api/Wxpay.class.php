@@ -97,8 +97,6 @@ class Wxpay extends Base
 
         $response3 = $this->xmlToArray($xml2);
         return $response3;
-
-
     }
 
     /**
