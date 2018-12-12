@@ -33,31 +33,31 @@ class Users extends Base
         $preg = '/^1[3456789]\d{9}$/';
         $preg_pass = '/^[\da-zA-Z]{6,20}$/';
         if(!$param['phone']){
-            return array('response_status' => 'nophone','res_msg'=>'手机号不能为空');//手机号不能为空
+            Response::error('nophone','手机号不能为空');
         }
         if(!preg_match_all($preg,$param['phone'])){
-            return array('response_status' => 'pherror','res_msg'=>'手机号格式不正确');//手机号格式不正确
+            Response::error('pherror','手机号格式不正确');
         }
         if(!$param['password']){
-            return array('response_status' => 'nopass','res_msg'=>'密码不能为空');//密码不能为空
+            Response::error('nopass','密码不能为空');
         }
         if(!preg_match_all($preg_pass,$param['password'])){
-            return array('response_status' => 'perror','res_msg'=>'密码格式不正确');//密码格式不正确
+            Response::error('perror','密码格式不正确');
         }
         if(!$user_type){
-            return array('response_status' => 'notype','res_msg'=>'注册类型不能为空');//注册类型不能为空
+            Response::error('notype','注册类型不能为空');
         }
         if($input_code===''||$send_code===''){
-            return array('response_status' => 'nocode','res_msg'=>'验证码为空');//验证码为空
+            Response::error('nocode','验证码为空');
         }
         if($input_code!=$send_code){
-            return array('response_status' => 'neqcode','res_msg'=>'输入验证码不正确');//输入验证码不正确
+            Response::error('neqcode','输入验证码不正确');
         }
 
         if($user_type == 'STU'){
             $is_phone = D('api_users')->field('id')->where(array('phone'=>$param['phone']))->select();
             if($is_phone){
-                return array('response_status' => 'hasphone','res_msg'=>'手机号已经注册');//手机号已经注册
+                Response::error('hasphone','手机号已经注册');
             }
             $data['login_first'] ='Y';
             $insert = D('api_users')->add($data);
@@ -66,17 +66,20 @@ class Users extends Base
                 $data['user_type'] = 'TEA';
                 $insert_teacher = D('api_ct_users')->add($data);
                 if ($insert_teacher) {
-                    return array('response_status' => 'success','res_msg'=>'成功');//success:成功;fail:失败
+                    Response::success(array('id'=>$insert_teacher));
                 } else {
+                    Response::error('pherror','机构添加失败');
                     return array('response_status' => 'tfail','res_msg'=>'机构表添加失败');//机构表添加失败
                 }
             }else{
+                Response::error('pherror','输入验证码不正确');
                 return array('response_status' => 'fail','res_msg'=>'失败');//success:成功;fail:失败
             }
 
         }else{
             $is_phone = D('api_ct_users')->field('id')->where(array('phone'=>$param['phone']))->select();
             if($is_phone){
+                Response::error('pherror','输入验证码不正确');
                 return array('response_status' => 'hasphone','res_msg'=>'手机号已经注册');//手机号已经注册
             }
             $data['user_type'] = $user_type;
@@ -89,16 +92,20 @@ class Users extends Base
                     if ($insert_stu) {
                         return array('response_status' => 'success','res_msg'=>'成功');//success:成功;fail:失败
                     } else {
+                        Response::error('pherror','输入验证码不正确');
                         return array('response_status' => 'sfail','res_msg'=>'学生表添加失败');//学生表添加失败
                     }
                 }else{
+                    Response::error('pherror','输入验证码不正确');
                     return array('response_status' => 'fail','res_msg'=>'失败');//success:成功;fail:失败
                 }
             }else{
                 $insert = D('api_ct_users')->add($data);
                 if ($insert) {
+                    Response::success('pherror','输入验证码不正确');
                     return array('response_status' => 'success','res_msg'=>'成功');//success:成功;fail:失败
                 } else {
+                    Response::error('pherror','输入验证码不正确');
                     return array('response_status' => 'fail','res_msg'=>'失败');//success:成功;fail:失败
                 }
             }

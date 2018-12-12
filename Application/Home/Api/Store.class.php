@@ -27,15 +27,12 @@ class Store extends Base
     public function slideshow($param)
     {
         $pic_type = $param['pic_type'];//轮播图类型('COM':机构;'STU':学生;'TEA':老师;)
-        $list['datas'] = D('api_slideshow as s')->join('left join api_publish as p on p.id=s.publish_id')->field('s.id,s.publish_id,p.cover')->where(array('s.pic_type' => $pic_type))->order('s.id desc')->select();
-        if (empty($list['datas'])) {
-            $list['response_status'] = 'fail';//success:成功;fail:失败
-            $list['res_msg'] = '失败';
+        $list = D('api_slideshow as s')->join('left join api_publish as p on p.id=s.publish_id')->field('s.id,s.publish_id,p.cover')->where(array('s.pic_type' => $pic_type))->order('s.id desc')->select();
+        if (empty($list)) {
+            Response::error('-1','暂无数据');
         }else{
-            $list['response_status'] = 'success';//success:成功;fail:失败
-            $list['res_msg'] = '成功';
+            Response::success($list);
         }
-        return $list;
 
     }
     /**
@@ -47,15 +44,12 @@ class Store extends Base
     public function terraceSlideshow($param)
     {
         $pic_type = $param['pic_type']?$param['pic_type']:'STOR';//轮播图类型('COM':机构;'STU':学生;'TEA':老师;STOR:商城平台)
-        $list['datas'] = D('api_slideshow as s')->join('left join api_publish as p on p.id=s.publish_id')->field('s.id,s.publish_id,p.cover')->where(array('s.pic_type' => $pic_type))->order('s.id desc')->select();
-        if (empty($list['datas'])) {
-            $list['response_status'] = 'fail';//success:成功;fail:失败
-            $list['res_msg'] = '失败';
+        $list = D('api_slideshow as s')->join('left join api_publish as p on p.id=s.publish_id')->field('s.id,s.publish_id,p.cover')->where(array('s.pic_type' => $pic_type))->order('s.id desc')->select();
+        if (empty($list)) {
+            Response::error(-1,'暂无数据');
         }else{
-            $list['response_status'] = 'success';//success:成功;fail:失败
-            $list['res_msg'] = '成功';
+            Response::success($list);
         }
-        return $list;
 
     }
 
@@ -80,18 +74,41 @@ class Store extends Base
             $where['item_type'] = $item_type;
         }
         if ($user_type == 'TEA' || $user_type == 'COM') {
-            $list['datas'] = D('api_publish as p')->join('left join api_ct_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,p.pub_time,p.share_num,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->limit($start, $limit)->select();
-            $list['response_status'] = 'success';//success:成功;fail:失败
+            $list = D('api_publish as p')->join('left join api_ct_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,p.pub_time,p.share_num,p.item_type,p.user_type,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->limit($start, $limit)->select();
+            Response::success($list);
         } else if ($user_type == 'STU') {
-            $list['datas'] = D('api_publish as p')->join('left join api_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,p.pub_time,p.share_num,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->limit($start, $limit)->select();
-            $list['response_status'] = 'success';//success:成功;fail:失败
-            $list['res_msg'] = '成功';
+            $list = D('api_publish as p')->join('left join api_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,p.pub_time,p.share_num,p.item_type,p.user_type,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->limit($start, $limit)->select();
+            Response::success($list);
         } else {
-            $list['response_status'] = 'fail';//success:成功;fail:失败
-            $list['res_msg'] = '失败';
+            Response::error(-1,'失败');
         }
-
-        return $list;
+    }
+    /**
+     *横向滑动列表
+     * @author: 李胜辉
+     * @time: 2018/12/12 10:34
+     *
+     */
+    public function publishCrosswiseList($param)
+    {
+        $user_type = $param['user_type'] ? $param['user_type'] : '';//发布人的类型(COM:机构;TEA:老师;STU:学生)
+        $item_type = $param['item_type'] ? $param['item_type'] : '';//发布内容类型(ART:文章;RAD:视频;SRAD:系列视频;FILE:文件;PIC:图片;)
+        $where = array();
+        $where['p.del_status'] = 2;
+        $where['p.audit_status'] = 'S';
+        $where['p.user_type'] = $user_type;
+        if ($item_type !== '') {
+            $where['item_type'] = $item_type;
+        }
+        if ($user_type == 'TEA' || $user_type == 'COM') {
+            $list = D('api_publish as p')->join('left join api_ct_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,p.pub_time,p.share_num,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->select();
+            Response::success($list);
+        } else if ($user_type == 'STU') {
+            $list = D('api_publish as p')->join('left join api_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,p.pub_time,p.share_num,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->select();
+            Response::success($list);
+        } else {
+            Response::error(-1,'失败');
+        }
     }
 
     /**
@@ -108,71 +125,51 @@ class Store extends Base
         if ($item_type == 'SRAD') { //系列视频
             switch ($pub_type) {
                 case 'STU':
-                    $list['datas'] = D('api_publish_content as c')->join('left join api_users as u on u.id=p.pub_userid')->field('c.id,c.content,c.title,u.icon,u.user_name,u.nickname,c.pub_userid')->where(array('c.publish_id' => $id, 'c.del_status' => 2))->order('c.id asc')->limit(0, 1)->select();
+                    $list = D('api_publish_content as c')->join('left join api_users as u on u.id=p.pub_userid')->field('c.id,c.content,c.title,u.icon,u.user_name,u.nickname,c.pub_userid')->where(array('c.publish_id' => $id, 'c.del_status' => 2))->order('c.id asc')->limit(0, 1)->select();
                     $list['pub_time'] = $info['pub_time'];
                     $list['price'] = $info['price'];
-                    if ($list['datas']) {
-                        $list['response_status'] = 'success';//成功
-                        $list['res_msg'] = '成功';
-                        return $list;
+                    if ($list) {
+                        Response::success($list);
                     } else {
-                        $list['response_status'] = 'fail';//失败
-                        $list['res_msg'] = '失败';
-                        return $list;
+                        Response::error(-1,'失败');
                     }
                     break;
                 case 'TEA':
                 case 'COM':
-                    $list['datas'] = D('api_publish_content as c')->join('left join api_ct_users as u on u.id=p.pub_userid')->field('c.id,c.content,c.title,u.icon,u.user_name,u.com_name,u.nickname,c.pub_userid')->where(array('c.publish_id' => $id, 'c.del_status' => 2))->order('c.id asc')->limit(0, 1)->select();
+                    $list = D('api_publish_content as c')->join('left join api_ct_users as u on u.id=p.pub_userid')->field('c.id,c.content,c.title,u.icon,u.user_name,u.com_name,u.nickname,c.pub_userid')->where(array('c.publish_id' => $id, 'c.del_status' => 2))->order('c.id asc')->limit(0, 1)->select();
                     $list['pub_time'] = $info['pub_time'];
                     $list['price'] = $info['price'];
-                    if ($list['datas']) {
-                        $list['response_status'] = 'success';//成功
-                        $list['res_msg'] = '成功';
-                        return $list;
+                    if ($list) {
+                        Response::success($list);
                     } else {
-                        $list['response_status'] = 'fail';//失败
-                        $list['res_msg'] = '失败';
-                        return $list;
+                        Response::error(-1,'失败');
                     }
                     break;
                 default :
-                    $list['response_status'] = 'fail';//失败
-                    $list['res_msg'] = '失败';
-                    return $list;
+                    Response::error(-1,'失败');
                     break;
             }
         } else {
             switch ($pub_type) { //非系列视频
                 case 'STU':
-                    $list['datas'] = D('api_publish as p')->join('left join api_publish_content as c on c.publish_id=p.id')->join('left join api_users as u on u.id=p.pub_userid')->field('p.id,p.title,u.icon,u.user_name,u.nickname,p.pub_userid,p.pub_time,c.content')->where(array('c.publish_id' => $id, 'c.del_status' => 2))->select();
-                    if ($list['datas']) {
-                        $list['response_status'] = 'success';//成功
-                        $list['res_msg'] = '成功';
-                        return $list;
+                    $list = D('api_publish as p')->join('left join api_publish_content as c on c.publish_id=p.id')->join('left join api_users as u on u.id=p.pub_userid')->field('p.id,p.title,u.icon,u.user_name,u.nickname,p.pub_userid,p.pub_time,c.content')->where(array('c.publish_id' => $id, 'c.del_status' => 2))->select();
+                    if ($list) {
+                        Response::success($list);
                     } else {
-                        $list['response_status'] = 'fail';//失败
-                        $list['res_msg'] = '失败';
-                        return $list;
+                        Response::error(-1,'失败');
                     }
                     break;
                 case 'TEA':
                 case 'COM':
-                    $list['datas'] = D('api_publish as p')->join('left join api_publish_content as c on c.publish_id=p.id')->join('left join api_ct_users as u on u.id=p.pub_userid')->field('p.id,p.title,u.icon,u.user_name,u.com_name,u.nickname,p.pub_userid,p.pub_time,c.content')->where(array('c.publish_id' => $id, 'c.del_status' => 2))->select();
-                    if ($list['datas']) {
-                        $list['response_status'] = 'success';//成功
-                        $list['res_msg'] = '成功';
-                        return $list;
+                    $list = D('api_publish as p')->join('left join api_publish_content as c on c.publish_id=p.id')->join('left join api_ct_users as u on u.id=p.pub_userid')->field('p.id,p.title,u.icon,u.user_name,u.com_name,u.nickname,p.pub_userid,p.pub_time,c.content')->where(array('c.publish_id' => $id, 'c.del_status' => 2))->select();
+                    if ($list) {
+                        Response::success($list);
                     } else {
-                        $list['response_status'] = 'fail';//失败
-                        $list['res_msg'] = '失败';
-                        return $list;
+                        Response::error(-1,'失败');
                     }
                     break;
                 default :
-                    $list['response_status'] = 'fail';//失败
-                    $list['res_msg'] = '失败';
-                    return $list;
+                    Response::error(-1,'失败');
                     break;
             }
         }
@@ -190,17 +187,13 @@ class Store extends Base
         $publish_id = $param['publish_id'];//发布id
         $total = D('api_publish_content')->where(array('publish_id' => $publish_id))->count();
         $limit = $param['limit'] ? $param['limit'] : $total;//每页显示条数
-        $list['datas'] = D('api_publish_content')->field('id,title,duration')->where(array('publish_id' => $publish_id))->limit(0, $limit)->select();
+        $list = D('api_publish_content')->field('id,title,duration')->where(array('publish_id' => $publish_id))->limit(0, $limit)->select();
         $total_money = D('api_publish')->where(array('id'=>$publish_id))->getField('price');
         $list['total'] = $total_money;//视频总价
-        if ($list['datas']) {
-            $list['response_status'] = 'success';//成功
-            $list['res_msg'] = '成功';
-            return $list;
+        if ($list) {
+            Response::success($list);
         } else {
-            $list['response_status'] = 'fail';//失败
-            $list['res_msg'] = '失败';
-            return $list;
+            Response::error(-1,'失败');
         }
     }
 
@@ -215,13 +208,9 @@ class Store extends Base
         $detail = D('api_publish_content')->field('id,title,content')->where(array('id' => $id, 'del_status' => 2))->find();
 
         if ($detail) {
-            $detail['response_status'] = 'success';//成功
-            $list['res_msg'] = '成功';
-            return $detail;
+            Response::success($detail);
         } else {
-            $detail['response_status'] = 'fail';//失败
-            $list['res_msg'] = '失败';
-            return $detail;
+            Response::error(-1,'失败');
         }
 
     }
@@ -239,20 +228,16 @@ class Store extends Base
         $item_id = $param['item_id'];//评论标题id
         $pub_type = $param['pub_type'];//发布内容用户类型(COM:机构;TEA:老师;STU:学生)
         if ($pub_type == 'STU') {
-            $list['datas'] = D('api_comment as c')->join('left join api_users as u on u.id=c.user_id')->field('u.icon,u.nickname,u.user_name,c.content,c.add_time')->where(array('c.item_id' => $item_id, 'c.audit_status' => 'S'))->limit($start, $limit)->order('c.id desc')->select();
+            $list = D('api_comment as c')->join('left join api_users as u on u.id=c.user_id')->field('u.icon,u.nickname,u.user_name,c.content,c.add_time')->where(array('c.item_id' => $item_id, 'c.audit_status' => 'S'))->limit($start, $limit)->order('c.id desc')->select();
 
         } else {
-            $list['datas'] = D('api_comment as c')->join('left join api_ct_users as u on u.id=c.user_id')->field('u.icon,u.com_name,u.nickname,u.user_name,c.content,c.add_time')->where(array('c.item_id' => $item_id, 'c.audit_status' => 'S'))->limit($start, $limit)->order('c.id desc')->select();
+            $list = D('api_comment as c')->join('left join api_ct_users as u on u.id=c.user_id')->field('u.icon,u.com_name,u.nickname,u.user_name,c.content,c.add_time')->where(array('c.item_id' => $item_id, 'c.audit_status' => 'S'))->limit($start, $limit)->order('c.id desc')->select();
 
         }
-        if ($list['datas']) {
-            $list['response_status'] = 'success';//成功
-            $list['res_msg'] = '成功';
-            return $list;
+        if ($list) {
+            Response::success($list);
         } else {
-            $list['response_status'] = 'fail';//失败
-            $list['res_msg'] = '失败';
-            return $list;
+            Response::error(-1,'失败');
         }
 
     }
@@ -264,15 +249,11 @@ class Store extends Base
      */
     public function publishCategoryList()
     {
-        $list['datas'] = D('api_publish_category')->order('id asc')->select();
-        if ($list['datas']) {
-            $list['response_status'] = 'success';//成功
-            $list['res_msg'] = '成功';
-            return $list;
+        $list = D('api_publish_category')->order('id asc')->select();
+        if ($list) {
+            Response::success($list);
         } else {
-            $list['response_status'] = 'fail';//失败
-            $list['res_msg'] = '失败';
-            return $list;
+            Response::error(-1,'失败');
         }
 
     }
@@ -347,13 +328,13 @@ class Store extends Base
             $content['pub_userid'] = $param['user_id'];//发布人id
             $add = D('api_publish_content')->add($content);
             if ($add) {
-                return array('response_status' => 'success','res_msg'=>'成功');//成功
+                Response::success($add);
             } else {
-                return array('response_status' => 'half','res_msg'=>'目录添加失败');//目录添加失败
+                Response::error('-2','目录添加失败');
             }
 
         } else {
-            return array('response_status' => 'fail','res_msg'=>'失败');//失败
+            Response::error(-1,'失败');
         }
     }
 
@@ -398,13 +379,13 @@ class Store extends Base
             }
             $add = D('api_publish_content')->addAll($datas);
             if ($add) {
-                return array('response_status' => 'success','res_msg'=>'成功');//成功
+                Response::success($add);
             } else {
-                return array('response_status' => 'half','res_msg'=>'目录添加失败');//目录添加失败
+                Response::error('-2','目录添加失败');
             }
 
         } else {
-            return array('response_status' => 'fail','res_msg'=>'失败');//失败
+            Response::error(-1,'失败');
         }
     }
 
