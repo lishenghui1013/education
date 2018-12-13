@@ -44,7 +44,7 @@ class Store extends Base
     public function terraceSlideshow($param)
     {
         $pic_type = $param['pic_type']?$param['pic_type']:'STOR';//轮播图类型('COM':机构;'STU':学生;'TEA':老师;STOR:商城平台)
-        $list = D('api_slideshow as s')->join('left join api_publish as p on p.id=s.publish_id')->field('s.id,s.publish_id,p.cover')->where(array('s.pic_type' => $pic_type))->order('s.id desc')->select();
+        $list = D('api_slideshow as s')->join('left join api_curriculum as p on p.id=s.publish_id')->field('s.id,s.publish_id,p.cover')->where(array('s.pic_type' => $pic_type))->order('s.id desc')->select();
         if (empty($list)) {
             Response::error(-1,'暂无数据');
         }else{
