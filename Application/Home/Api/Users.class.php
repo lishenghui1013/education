@@ -28,7 +28,7 @@ class Users extends Base
         $data['password'] = md5($param['password']);//密码
         $data['add_time'] = time();//添加时间
         $input_code = $param['input_code'];//用户填写的验证码
-        $send_code = $param['send_code'];//系统发送验证码
+        $send_code = session('code');//系统发送验证码
         $user_type = $param['user_type'];//用户类型(STU:学生;TEA:老师;COM:机构)
         $preg = '/^1[3456789]\d{9}$/';
         $preg_pass = '/^[\da-zA-Z]{6,20}$/';
@@ -53,7 +53,7 @@ class Users extends Base
         if ($input_code != $send_code) {
             Response::error(-8, '输入验证码不正确');
         }
-
+        session('code',null);
         if ($user_type == 'STU') {
             $is_phone = D('api_users')->field('id')->where(array('phone' => $param['phone']))->select();
             $is_ct_phone = D('api_ct_users')->field('id')->where(array('phone' => $param['phone']))->select();
@@ -278,7 +278,7 @@ class Users extends Base
     {
         $phone = $param['phone'];//手机号
         $verify_code = $param['input_code'];//用户输入的验证码
-        $sys_code = $param['sys_code'];//发送的验证码
+        $sys_code = session('code');//发送的验证码
         $password = md5($param['password']); //密码
         $preg = '/^1[3456789]\d{9}$/';//手机号正则
         $preg_pass = '/^[\da-zA-Z]{6,20}$/';//密码正则
@@ -291,6 +291,7 @@ class Users extends Base
         if ($param['password'] == '' || !preg_match($preg_pass, $param['password'])) {
             Response::error(-4,'密码格式不正确');
         }
+        session('code',null);
         Response::debug($phone . '+' . $param['password'] . '+' . $password);
         $data['password'] = $password;
         $user_info = D('api_users')->field('id')->where(array('phone' => $phone))->find();

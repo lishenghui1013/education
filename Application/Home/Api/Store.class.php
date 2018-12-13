@@ -29,12 +29,13 @@ class Store extends Base
         $pic_type = $param['pic_type'];//轮播图类型('COM':机构;'STU':学生;'TEA':老师;)
         $list = D('api_slideshow as s')->join('left join api_publish as p on p.id=s.publish_id')->field('s.id,s.publish_id,p.cover')->where(array('s.pic_type' => $pic_type))->order('s.id desc')->select();
         if (empty($list)) {
-            Response::error('-1','暂无数据');
-        }else{
+            Response::error('-1', '暂无数据');
+        } else {
             Response::success($list);
         }
 
     }
+
     /**
      * 平台轮播图
      * @author: 李胜辉
@@ -43,11 +44,11 @@ class Store extends Base
      */
     public function terraceSlideshow($param)
     {
-        $pic_type = $param['pic_type']?$param['pic_type']:'STOR';//轮播图类型('COM':机构;'STU':学生;'TEA':老师;STOR:商城平台)
+        $pic_type = $param['pic_type'] ? $param['pic_type'] : 'STOR';//轮播图类型('COM':机构;'STU':学生;'TEA':老师;STOR:商城平台)
         $list = D('api_slideshow as s')->join('left join api_curriculum as p on p.id=s.publish_id')->field('s.id,s.publish_id,p.cover')->where(array('s.pic_type' => $pic_type))->order('s.id desc')->select();
         if (empty($list)) {
-            Response::error(-1,'暂无数据');
-        }else{
+            Response::error(-1, '暂无数据');
+        } else {
             Response::success($list);
         }
 
@@ -80,9 +81,10 @@ class Store extends Base
             $list = D('api_publish as p')->join('left join api_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,p.pub_time,p.share_num,p.item_type,p.user_type,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->limit($start, $limit)->select();
             Response::success($list);
         } else {
-            Response::error(-1,'失败');
+            Response::error(-1, '失败');
         }
     }
+
     /**
      *横向滑动列表
      * @author: 李胜辉
@@ -107,7 +109,67 @@ class Store extends Base
             $list = D('api_publish as p')->join('left join api_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,p.pub_time,p.share_num,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->select();
             Response::success($list);
         } else {
-            Response::error(-1,'失败');
+            Response::error(-1, '失败');
+        }
+    }
+
+    /**
+     * 发布信息列表(合并版)
+     * @author: 李胜辉
+     * @time: 2018/12/13 10:34
+     *
+     */
+    public function publishAllList($param)
+    {
+        $pagenum = $param['pagenum'] ? $param['pagenum'] : 1;//当前页
+        $limit = $param['limit'] ? $param['limit'] : 10;//每页显示条数
+        $start = ($pagenum - 1) * $limit;
+        $user_type = $param['user_type'] ? $param['user_type'] : '';//发布人的类型(COM:机构;TEA:老师;STU:学生)
+        $where = array();
+        $where['p.del_status'] = 2;
+        $where['p.audit_status'] = 'S';
+        $where['p.user_type'] = $user_type;
+        if ($user_type == 'TEA' || $user_type == 'COM') {
+            $list = D('api_publish as p')->join('left join api_ct_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,p.pub_time,p.share_num,p.item_type,p.user_type,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->limit($start, $limit)->select();
+            if ($list) {
+                foreach ($list as $key => $value) {
+                    $item_type = $value['item_type'] ? $value['item_type'] : '';//发布内容类型(ART:文章;RAD:视频;SRAD:系列视频;FILE:文件;PIC:图片;)
+                    if ($item_type !== '') {
+                        $where['item_type'] = $item_type;
+                    }
+                    $child_list = D('api_publish as p')->join('left join api_ct_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,p.pub_time,p.share_num,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->select();
+                   if($child_list){
+                       $list[$key]['child_list'] = $child_list;
+                   }else{
+                       $list[$key]['child_list'] = array();
+                   }
+                }
+                unset($key,$value);
+                Response::success($list);
+            } else {
+                Response::error(-1, '暂无数据');
+            }
+        } else if ($user_type == 'STU') {
+            $list = D('api_publish as p')->join('left join api_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,p.pub_time,p.share_num,p.item_type,p.user_type,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->limit($start, $limit)->select();
+            if ($list) {
+                foreach ($list as $key => $value) {
+                    $item_type = $param['item_type'] ? $param['item_type'] : '';//发布内容类型(ART:文章;RAD:视频;SRAD:系列视频;FILE:文件;PIC:图片;)
+                    if ($item_type !== '') {
+                        $where['item_type'] = $item_type;
+                    }
+                        $child_list = D('api_publish as p')->join('left join api_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,p.pub_time,p.share_num,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->select();
+                    if($child_list){
+                        $list[$key]['child_list'] = $child_list;
+                    }else{
+                        $list[$key]['child_list'] = array();
+                    }
+                    Response::success($list);
+                }
+            } else {
+                Response::error(-1, '暂无数据');
+            }
+        } else {
+            Response::error(-1, '暂无数据');
         }
     }
 
@@ -131,7 +193,7 @@ class Store extends Base
                     if ($list) {
                         Response::success($list);
                     } else {
-                        Response::error(-1,'失败');
+                        Response::error(-1, '失败');
                     }
                     break;
                 case 'TEA':
@@ -142,11 +204,11 @@ class Store extends Base
                     if ($list) {
                         Response::success($list);
                     } else {
-                        Response::error(-1,'失败');
+                        Response::error(-1, '失败');
                     }
                     break;
                 default :
-                    Response::error(-1,'失败');
+                    Response::error(-1, '失败');
                     break;
             }
         } else {
@@ -156,7 +218,7 @@ class Store extends Base
                     if ($list) {
                         Response::success($list);
                     } else {
-                        Response::error(-1,'失败');
+                        Response::error(-1, '失败');
                     }
                     break;
                 case 'TEA':
@@ -165,11 +227,11 @@ class Store extends Base
                     if ($list) {
                         Response::success($list);
                     } else {
-                        Response::error(-1,'失败');
+                        Response::error(-1, '失败');
                     }
                     break;
                 default :
-                    Response::error(-1,'失败');
+                    Response::error(-1, '失败');
                     break;
             }
         }
@@ -188,12 +250,12 @@ class Store extends Base
         $total = D('api_publish_content')->where(array('publish_id' => $publish_id))->count();
         $limit = $param['limit'] ? $param['limit'] : $total;//每页显示条数
         $list = D('api_publish_content')->field('id,title,duration')->where(array('publish_id' => $publish_id))->limit(0, $limit)->select();
-        $total_money = D('api_publish')->where(array('id'=>$publish_id))->getField('price');
+        $total_money = D('api_publish')->where(array('id' => $publish_id))->getField('price');
         $list['total'] = $total_money;//视频总价
         if ($list) {
             Response::success($list);
         } else {
-            Response::error(-1,'失败');
+            Response::error(-1, '失败');
         }
     }
 
@@ -210,7 +272,7 @@ class Store extends Base
         if ($detail) {
             Response::success($detail);
         } else {
-            Response::error(-1,'失败');
+            Response::error(-1, '失败');
         }
 
     }
@@ -237,7 +299,7 @@ class Store extends Base
         if ($list) {
             Response::success($list);
         } else {
-            Response::error(-1,'失败');
+            Response::error(-1, '失败');
         }
 
     }
@@ -253,7 +315,7 @@ class Store extends Base
         if ($list) {
             Response::success($list);
         } else {
-            Response::error(-1,'失败');
+            Response::error(-1, '失败');
         }
 
     }
@@ -330,11 +392,11 @@ class Store extends Base
             if ($add) {
                 Response::success($add);
             } else {
-                Response::error('-2','目录添加失败');
+                Response::error('-2', '目录添加失败');
             }
 
         } else {
-            Response::error(-1,'失败');
+            Response::error(-1, '失败');
         }
     }
 
@@ -381,11 +443,11 @@ class Store extends Base
             if ($add) {
                 Response::success($add);
             } else {
-                Response::error('-2','目录添加失败');
+                Response::error('-2', '目录添加失败');
             }
 
         } else {
-            Response::error(-1,'失败');
+            Response::error(-1, '失败');
         }
     }
 

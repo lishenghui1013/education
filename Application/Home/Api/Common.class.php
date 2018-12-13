@@ -472,11 +472,12 @@ class Common extends Base
     {
         $phone = $param['phone']?$param['phone']:'';//手机号
         $code = $this->buildCodes();//验证码
+        session('code',$code);
         $res = SmsDemo::sendSms($phone,$code);
         if($res['Message']=='OK'){
             Response::success(array());
         }else{
-            Response::error(-1,'发送失败');
+            Response::error(-1,$res['Message']);
         }
     }
 
