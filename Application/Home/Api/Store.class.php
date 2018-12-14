@@ -137,7 +137,7 @@ class Store extends Base
                     if ($item_type !== '') {
                         $where['item_type'] = $item_type;
                     }
-                    $child_list = D('api_publish as p')->join('left join api_ct_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,p.pub_time,p.share_num,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->select();
+                    $child_list = D('api_publish as p')->join('left join api_ct_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,p.pub_time,p.share_num,p.collect_num,p.item_type,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->select();
                    if($child_list){
                        $list[$key]['child_list'] = $child_list;
                    }else{

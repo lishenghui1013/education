@@ -148,6 +148,7 @@ class UserController extends BaseController
     {
         $id = I('post.id');
         $password = user_md5('123456');
+        echo $password;exit;
         $data['password'] = $password;
         $res = D('api_user')->where(array('id' => $id))->save($data);
         if ($res === false) {
