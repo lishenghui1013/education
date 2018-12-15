@@ -267,7 +267,7 @@ class Store extends Base
     public function videoCatalogDetail($param)
     {
         $id = $param['id'];//视频目录id
-        $detail = D('api_publish_content')->field('id,title,content')->where(array('id' => $id, 'del_status' => 2))->find();
+        $detail = D('api_publish_content')->field('id,cover,title,content')->where(array('id' => $id, 'del_status' => 2))->find();
 
         if ($detail) {
             Response::success($detail);
