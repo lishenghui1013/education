@@ -75,10 +75,10 @@ class Store extends Base
             $where['item_type'] = $item_type;
         }
         if ($user_type == 'TEA' || $user_type == 'COM') {
-            $list = D('api_publish as p')->join('left join api_ct_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,p.pub_time,p.share_num,p.item_type,p.user_type,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->limit($start, $limit)->select();
+            $list = D('api_publish as p')->join('left join api_ct_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,FROM_UNIXTIME(p.pub_time,"%Y-%m-%d") as pub_time,p.share_num,p.item_type,p.user_type,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->limit($start, $limit)->select();
             Response::success($list);
         } else if ($user_type == 'STU') {
-            $list = D('api_publish as p')->join('left join api_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,p.pub_time,p.share_num,p.item_type,p.user_type,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->limit($start, $limit)->select();
+            $list = D('api_publish as p')->join('left join api_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,FROM_UNIXTIME(p.pub_time,"%Y-%m-%d") as pub_time,p.share_num,p.item_type,p.user_type,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->limit($start, $limit)->select();
             Response::success($list);
         } else {
             Response::error(-1, '失败');
@@ -103,10 +103,10 @@ class Store extends Base
             $where['item_type'] = $item_type;
         }
         if ($user_type == 'TEA' || $user_type == 'COM') {
-            $list = D('api_publish as p')->join('left join api_ct_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,p.pub_time,p.share_num,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->select();
+            $list = D('api_publish as p')->join('left join api_ct_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,FROM_UNIXTIME(p.pub_time,"%Y-%m-%d") as pub_time,p.share_num,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->select();
             Response::success($list);
         } else if ($user_type == 'STU') {
-            $list = D('api_publish as p')->join('left join api_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,p.pub_time,p.share_num,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->select();
+            $list = D('api_publish as p')->join('left join api_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,FROM_UNIXTIME(p.pub_time,"%Y-%m-%d") as pub_time,p.share_num,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->select();
             Response::success($list);
         } else {
             Response::error(-1, '失败');
@@ -130,14 +130,14 @@ class Store extends Base
         $where['p.audit_status'] = 'S';
         $where['p.user_type'] = $user_type;
         if ($user_type == 'TEA' || $user_type == 'COM') {
-            $list = D('api_publish as p')->join('left join api_ct_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,p.pub_time,p.share_num,p.item_type,p.user_type,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->limit($start, $limit)->select();
+            $list = D('api_publish as p')->join('left join api_ct_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,FROM_UNIXTIME(p.pub_time,"%Y-%m-%d") as pub_time,p.share_num,p.item_type,p.user_type,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->limit($start, $limit)->select();
             if ($list) {
                 foreach ($list as $key => $value) {
                     $item_type = $value['item_type'] ? $value['item_type'] : '';//发布内容类型(ART:文章;RAD:视频;SRAD:系列视频;FILE:文件;PIC:图片;)
                     if ($item_type !== '') {
                         $where['item_type'] = $item_type;
                     }
-                    $child_list = D('api_publish as p')->join('left join api_ct_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,p.pub_time,p.share_num,p.collect_num,p.item_type,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->select();
+                    $child_list = D('api_publish as p')->join('left join api_ct_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,FROM_UNIXTIME(p.pub_time,"%Y-%m-%d") as pub_time,p.share_num,p.collect_num,p.item_type,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->select();
                    if($child_list){
                        $list[$key]['child_list'] = $child_list;
                    }else{
@@ -150,14 +150,14 @@ class Store extends Base
                 Response::error(-1, '暂无数据');
             }
         } else if ($user_type == 'STU') {
-            $list = D('api_publish as p')->join('left join api_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,p.pub_time,p.share_num,p.item_type,p.user_type,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->limit($start, $limit)->select();
+            $list = D('api_publish as p')->join('left join api_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,FROM_UNIXTIME(p.pub_time,"%Y-%m-%d") as pub_time,p.share_num,p.item_type,p.user_type,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->limit($start, $limit)->select();
             if ($list) {
                 foreach ($list as $key => $value) {
                     $item_type = $param['item_type'] ? $param['item_type'] : '';//发布内容类型(ART:文章;RAD:视频;SRAD:系列视频;FILE:文件;PIC:图片;)
                     if ($item_type !== '') {
                         $where['item_type'] = $item_type;
                     }
-                        $child_list = D('api_publish as p')->join('left join api_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,p.pub_time,p.share_num,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->select();
+                        $child_list = D('api_publish as p')->join('left join api_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,FROM_UNIXTIME(p.pub_time,"%Y-%m-%d") as pub_time,p.share_num,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->select();
                     if($child_list){
                         $list[$key]['child_list'] = $child_list;
                     }else{
@@ -182,7 +182,7 @@ class Store extends Base
     {
         $id = $param['id'];//信息id
         $pub_type = $param['user_type'];//发布人的类型(COM:机构;TEA:老师;STU:学生)
-        $info = D('api_publish')->where(array('id' => $id, 'del_status' => 2, 'audit_status' => 'S'))->field('id,item_type,pub_time,price')->find();
+        $info = D('api_publish')->where(array('id' => $id, 'del_status' => 2, 'audit_status' => 'S'))->field('id,item_type,FROM_UNIXTIME(pub_time,"%Y-%m-%d") as pub_time,price')->find();
         $item_type = $info['item_type'];
         if ($item_type == 'SRAD') { //系列视频
             switch ($pub_type) {
@@ -290,10 +290,10 @@ class Store extends Base
         $item_id = $param['item_id'];//评论标题id
         $pub_type = $param['pub_type'];//发布内容用户类型(COM:机构;TEA:老师;STU:学生)
         if ($pub_type == 'STU') {
-            $list = D('api_comment as c')->join('left join api_users as u on u.id=c.user_id')->field('u.icon,u.nickname,u.user_name,c.content,c.add_time')->where(array('c.item_id' => $item_id, 'c.audit_status' => 'S'))->limit($start, $limit)->order('c.id desc')->select();
+            $list = D('api_comment as c')->join('left join api_users as u on u.id=c.user_id')->field('u.icon,u.nickname,u.user_name,c.content,FROM_UNIXTIME(c.add_time,"%Y-%m-%d") as add_time')->where(array('c.item_id' => $item_id, 'c.audit_status' => 'S'))->limit($start, $limit)->order('c.id desc')->select();
 
         } else {
-            $list = D('api_comment as c')->join('left join api_ct_users as u on u.id=c.user_id')->field('u.icon,u.com_name,u.nickname,u.user_name,c.content,c.add_time')->where(array('c.item_id' => $item_id, 'c.audit_status' => 'S'))->limit($start, $limit)->order('c.id desc')->select();
+            $list = D('api_comment as c')->join('left join api_ct_users as u on u.id=c.user_id')->field('u.icon,u.com_name,u.nickname,u.user_name,c.content,FROM_UNIXTIME(c.add_time,"%Y-%m-%d") as add_time')->where(array('c.item_id' => $item_id, 'c.audit_status' => 'S'))->limit($start, $limit)->order('c.id desc')->select();
 
         }
         if ($list) {

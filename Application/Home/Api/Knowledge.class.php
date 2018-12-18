@@ -13,6 +13,7 @@ use Home\ORG\ApiLog;
 use Home\ORG\Crypt;
 use Home\ORG\Response;
 use Home\ORG\ReturnCode;
+use Home\Api\Common;
 
 class Knowledge extends Base
 {
@@ -48,7 +49,7 @@ class Knowledge extends Base
         if ($article_type !== '') {
             $where['article_type'] = $article_type;
         }
-        $list = D('api_article_publish')->field('id,title,content,collect_num,read_num,share_num')->where($where)->order('id desc')->limit($start, $limit)->select();
+        $list = D('api_article_publish')->field('id,title,content,collect_num,read_num,share_num,from_unixtime(pub_time,"%Y-%m-%d") as pub_time')->where($where)->order('id desc')->limit($start, $limit)->select();
         if ($list) {
             Response::success($list);
         } else {
@@ -69,7 +70,7 @@ class Knowledge extends Base
         $where['show_status'] = 1;//显示状态(1,上线;2,下线)
         if ($id !== '') {
             $where['id'] = $id;
-            $detail = D('api_article_publish')->field('id,title,content,read_num,collect_num,share_num,pub_time')->where($where)->find();
+            $detail = D('api_article_publish')->field('id,title,content,read_num,collect_num,share_num,FROM_UNIXTIME(pub_time,"%Y-%m-%d") as pub_time')->where($where)->find();
             if ($detail) {
                 Response::success($detail);
             } else {
@@ -129,7 +130,7 @@ class Knowledge extends Base
         $where['show_status'] = 1;//显示状态(1,上线;2,下线)
         if ($textbook_id !== '') {
             $where['id'] = $textbook_id;
-            $detail = D('api_textbook')->field('title,cover,intro,read_num,collect_num,share_num,pub_time')->where($where)->find();
+            $detail = D('api_textbook')->field('title,cover,intro,read_num,collect_num,share_num,FROM_UNIXTIME(pub_time,"%Y-%m-%d") as pub_time')->where($where)->find();
             if ($detail) {
                 Response::success($detail);
 
@@ -193,7 +194,7 @@ class Knowledge extends Base
         $where['show_status'] = 1;//显示状态(1,上线;2,下线)
         if ($id !== '') {
             $where['id'] = $id;
-            $detail = D('api_textbook_content')->field('id,title,content,price,read_num,collect_num,share_num,pub_time')->where($where)->find();
+            $detail = D('api_textbook_content')->field('id,title,content,price,read_num,collect_num,share_num,FROM_UNIXTIME(pub_time,"%Y-%m-%d") as pub_time')->where($where)->find();
             if ($detail) {
                 Response::success($detail);
             } else {
@@ -231,7 +232,7 @@ class Knowledge extends Base
         if ($versions_id !== '') {
             $where['versions_id'] = $versions_id;
         }
-        $list = D('api_video')->field('id,title,intro,cover,collect_num,read_num,share_num,pub_time')->where($where)->order('id desc')->limit($start, $limit)->select();
+        $list = D('api_video')->field('id,title,intro,cover,collect_num,read_num,share_num,FROM_UNIXTIME(pub_time,"%Y-%m-%d") as pub_time')->where($where)->order('id desc')->limit($start, $limit)->select();
         if ($list) {
             Response::success($list);
         } else {
@@ -252,7 +253,7 @@ class Knowledge extends Base
         $where['show_status'] = 1;//显示状态(1,上线;2,下线)
         if ($video_id !== '') {
             $where['id'] = $video_id;
-            $detail = D('api_video')->field('id,title,cover,intro,read_num,collect_num,share_num,pub_time')->where($where)->find();
+            $detail = D('api_video')->field('id,title,cover,intro,read_num,collect_num,share_num,FROM_UNIXTIME(pub_time,"%Y-%m-%d") as pub_time')->where($where)->find();
             if ($detail) {
                 Response::success($detail);
             } else {
@@ -315,7 +316,7 @@ class Knowledge extends Base
         $where['show_status'] = 1;//显示状态(1,上线;2,下线)
         if ($id !== '') {
             $where['id'] = $id;
-            $detail = D('api_video_content')->field('id,title,video_id,video_url,sort,price,read_num,collect_num,share_num,pub_time')->where($where)->find();
+            $detail = D('api_video_content')->field('id,title,video_id,video_url,sort,price,read_num,collect_num,share_num,FROM_UNIXTIME(pub_time,"%Y-%m-%d") as pub_time')->where($where)->find();
             if ($detail) {
                 Response::success($detail);
             } else {

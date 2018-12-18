@@ -64,7 +64,7 @@ class Goods extends Base
         if($category_id!=''){
             $where['category_id'] = $category_id;
         }
-        $res = D('api_curriculum')->field('id,curriculum_name,price,intro,cover,add_time,add_id')->where($where)->limit($start,$limit)->select();
+        $res = D('api_curriculum')->field('id,curriculum_name,price,intro,cover,FROM_UNIXTIME(add_time,"%Y-%m-%d") as add_time,add_id')->where($where)->limit($start,$limit)->select();
         if ($res) {
             Response::success($res);
         } else {
@@ -80,7 +80,7 @@ class Goods extends Base
     public function curriculumDetail($param)
     {
         $id = $param['id'];//课程id
-        $res = D('api_curriculum')->field('id,curriculum_name,price,intro,cover,add_time,add_id,content,category_id,user_type,curriculum_start_time,curriculum_end_time,lesson_time,inventory_num')->where(array('id'=>$id))->find();
+        $res = D('api_curriculum')->field('id,curriculum_name,price,intro,cover,FROM_UNIXTIME(add_time,"%Y-%m-%d") as add_time,add_id,content,category_id,user_type,FROM_UNIXTIME(curriculum_start_time,"%Y-%m-%d") as curriculum_start_time,FROM_UNIXTIME(curriculum_end_time,"%Y-%m-%d") as curriculum_end_time,lesson_time,inventory_num')->where(array('id'=>$id))->find();
         if ($res) {
             Response::success($res);
         } else {

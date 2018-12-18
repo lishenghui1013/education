@@ -25,11 +25,11 @@ class Common extends Base
      */
     public function subjectList()
     {
-        $list= D('api_subject')->field('id,subject_name')->select();
+        $list = D('api_subject')->field('id,subject_name')->select();
         if ($list) {
             Response::success($list);
         } else {
-            Response::error(-1,'暂无数据');
+            Response::error(-1, '暂无数据');
         }
     }
 
@@ -41,22 +41,22 @@ class Common extends Base
      */
     public function classList($param)
     {
-        $class_type = $param['class_type']?$param['class_type']:'';//年级分类(SMALL:小学;JUN:初中;HIGHT:高中;UNI:大学;COLL:专科;GRAD:研究生;)
+        $class_type = $param['class_type'] ? $param['class_type'] : '';//年级分类(SMALL:小学;JUN:初中;HIGHT:高中;UNI:大学;COLL:专科;GRAD:研究生;)
         $where = array();
         $data = array();
-        $types = array('SMALL','JUN','HIGHT','UNI','COLL','GRAD');
-        if($types){
-            foreach($types as $key=>$value){
+        $types = array('SMALL', 'JUN', 'HIGHT', 'UNI', 'COLL', 'GRAD');
+        if ($types) {
+            foreach ($types as $key => $value) {
                 $where['class_type'] = $value;
                 $data[$value] = D('api_class')->field('id,class_name,class_type')->where($where)->select();
             }
-            unset($key,$value);
+            unset($key, $value);
         }
 
         if ($data) {
             Response::success($data);
         } else {
-            Response::error(-1,'暂无数据');
+            Response::error(-1, '暂无数据');
         }
     }
 
@@ -72,9 +72,10 @@ class Common extends Base
         if ($list) {
             Response::success($list);
         } else {
-            Response::error(-1,'暂无数据');
+            Response::error(-1, '暂无数据');
         }
     }
+
     /**
      * 添加收藏
      * @author: 李胜辉
@@ -93,21 +94,21 @@ class Common extends Base
         if ($res) {
             $model = new Model();
             $item_category = $param['item_category'];
-            switch ($item_category){
+            switch ($item_category) {
                 case 'ART':
-                    $sql = 'update api_article_publish set collect_num=collect_num+1 where id='.$param['item_id'];
+                    $sql = 'update api_article_publish set collect_num=collect_num+1 where id=' . $param['item_id'];
                     $model->query($sql);
                     break;
                 case 'VID':
-                    $sql = 'update api_video_content set collect_num=collect_num+1 where id='.$param['item_id'];
+                    $sql = 'update api_video_content set collect_num=collect_num+1 where id=' . $param['item_id'];
                     $model->query($sql);
                     break;
                 case 'TEX':
-                    $sql = 'update api_textbook_content set collect_num=collect_num+1 where id='.$param['item_id'];
+                    $sql = 'update api_textbook_content set collect_num=collect_num+1 where id=' . $param['item_id'];
                     $model->query($sql);
                     break;
                 case 'OTHER':
-                    $sql = 'update api_publish_content set collect_num=collect_num+1 where id='.$param['item_id'];
+                    $sql = 'update api_publish_content set collect_num=collect_num+1 where id=' . $param['item_id'];
                     $model->query($sql);
                     break;
                 default :
@@ -116,9 +117,10 @@ class Common extends Base
 
             Response::success(array());
         } else {
-            Response::error(-1,'收藏失败');
+            Response::error(-1, '收藏失败');
         }
     }
+
     /**
      * 添加评论
      * @author: 李胜辉
@@ -136,9 +138,9 @@ class Common extends Base
 
         $res = D('api_comment')->add($data);
         if ($res) {
-            Response::success(array('id'=>$res));
+            Response::success(array('id' => $res));
         } else {
-            Response::error(-1,'评论失败');
+            Response::error(-1, '评论失败');
         }
     }
 
@@ -149,6 +151,7 @@ class Common extends Base
     const URL = 'http://openapi.youdao.com/api';
     const APP_KEY = '1baeb55ce326cf32';  //替换为您的应用ID
     const SEC_KEY = 'mGsITpcCqpGicOm0Xr0jmafvzAUpQgnq';  //替换为您的密钥
+
     /**
      * 有道智云 公共翻译入口
      * @author: 李胜辉
@@ -173,13 +176,14 @@ class Common extends Base
         $args['sign'] = $this->buildSign(self::APP_KEY, $query, $args['salt'], self::SEC_KEY);
         $ret = $this->call(self::URL, $args);
         $ret = json_decode($ret, true);
-        if($ret){
+        if ($ret) {
             Response::success($ret);
-        }else{
-          Response::error(-1,'未查到数据');
+        } else {
+            Response::error(-1, '未查到数据');
         }
 
     }
+
     /**
      * 有道智云 生词翻译入口
      * @author: 李胜辉
@@ -194,14 +198,14 @@ class Common extends Base
         $from = $param['from'] ? $param['from'] : 'EN';//要翻译的语言
         $to = $param['to'] ? $param['to'] : 'zh-CHS';//翻译成什么语言
         $where = array();
-        if($param['add_userid']!=''){
+        if ($param['add_userid'] != '') {
             $where['add_userid'] = $param['add_userid'];//用户id
             $where['new_words'] = $query;//单词
         }
-        if($param['user_type']!=''){
+        if ($param['user_type'] != '') {
             $where['user_type'] = $param['user_type'];//生词类型(SPACE:学习空间的;OTHER:其他的)
         }
-        if($param['words_type']!=''){
+        if ($param['words_type'] != '') {
             $where['words_type'] = $param['words_type'];//用户类型(COM:机构;TEA:老师;STU:学生)
         }
         $args = array(
@@ -213,17 +217,34 @@ class Common extends Base
         );
         $args['sign'] = $this->buildSign(self::APP_KEY, $query, $args['salt'], self::SEC_KEY);
         $ret = $this->call(self::URL, $args);
-        $is_have = D('api_new_words')->where($where)->getField('id');
-        if($is_have){
-            $ret['add_status']='Y';//已经添加
-        }else{
-            $ret['add_status']='N';//已经添加
+       $arr_ret['translate'] = json_decode($ret,true);
+        /************修改************/
+        $return['us-phonetic'] = $arr_ret['translate']['basic']['us-phonetic'];//音标
+        $usphonetic = $arr_ret['translate']['basic']['explains'];
+        $str_us = '';
+        if($usphonetic){
+            foreach($usphonetic as $key=>$value){
+                $str_us .= $value . ' ';
+            }
+            unset($key,$value);
+            $str_us = substr($str_us,0,-1);
+
         }
-        $ret = json_decode($ret, true);
-        if($ret){
-            Response::success($ret);
-        }else{
-            Response::error(-1,'未查到数据');
+        $return['explains'] = $str_us?$str_us:'';//翻译
+        $return['speakUrl'] = $arr_ret['translate']['speakUrl'];//发音
+        /****************修改结束************/
+        if ($return) {
+            $is_have = D('api_new_words')->where($where)->getField('id');
+            if ($is_have) {
+                $return['add_status'] = 'Y';
+                /*$arr_ret['add_status'] = 'Y';//已经添加*/
+            } else {
+                $return['add_status'] = 'N';
+                /*$arr_ret['add_status'] = 'N';//已经添加*/
+            }
+            Response::success($return);
+        } else {
+            Response::error(-1, '未查到数据');
         }
     }
 
@@ -335,21 +356,36 @@ class Common extends Base
     public function addNewWords($param)
     {
         $data['new_words'] = $param['new_words'];//生词
-        $temp[] = $param['basic'];//翻译,音标
-        $temp[] = $param['speakUrl'];//发音地址
-        $data['translate'] = json_encode($temp);
+        $basic = htmlspecialchars_decode($param['basic'],ENT_QUOTES);//翻译,音标
+
+        /*$arr_basic = json_decode($basic,true);
+        $temp = array();
+        $temp['us-phonetic'] = $arr_basic['us-phonetic'];//音标
+        $explains = '';
+        if($arr_basic['explains']){
+            foreach($arr_basic['explains'] as $key=>$value){
+                $explains .= $value . ' ';
+            }
+            unset($key,$value);
+            $explains = substr($explains,0,-1);
+        }
+        $temp['explains'] = $explains;//翻译
+        /*$temp['basic'] = json_decode($basic,true);*/
+        /*$temp['speakUrl'] = $param['speakUrl'];//发音地址
+        $data['translate'] = json_encode($temp);*/
+        $data['translate'] = $param['basic'];
         $data['words_type'] = $param['words_type'];//生词类型(SPACE:学习空间的;OTHER:其他的)
-        $data['source'] = $param['source'];//生词来源
+        $data['source'] = $param['source']?$param['source']:'';//生词来源
         $data['subject_id'] = $param['subject_id'];//所属科目
         $data['user_type'] = $param['user_type'];//用户类型(COM:机构;TEA:老师;STU:学生)
         $data['add_userid'] = $param['add_userid'];//添加生词的用户id
         $data['add_time'] = time();//添加时间
         $res = D('api_new_words')->data($data)->add();
 
-        if($res){
-            Response::success(array('id'=>$res));
-        }else{
-            Response::error(-1,'添加失败');
+        if ($res) {
+            Response::success(array('id' => $res));
+        } else {
+            Response::error(-1, '添加失败');
         }
     }
 
@@ -362,10 +398,10 @@ class Common extends Base
     {
         $id = $param['id'];//生词id
         $res = D('api_new_words')->where(array('id' => $id))->delete();
-        if($res){
-            Response::success(array('del_num'=>$res));
-        }else{
-            Response::error(-1,'删除失败');
+        if ($res) {
+            Response::success(array('del_num' => $res));
+        } else {
+            Response::error(-1, '删除失败');
         }
     }
 
@@ -408,14 +444,18 @@ class Common extends Base
         }
         if ($user_id !== '') {
             $where['add_suerid'] = $user_id;
-            $list = D('api_new_words')->field('id,new_words,translate,source,add_time')->where($where)->order('id desc')->limit($start, $limit)->select();
+            $list = D('api_new_words')->field('id,new_words,translate,source,FROM_UNIXTIME(add_time,"%Y-%m-%d") as add_time')->where($where)->order('id desc')->limit($start, $limit)->select();
             if ($list) {
+                foreach($list as $key=>$value){
+                    $list[$key]['translate'] = json_decode($value['translate']);
+                }
+                unset($key,$value);
                 Response::success($list);
             } else {
-                Response::error(-1,'暂无数据');
+                Response::error(-1, '暂无数据');
             }
         } else {
-            Response::error(-2,'缺少参数userid');
+            Response::error(-2, '缺少参数userid');
         }
     }
 
@@ -447,14 +487,14 @@ class Common extends Base
         // 上传文件
         $res_info = $upload->upload();
         $info = '';
-        if($res_info){
+        if ($res_info) {
             foreach ($res_info as $key => $tepimg) {
-                $info .= $url . preg_replace('/^..\//','',$tepimg['savepath']) . $tepimg['savename'] . ';';//拼接图片地址
+                $info .= $url . preg_replace('/^..\//', '', $tepimg['savepath']) . $tepimg['savename'] . ';';//拼接图片地址
             }
             unset($key, $tepimg);
             $info = substr($info, 0, -1);
             return $info;
-        }else{
+        } else {
             return $info;
         }
     }
@@ -470,14 +510,14 @@ class Common extends Base
      */
     public function sendCodes($param)
     {
-        $phone = $param['phone']?$param['phone']:'';//手机号
+        $phone = $param['phone'] ? $param['phone'] : '';//手机号
         $code = $this->buildCodes();//验证码
-        session('code',$code);
-        $res = SmsDemo::sendSms($phone,$code);
-        if($res['Message']=='OK'){
+        session('code', $code);
+        $res = SmsDemo::sendSms($phone, $code);
+        if ($res['Message'] == 'OK') {
             Response::success(array());
-        }else{
-            Response::error(-1,$res['Message']);
+        } else {
+            Response::error(-1, $res['Message']);
         }
     }
 
@@ -489,8 +529,8 @@ class Common extends Base
     public function buildCodes()
     {
         $code = '';
-        for($i=0;$i<4;$i++){
-            $code .= mt_rand(0,9);
+        for ($i = 0; $i < 4; $i++) {
+            $code .= mt_rand(0, 9);
         }
         return $code;
 
@@ -505,8 +545,8 @@ class Common extends Base
      */
     public function getMicrotime()
     {
-        $arr_microtime = explode(" ",microtime());
-        $str_microtime = intval($arr_microtime[1]).intval($arr_microtime[0]*1000000);
+        $arr_microtime = explode(" ", microtime());
+        $str_microtime = intval($arr_microtime[1]) . intval($arr_microtime[0] * 1000000);
         return $str_microtime;
     }
     /*******************************************************************************************地址 结束*******************************************************/
@@ -520,8 +560,8 @@ class Common extends Base
         $listInfo = D('api_provinces')->select();
         ApiLog::setApiInfo($listInfo);
         if (empty($listInfo)) {
-            Response::error(-1,'暂无数据');
-        }else{
+            Response::error(-1, '暂无数据');
+        } else {
             Response::success($listInfo);
         }
     }
@@ -537,11 +577,12 @@ class Common extends Base
         $listInfo = D('api_cities')->where(array('provinceid' => $province_num))->select();
         ApiLog::setApiInfo($listInfo);
         if (empty($listInfo)) {
-            Response::error(-1,'暂无数据');
-        }else{
+            Response::error(-1, '暂无数据');
+        } else {
             Response::success($listInfo);
         }
     }
+
     /**
      * 县区列表
      * @author: 李胜辉
@@ -553,8 +594,8 @@ class Common extends Base
         $listInfo = D('api_areas')->where(array('cityid' => $city_num))->select();
         ApiLog::setApiInfo($listInfo);
         if (empty($listInfo)) {
-            Response::error(-1,'暂无数据');
-        }else{
+            Response::error(-1, '暂无数据');
+        } else {
             Response::success($listInfo);
         }
     }

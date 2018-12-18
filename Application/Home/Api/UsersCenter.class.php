@@ -110,7 +110,7 @@ class UsersCenter extends Base
         }
         if ($user_id !== '') {
             $where['add_suerid'] = $user_id;
-            $list = D('api_notice')->field('id,title,content,read_status,notice_type,add_time')->where($where)->order('id desc')->limit($start, $limit)->select();
+            $list = D('api_notice')->field('id,title,content,read_status,notice_type,FROM_UNIXTIME(add_time,"%Y-%m-%d") as add_time')->where($where)->order('id desc')->limit($start, $limit)->select();
             if ($list) {
                 Response::success($list);
             } else {
@@ -132,7 +132,7 @@ class UsersCenter extends Base
         $where = array();
         $where['id'] = $param['id'];//消息id
         $where['del_status'] = 2;
-        $list = D('api_notice')->field('id,title,content,read_status,notice_type,read_time,send_userid,add_time')->where($where)->find();
+        $list = D('api_notice')->field('id,title,content,read_status,notice_type,read_time,send_userid,FROM_UNIXTIME(add_time,"%Y-%m-%d") as add_time')->where($where)->find();
         if ($list) {
             Response::success($list);
         } else {
@@ -154,7 +154,7 @@ class UsersCenter extends Base
         $where['id'] = $param['id'];//用户id
         $user_type = $param['user_type'];//用户类型(COM:机构;TEA:老师;STU:学生)
         if ($user_type == 'STU') {
-            $list = D('api_users')->field('id,user_name,nickname,true_name,phone,balance,icon,add_time')->where($where)->find();
+            $list = D('api_users')->field('id,user_name,nickname,true_name,phone,balance,icon,FROM_UNIXTIME(add_time,"%Y-%m-%d") as add_time')->where($where)->find();
 
         } else {
             $list = D('api_ct_users')->field('id,user_name,com_name,nickname,true_name,user_type,phone,balance,icon,add_time')->where($where)->find();
@@ -192,7 +192,7 @@ class UsersCenter extends Base
 
         if ($user_id !== '') {
             $where['user_id'] = $user_id;
-            $list = D('api_comment')->field('id,content,pub_type,is_catalog,item_id,add_time')->where($where)->order('id desc')->limit($start, $limit)->select();
+            $list = D('api_comment')->field('id,content,pub_type,is_catalog,item_id,FROM_UNIXTIME(add_time,"%Y-%m-%d") as add_time')->where($where)->order('id desc')->limit($start, $limit)->select();
             if ($list) {
                 foreach ($list as $key => $value) {
                     if ($value['is_catalog'] == 'N') {
@@ -252,7 +252,7 @@ class UsersCenter extends Base
                 $where['item_type'] = $item_type;
             }
             $where['user_id'] = $user_id;
-            $list = D('api_collect')->field('id,item_type,item_category,pub_type,is_catalog,item_id,add_time')->where($where)->order('id desc')->limit($start, $limit)->select();
+            $list = D('api_collect')->field('id,item_type,item_category,pub_type,is_catalog,item_id,FROM_UNIXTIME(add_time,"%Y-%m-%d") as add_time')->where($where)->order('id desc')->limit($start, $limit)->select();
             if ($list) {
                 switch ($item_type) {
                     case 'STORE':
@@ -675,11 +675,11 @@ class UsersCenter extends Base
         //获取当前日期时间戳
         $curr_time = strtotime(date('Y-m-d', $data['add_time']));
         //查询奖励表中签到记录等级数量
-        $award_list = D('api_award')->field('id,serial_days,num,add_time')->where(array('award_type' => 'SIGN'))->order('serial_days desc')->select();
+        $award_list = D('api_award')->field('id,serial_days,num,FROM_UNIXTIME(add_time,"%Y-%m-%d") as add_time')->where(array('award_type' => 'SIGN'))->order('serial_days desc')->select();
         $total = count($award_list);
         //查询签到信息
         unset($where['_string']);
-        $signed_info = D('api_bean_io')->where($where)->field('id,add_time')->order('add_time desc')->limit(0, $award_list[0]['serial_days'])->select();
+        $signed_info = D('api_bean_io')->where($where)->field('id,FROM_UNIXTIME(add_time,"%Y-%m-%d") as add_time')->order('add_time desc')->limit(0, $award_list[0]['serial_days'])->select();
 
         $max = count($signed_info);
         if ($signed_info) {
@@ -736,7 +736,7 @@ class UsersCenter extends Base
         $where['user_id'] = $param['user_id'];//用户id
         $where['pay_type'] = 'SIGN';
         //签到信息
-        $signed_info = D('api_bean_io')->field('id,add_time')->where($where)->select();
+        $signed_info = D('api_bean_io')->field('id,FROM_UNIXTIME(add_time,"%Y-%m-%d") as add_time')->where($where)->select();
         $signed_info['total'] = count($signed_info);//累计签到多少天
         //连续签到多少天
         //获取当前日期时间戳
@@ -760,7 +760,7 @@ class UsersCenter extends Base
         $wheres['user_id'] = $param['user_id'];
         $wheres['role_type'] = $param['user_type'];
         $wheres['pay_type'] = 'SIGN';
-        $is_sign = D('api_bean_io')->where($wheres)->select();
+        $is_sign = D('api_bean_io')->field('id,num,status,order,io_type,user_type,explain,user_id,FROM_UNIXTIME(add_time,"%Y-%m-%d") as add_time')->where($wheres)->select();
         if ($is_sign) {
             $signed_info['signed_status'] = 'SIGNED';//已经签到过了
         } else {
@@ -1106,7 +1106,7 @@ class UsersCenter extends Base
         if ($order_status != '') {
             $where['o.order_status'] = $order_status;
         }
-        $res = D('api_order as o')->join('left join api_curriculum as c on c.id=o.goods_id')->field('o.id,o.order_no,o.goods_id,o.unit_price,o.total_price,o.goods_num,o.add_time,o.order_status,c.curriculum_name,c.price,c.cover,c.category_id')->where($where)->limit($start, $limit)->select();
+        $res = D('api_order as o')->join('left join api_curriculum as c on c.id=o.goods_id')->field('o.id,o.order_no,o.goods_id,o.unit_price,o.total_price,o.goods_num,FROM_UNIXTIME(o.add_time,"%Y-%m-%d") as add_time,o.order_status,c.curriculum_name,c.price,c.cover,c.category_id')->where($where)->limit($start, $limit)->select();
         if ($res) {
             Response::success($res);
         } else {
@@ -1123,7 +1123,7 @@ class UsersCenter extends Base
     public function myOrderDetail($param)
     {
         $id = $param['id'];//订单id
-        $res = D('api_order as o')->join('left join api_curriculum as c on c.id=o.goods_id')->field('o.id,o.order_no,o.goods_id,o.unit_price,o.total_price,o.goods_num,o.add_time,o.order_status,c.curriculum_name,c.price,c.cover,c.category_id')->where(array('o.id' => $id, 'o.order_status' => array('neq', 'C')))->find();
+        $res = D('api_order as o')->join('left join api_curriculum as c on c.id=o.goods_id')->field('o.id,o.order_no,o.goods_id,o.unit_price,o.total_price,o.goods_num,FROM_UNIXTIME(o.add_time,"%Y-%m-%d") as add_time,o.order_status,c.curriculum_name,c.price,c.cover,c.category_id')->where(array('o.id' => $id, 'o.order_status' => array('neq', 'C')))->find();
         if ($res) {
             Response::success($res);
         } else {
@@ -1213,7 +1213,7 @@ class UsersCenter extends Base
         if ($order_status != '') {
             $where['o.order_status'] = $order_status;
         }
-        $res = D('api_order as o')->join('left join api_curriculum as c on c.id=o.goods_id')->field('o.id,o.order_no,o.goods_id,o.unit_price,o.total_price,o.goods_num,o.add_time,o.order_status,c.curriculum_name,c.price,c.cover,c.category_id')->where($where)->limit($start, $limit)->select();
+        $res = D('api_order as o')->join('left join api_curriculum as c on c.id=o.goods_id')->field('o.id,o.order_no,o.goods_id,o.unit_price,o.total_price,o.goods_num,FROM_UNIXTIME(o.add_time,"%Y-%m-%d") as add_time,o.order_status,c.curriculum_name,c.price,c.cover,c.category_id')->where($where)->limit($start, $limit)->select();
         if ($res) {
             Response::success($res);
         } else {
@@ -1230,7 +1230,7 @@ class UsersCenter extends Base
     public function storeOderDetail($param)
     {
         $id = $param['id'];//订单id
-        $res = D('api_order as o')->join('left join api_curriculum as c on c.id=o.goods_id')->field('o.id,o.order_no,o.goods_id,o.unit_price,o.total_price,o.goods_num,o.add_time,o.order_status,c.curriculum_name,c.price,c.cover,c.category_id')->where(array('o.id' => $id, 'o.order_status' => array('neq', 'C')))->find();
+        $res = D('api_order as o')->join('left join api_curriculum as c on c.id=o.goods_id')->field('o.id,o.order_no,o.goods_id,o.unit_price,o.total_price,o.goods_num,FROM_UNIXTIME(o.add_time,"%Y-%m-%d") as add_time,o.order_status,c.curriculum_name,c.price,c.cover,c.category_id')->where(array('o.id' => $id, 'o.order_status' => array('neq', 'C')))->find();
         if ($res) {
             Response::success($res);
         } else {
