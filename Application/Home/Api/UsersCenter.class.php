@@ -438,7 +438,7 @@ class UsersCenter extends Base
         $pagenum = $param['pagenum'] ? $param['pagenum'] : 1;//当前页
         $limit = $param['limit'] ? $param['limit'] : 10;//每页显示条数
         $start = ($pagenum - 1) * $limit;
-        $sql = 'select * from (select concat("+","",gold_num) as num,`explain`,add_time from api_recharge where user_id=' . $user_id . ' and role_type="' . $user_type . '" and status=1 UNION select concat("-","",e_money) as num,`explain`,add_time from api_expense where user_id=' . $user_id . ' and e_status="S" and r_type="' . $user_type . '") as u order by add_time asc limit ' . $start . ',' . $limit;
+        $sql = 'select * from (select concat("+","",gold_num) as num,`explain`,from_unixtime(add_time,"%Y-%m-%d") as add_time from api_recharge where user_id=' . $user_id . ' and role_type="' . $user_type . '" and status=1 UNION select concat("-","",e_money) as num,`explain`,add_time from api_expense where user_id=' . $user_id . ' and e_status="S" and r_type="' . $user_type . '") as u order by add_time asc limit ' . $start . ',' . $limit;
         $table = M();
         $list = $table->query($sql);
         if ($list) {

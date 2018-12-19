@@ -187,7 +187,7 @@ class Store extends Base
         if ($item_type == 'SRAD') { //系列视频
             switch ($pub_type) {
                 case 'STU':
-                    $list = D('api_publish_content as c')->join('left join api_users as u on u.id=p.pub_userid')->field('c.id,c.content,c.title,u.icon,u.user_name,u.nickname,c.pub_userid')->where(array('c.publish_id' => $id, 'c.del_status' => 2))->order('c.id asc')->limit(0, 1)->select();
+                    $list = D('api_publish_content as c')->join('left join api_users as u on u.id=p.pub_userid')->field('c.id,c.content,c.content_pic,c.title,u.icon,u.user_name,u.nickname,c.pub_userid')->where(array('c.publish_id' => $id, 'c.del_status' => 2))->order('c.id asc')->limit(0, 1)->select();
                     $list['pub_time'] = $info['pub_time'];
                     $list['price'] = $info['price'];
                     if ($list) {
@@ -198,7 +198,7 @@ class Store extends Base
                     break;
                 case 'TEA':
                 case 'COM':
-                    $list = D('api_publish_content as c')->join('left join api_ct_users as u on u.id=p.pub_userid')->field('c.id,c.content,c.title,u.icon,u.user_name,u.com_name,u.nickname,c.pub_userid')->where(array('c.publish_id' => $id, 'c.del_status' => 2))->order('c.id asc')->limit(0, 1)->select();
+                    $list = D('api_publish_content as c')->join('left join api_ct_users as u on u.id=p.pub_userid')->field('c.id,c.content,c.content_pic,c.title,u.icon,u.user_name,u.com_name,u.nickname,c.pub_userid')->where(array('c.publish_id' => $id, 'c.del_status' => 2))->order('c.id asc')->limit(0, 1)->select();
                     $list['pub_time'] = $info['pub_time'];
                     $list['price'] = $info['price'];
                     if ($list) {
@@ -214,7 +214,7 @@ class Store extends Base
         } else {
             switch ($pub_type) { //非系列视频
                 case 'STU':
-                    $list = D('api_publish as p')->join('left join api_publish_content as c on c.publish_id=p.id')->join('left join api_users as u on u.id=p.pub_userid')->field('p.id,p.title,u.icon,u.user_name,u.nickname,p.pub_userid,p.pub_time,c.content')->where(array('c.publish_id' => $id, 'c.del_status' => 2))->select();
+                    $list = D('api_publish as p')->join('left join api_publish_content as c on c.publish_id=p.id')->join('left join api_users as u on u.id=p.pub_userid')->field('p.id,p.title,u.icon,u.user_name,u.nickname,p.pub_userid,p.pub_time,c.content,c.content_pic')->where(array('c.publish_id' => $id, 'c.del_status' => 2))->select();
                     if ($list) {
                         Response::success($list);
                     } else {
@@ -223,7 +223,7 @@ class Store extends Base
                     break;
                 case 'TEA':
                 case 'COM':
-                    $list = D('api_publish as p')->join('left join api_publish_content as c on c.publish_id=p.id')->join('left join api_ct_users as u on u.id=p.pub_userid')->field('p.id,p.title,u.icon,u.user_name,u.com_name,u.nickname,p.pub_userid,p.pub_time,c.content')->where(array('c.publish_id' => $id, 'c.del_status' => 2))->select();
+                    $list = D('api_publish as p')->join('left join api_publish_content as c on c.publish_id=p.id')->join('left join api_ct_users as u on u.id=p.pub_userid')->field('p.id,p.title,u.icon,u.user_name,u.com_name,u.nickname,p.pub_userid,p.pub_time,c.content,c.content_pic')->where(array('c.publish_id' => $id, 'c.del_status' => 2))->select();
                     if ($list) {
                         Response::success($list);
                     } else {
@@ -385,7 +385,7 @@ class Store extends Base
             $content['cover'] = $url['cover'] ? $url['cover'] : '';//封面
             $content['publish_id'] = $insert;//发布id
             $content['title'] = $param['title'];//标题
-
+            $content['content_pic'] = $url['content_pic'] ? $url['content_pic'] : '';//内容中的图片
             $content['pub_time'] = time();//添加时间
             $content['pub_userid'] = $param['user_id'];//发布人id
             $add = D('api_publish_content')->add($content);
