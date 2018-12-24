@@ -51,6 +51,10 @@ class Knowledge extends Base
         }
         $list = D('api_article_publish')->field('id,title,content,collect_num,read_num,share_num,from_unixtime(pub_time,"%Y-%m-%d") as pub_time')->where($where)->order('id desc')->limit($start, $limit)->select();
         if ($list) {
+            foreach($list as $key=>$value){
+                $list[$key]['content'] = htmlspecialchars_decode($value['content'],ENT_QUOTES);
+
+            }
             Response::success($list);
         } else {
            Response::error(-1,'暂无数据');
@@ -70,8 +74,10 @@ class Knowledge extends Base
         $where['show_status'] = 1;//显示状态(1,上线;2,下线)
         if ($id !== '') {
             $where['id'] = $id;
-            $detail = D('api_article_publish')->field('id,title,content,read_num,collect_num,share_num,FROM_UNIXTIME(pub_time,"%Y-%m-%d") as pub_time')->where($where)->find();
+            $detail = D('api_article_publish')->field('id,title,content,translate_content,read_num,collect_num,share_num,FROM_UNIXTIME(pub_time,"%Y-%m-%d") as pub_time')->where($where)->find();
             if ($detail) {
+                $detail['content'] = htmlspecialchars_decode($detail['content'],ENT_QUOTES);
+                $detail['translate_content'] = htmlspecialchars_decode($detail['translate_content'],ENT_QUOTES);
                 Response::success($detail);
             } else {
                 Response::error(-1,'暂无数据');
@@ -132,6 +138,7 @@ class Knowledge extends Base
             $where['id'] = $textbook_id;
             $detail = D('api_textbook')->field('title,cover,intro,read_num,collect_num,share_num,FROM_UNIXTIME(pub_time,"%Y-%m-%d") as pub_time')->where($where)->find();
             if ($detail) {
+                $detail['intro'] = htmlspecialchars_decode($detail['intro'],ENT_QUOTES);
                 Response::success($detail);
 
             } else {
@@ -196,6 +203,7 @@ class Knowledge extends Base
             $where['id'] = $id;
             $detail = D('api_textbook_content')->field('id,title,content,price,read_num,collect_num,share_num,FROM_UNIXTIME(pub_time,"%Y-%m-%d") as pub_time')->where($where)->find();
             if ($detail) {
+                $detail['content'] = htmlspecialchars_decode($detail['content'],ENT_QUOTES);
                 Response::success($detail);
             } else {
                 Response::error(-1,'暂无数据');
@@ -234,6 +242,9 @@ class Knowledge extends Base
         }
         $list = D('api_video')->field('id,title,intro,cover,collect_num,read_num,share_num,FROM_UNIXTIME(pub_time,"%Y-%m-%d") as pub_time')->where($where)->order('id desc')->limit($start, $limit)->select();
         if ($list) {
+            foreach($list as $key=>$value){
+                $list[$key]['intro'] = htmlspecialchars_decode($value['intro'],ENT_QUOTES);
+            }
             Response::success($list);
         } else {
             Response::error(-1,'暂无数据');
@@ -255,6 +266,7 @@ class Knowledge extends Base
             $where['id'] = $video_id;
             $detail = D('api_video')->field('id,title,cover,intro,read_num,collect_num,share_num,FROM_UNIXTIME(pub_time,"%Y-%m-%d") as pub_time')->where($where)->find();
             if ($detail) {
+                $detail['intro'] = htmlspecialchars_decode($detail['intro'],ENT_QUOTES);
                 Response::success($detail);
             } else {
                 Response::error(-1,'暂无数据');

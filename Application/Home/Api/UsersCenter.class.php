@@ -469,7 +469,7 @@ class UsersCenter extends Base
         if ($balance) {
             Response::success(array('balance' => $balance));
         } else {
-            Response::error(-1, '暂无数据',array('balance' => 0));
+            Response::error(-1, '暂无数据', array('balance' => 0));
         }
     }
 
@@ -521,7 +521,7 @@ class UsersCenter extends Base
             } else {
                 $res = D('api_bankcard')->where(array('id' => $id))->delete();
             }
-        }else{
+        } else {
             $res = D('api_bankcard')->where(array('id' => $id))->delete();
         }
 
@@ -559,13 +559,13 @@ class UsersCenter extends Base
         $where['id'] = $param['id'];//银行卡id
         $info = D('api_bankcard')->field('id,user_id,user_type')->where($where)->find();
         $update = D('api_bankcard')->where(array('user_id' => $info->user_id, 'user_type' => $info->user_type, 'default' => 'Y'))->data(array('default' => 'N'))->save();
-        if($update===false){
+        if ($update === false) {
             Response::error(-2, '出错了');
-        }else{
+        } else {
             $data['default'] = 'Y';//如果是第一张卡设为默认
             $set = D('api_bankcard')->where($where)->save($data);
             if ($set) {
-                Response::success(array('update_num'=>$set));
+                Response::success(array('update_num' => $set));
             } else {
                 Response::error(-1, '设置失败');
             }
@@ -638,7 +638,7 @@ class UsersCenter extends Base
         $data['add_time'] = time();//添加时间
         $insert = D('api_expense')->add($data);
         if ($insert) {
-            Response::success(array('id'=>$insert));
+            Response::success(array('id' => $insert));
         } else {
             Response::error(-1, '申请失败');
         }
@@ -704,7 +704,7 @@ class UsersCenter extends Base
                 $blance = $data['num'] + $balance;
                 $res = D('api_users')->where(array('id' => $param['user_id']))->save(array('bean_balance' => $blance));
                 if ($res) {
-                    Response::success(array('update_num'=>$res));
+                    Response::success(array('update_num' => $res));
                 } else {
                     Response::error(-2, '用户余额未更新成功');
                 }
@@ -713,7 +713,7 @@ class UsersCenter extends Base
                 $blance = $data['num'] + $balance;
                 $res = D('api_ct_users')->where(array('id' => $param['user_id']))->save(array('bean_balance' => $blance));
                 if ($res) {
-                    Response::success(array('update_num'=>$res));
+                    Response::success(array('update_num' => $res));
                 } else {
                     Response::error(-2, '用户余额未更新成功');
                 }
@@ -769,7 +769,7 @@ class UsersCenter extends Base
         if ($signed_info) {
             Response::success($signed_info);
         } else {
-            Response::error(-1, '签到失败',$signed_info);
+            Response::error(-1, '签到失败', $signed_info);
         }
     }
 
@@ -824,7 +824,7 @@ class UsersCenter extends Base
                 $blance = $data['num'] + $balance;
                 $res = D('api_users')->where(array('id' => $param['user_id']))->save(array('bean_balance' => $blance));
                 if ($res) {
-                    Response::success(array('update_num'=>$res));
+                    Response::success(array('update_num' => $res));
                 } else {
                     Response::error(-2, '用户余额未更新成功');
                 }
@@ -833,7 +833,7 @@ class UsersCenter extends Base
                 $blance = $data['num'] + $balance;
                 $res = D('api_ct_users')->where(array('id' => $param['user_id']))->save(array('bean_balance' => $blance));
                 if ($res) {
-                    Response::success(array('update_num'=>$res));
+                    Response::success(array('update_num' => $res));
                 } else {
                     Response::error(-2, '用户余额未更新成功');
                 }
@@ -893,7 +893,7 @@ class UsersCenter extends Base
                     $sql = 'update api_publish_content set read_num=read_num+1 where id=' . $param['item_id'];
                     $model = new Model();
                     $model->query($sql);
-                    Response::success(array('update_num'=>$res));
+                    Response::success(array('update_num' => $res));
                 } else {
                     Response::error(-2, '用户余额未更新成功');
                 }
@@ -918,7 +918,7 @@ class UsersCenter extends Base
                     $sql = 'update api_publish_content set read_num=read_num+1 where id=' . $param['item_id'];
                     $model = new Model();
                     $model->query($sql);
-                    Response::success(array('update_num'=>$res));
+                    Response::success(array('update_num' => $res));
                 } else {
                     Response::error(-2, '用户余额未更新成功');
                 }
@@ -947,7 +947,7 @@ class UsersCenter extends Base
                 if ($old_icon) { //删除旧头像
                     unlink($old_icon);
                 }
-                Response::success(array('update_num'=>$set));
+                Response::success(array('update_num' => $set));
             } else {
                 Response::error(-1, '修改失败');
             }
@@ -960,7 +960,7 @@ class UsersCenter extends Base
                 if ($old_icon) {
                     unlink($old_icon);
                 }
-                Response::success(array('update_num'=>$set));
+                Response::success(array('update_num' => $set));
             } else {
                 Response::error(-1, '修改失败');
             }
@@ -980,24 +980,21 @@ class UsersCenter extends Base
         $data['user_name'] = $param['user_name'];//姓名
         $where['id'] = $param['user_id'];//用户id
         $type = $param['user_type'];//用户类型(STU:学生;TEA:老师;COM:机构)
-        if ($type == 'STU' || $type == 'TEA') {
-            $old_info = D('api_users')->field('id,phone,user_name')->where($where)->find();
-            $update = D('api_users')->where($where)->data($data)->save();
+        $pcre = '/^1[3456789]\d{9}$/';
+        if ($data['phone'] == '' || !preg_match_all($pcre, $data['phone'])) {
+            Response::error(-3, '手机号格式不正确');
+        }
+        if ($type == 'STU') {
+            $update = D('api_users')->where($where)->save($data);
             if ($update) {
-                $edit = D('api_users')->where(array('phone' => $old_info['phone']))->data($data)->save();
-                if ($edit) {
-                    Response::success(array('update_num'=>$edit));
-                } else {
-                    Response::error(-1, '修改失败');
-                }
-
+                Response::success(array());
             } else {
                 Response::error(-1, '修改失败');
             }
-        } else if ($type == 'COM') {
-            $update = D('api_ct_users')->where($where)->data($data)->save();
+        } else if ($type == 'COM' || $type == 'TEA') {
+            $update = D('api_ct_users')->where($where)->save($data);
             if ($update) {
-                Response::success(array('update_num'=>$update));
+                Response::success(array());
             } else {
                 Response::error(-1, '修改失败');
             }
@@ -1075,7 +1072,7 @@ class UsersCenter extends Base
         $data['add_time'] = time();//添加时间
         $res = D('api_goods_comment')->add($data);
         if ($res) {
-            Response::success(array('id'=>$res));
+            Response::success(array('id' => $res));
         } else {
             Response::error(-1, '评价失败');
         }
@@ -1143,7 +1140,7 @@ class UsersCenter extends Base
         $data['order_status'] = 'N';
         $res = D('api_order')->where(array('id' => $id))->save($data);
         if ($res) {
-            Response::success(array('update_num'=>$res));
+            Response::success(array('update_num' => $res));
         } else {
             Response::error(-1, '确认收货失败');
         }
@@ -1161,7 +1158,7 @@ class UsersCenter extends Base
         $data['order_status'] = 'C';
         $res = D('api_order')->where(array('id' => $id))->save($data);
         if ($res) {
-            Response::success(array('del_num'=>$res));
+            Response::success(array('del_num' => $res));
         } else {
             Response::error(-1, '删除失败');
         }
@@ -1179,7 +1176,7 @@ class UsersCenter extends Base
         $data['order_status'] = 'R';
         $res = D('api_order')->where(array('id' => $id))->save($data);
         if ($res) {
-            Response::success(array('update_num'=>$res));
+            Response::success(array('update_num' => $res));
         } else {
             Response::error(-1, '申请失败');
         }
@@ -1250,7 +1247,7 @@ class UsersCenter extends Base
         $data['order_status'] = 'S';
         $res = D('api_order')->where(array('id' => $id))->save($data);
         if ($res) {
-            Response::success(array('update_num'=>$res));
+            Response::success(array('update_num' => $res));
         } else {
             Response::error(-1, '发货失败');
         }

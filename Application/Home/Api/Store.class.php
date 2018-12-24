@@ -350,17 +350,7 @@ class Store extends Base
             case 'PIC':
                 $path = 'publish/pic';
                 $url = $this->uploads($path);
-                if ($url) {
-                    $preg = '/^content\d$/';
-                    $str_url = '';
-                    foreach ($url as $keys => $values) {
-                        if (preg_match_all($preg, $keys)) {
-                            $str_url .= $values . ';';//拼接图片地址
-                        }
-                    }
-                    $str_url = substr($str_url, 0, -1);
-                    $content['content'] = $str_url;//内容
-                }
+                $content['content'] = $url['content'] ? $url['content'] : '';//内容
                 $data['intro'] = $param['intro'] ? $param['intro'] : '';//简介
 
                 break;
@@ -385,7 +375,7 @@ class Store extends Base
             $content['cover'] = $url['cover'] ? $url['cover'] : '';//封面
             $content['publish_id'] = $insert;//发布id
             $content['title'] = $param['title'];//标题
-            $content['content_pic'] = $url['content_pic'] ? $url['content_pic'] : '';//内容中的图片
+            $content['content_pic'] = $url['art_pic'] ? $url['art_pic'] : '';//内容中的图片
             $content['pub_time'] = time();//添加时间
             $content['pub_userid'] = $param['user_id'];//发布人id
             $add = D('api_publish_content')->add($content);
@@ -394,7 +384,6 @@ class Store extends Base
             } else {
                 Response::error('-2', '目录添加失败');
             }
-
         } else {
             Response::error(-1, '失败');
         }
@@ -466,7 +455,7 @@ class Store extends Base
         $url = 'http://' . $_SERVER['HTTP_HOST'] . '/' . substr($str, 0, strpos($str, '/') + 1);
         Response::debug($url);
         $upload = new \Think\Upload();   // 实例化上传类
-        $upload->maxSize = 3145728;    // 设置附件上传大小
+        $upload->maxSize = 314572800000;    // 设置附件上传大小
         /*$upload->exts = array('jpg', 'gif', 'png', 'jpeg'); // 设置附件上传类型*/
         $upload->rootPath = THINK_PATH;          // 设置附件上传根目录
         $upload->savePath = '../Public/uploads/';    // 设置附件上传（子）目录

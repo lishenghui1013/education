@@ -58,7 +58,7 @@ class Response {
         }
         header('Content-Type:application/json; charset=utf-8');
         if (self::$dataType == DataType::TYPE_OBJECT && empty($data)) {
-            $returnStr = json_encode($returnData, JSON_FORCE_OBJECT);
+            $returnStr = json_encode($returnData);
         } else {
             $returnStr = json_encode($returnData);
         }
@@ -84,9 +84,9 @@ class Response {
                     }
                 }else{ $arr = array(); }
             }else{
-                if($arr === null){ $arr = ''; }         //注意三个等号
+                if($arr === null){ $arr = []; }         //注意三个等号
             }
-        }else{ $arr = ''; }
+        }else{ $arr = []; }
         return $arr;
     }
 

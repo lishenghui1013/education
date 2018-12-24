@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>奥国教育</title>
+	<style type="text/css">
+	*{margin: 0;padding: 0;}
+	a{
+		text-decoration: none;
+	}
+	ul li,ol{
+		list-style: none;
+	}
+		html,body{
+			width: 100%;
+			height: 100%;
+		}
+		.wrap{
+			width: 100%;
+			height: 3940px;
+			background: url(img/background.jpg) no-repeat;
+			background-size: 100% 100%;
+			position: relative;
+		}
+		/* 导航 */
+		.nav{
+			width: 218px;
+			height: 276px;
+			float: left;
+
+			
+		}
+		.modile{
+			width: 924px;
+			height: 276px;
+			position: absolute;
+			top: 662px;
+			left: 27%; 
+
+		}
+		.nav ul li{
+			margin:10px 0 45px;
+			font-weight: bold;
+			font-size: 18px;
+			color: black;
+		}
+		.nav ul li .t-m{
+			font-size: 13px;
+		}
+
+		.list-m{
+			float: left;
+			width: 706px;
+			height: 276px;
+		}
+		.loginandregistration{
+			width: 600px;
+			height: 600px;
+			border-radius: 10px;
+			background: rgb(208, 247, 244);
+			position: fixed;
+			top:50%;
+			left:50%;
+			margin:-300px 0 0 -300px;
+			display: none;
+		}
+		.loginandregistration .slick-wrap{
+			width: 100%;
+			height: 100%;
+			position: relative;
+		}
+		.slick-wrap h2{
+			text-align: center;line-height: 100px;letter-spacing: 20px;color: #2A4C54;
+		}
+		.slick-close{
+			width: 25px;
+			height: 25px;
+			position: absolute;
+			top: 10px;
+			right: 0;
+			font-size: 19px;
+  			  font-weight: bold;
+		}
+		#slick-login {
+		    width: 320px;
+		    height: 155px;
+		    position: absolute;
+		    left: 50%;
+		    top: 30%;
+		    margin-left: -160px;
+		    margin-top: -20px;
+		}
+		 
+		#slick-login label {
+		    display: none;
+		}
+		 
+		.placeholder {
+		    color: #444;
+		}
+
+		#slick-login input[type="text"],#slick-login input[type="password"] {
+		    width: 93%;
+		    height: 40px;
+		    position: relative;
+		    margin-top: 60px;
+		    font-size: 14px;
+		    color: #444;
+		    outline: none;
+		    border: 1px solid rgba(0, 0, 0, .49);
+		    padding-left: 20px;
+		    background-clip: padding-box;
+		    border-radius: 6px;
+		    background-image: -webkit-linear-gradient(bottom, #FFFFFF 0%, #F2F2F2 100%);
+		    box-shadow: inset 0px 2px 0px #d9d9d9;
+		    transition: all .1s ease-in-out;
+		}
+ 
+		 /*给输入框做阴影*/
+		#slick-login input[type="text"]:focus,#slick-login input[type="password"]:focus {
+		    -webkit-box-shadow: inset 0px 2px 0px #a7a7a7;
+		    box-shadow: inset 0px 2px 0px #a7a7a7;
+		}
+		 
+		 /*让输入的内容定格写*/
+		#slick-login input:first-child {
+		    margin-top: 10px;
+		}
+		 
+		 /*给Input做样式*/
+		#slick-login input[type="submit"] {
+		    width: 100%;
+		    height: 50px;
+		    margin-top: 55px;
+		    color: #fff;
+		    font-size: 18px;
+		    font-weight: bold;
+		    padding-left: 20px;
+		    text-shadow: 0px -1px 0px #5b6ddc;
+		    outline: none;
+		    border: 1px solid rgba(0, 0, 0, .49);
+		    background-clip: padding-box;
+		    border-radius: 6px;
+		    background-color: #5466da;
+		    background-image: -webkit-linear-gradient(bottom, #5466da 0%, #768ee4 100%);
+		    box-shadow: inset 0px 1px 0px #9ab1ec;
+		    cursor: pointer;
+		    transition: all .1s ease-in-out;
+		}
+		 
+		#slick-login input[type="submit"]:hover {
+		    background-color: #5f73e9;
+		    background-image: -webkit-linear-gradient(bottom, #5f73e9 0%, #859bef 100%);
+		    -webkit-box-shadow: inset 0px 1px 0px #aab9f4;
+		    box-shadow: inset 0px 1px 0px #aab9f4;
+		    margin-top: 50px;
+		}
+		 
+		 /*点击Log In 时候渐变色，从下往上*/
+		#slick-login input[type="submit"]:active {
+		    background-color: #7588e1;
+		    background-image: -webkit-linear-gradient(bottom, #7588e1 0%, #7184df 100%);
+		    -webkit-box-shadow: inset 0px 1px 0px #93a9e9;
+		    box-shadow: inset 0px 1px 0px #93a9e9;
+		}
+		.remember a{
+				float: right;
+				margin-top: 10px;
+				color: black;
+		}
+		/* 注册页面 */
+		.registerpage{
+			width:100%;
+			height:100%;
+			background: red;
+			display: none;
+		}
+
+		/* 教育平台 */
+		.educationplatform{
+			width: 774px;
+			height: 1933px;
+			position: absolute;
+			top: 1505px;
+			left: 29%;
+
+		}
+		/* 中小学 */
+		.middleandprimaryschool{
+			width: 100%;
+			height: 260px;
+		}
+
+		.PlatformSpacing{
+			margin-bottom: 15px;
+			border-bottom: 1px solid #A59C9C;
+
+		}
+		.PlatformSpacing h3{
+			background: #F8FCED;
+			padding: 3px 0;
+			color: #EF7596;
+		}
+		.PlatformSpacing h4{
+			color: #C79C64;
+		}
+		.interlinkage{
+			 display: flex;
+	        flex-flow: wrap column;
+	        align-content: flex-start;
+	        height: 232px;
+	        margin-top: 10px;
+
+		}
+		.interlinkage li{
+			margin:0 30px 8px 0;
+			display: inline;
+			width: auto;
+		}
+		.PlatformSpacing a{
+			color:#2A8F90;
+		}
+
+		.ask{
+			width: 150px;
+			height: 150px;
+			position: fixed;
+			bottom: 100px;
+			left: 0;
+			background: rgba(0,0,0,0.5);
+		}
+		.header{
+			width: 800px;
+			height: 100px;
+			margin:0 auto;
+		}
+		.header img{
+			width: 100px;
+			height: 100px;
+			float: left;
+		}
+		.header div{
+			width: 700px;
+			height: 100px;
+			float: left;
+			font-size: 70px;
+			letter-spacing: 50px;
+			line-height: 100px;
+			text-align: center;
+		}
+		.ask-q{
+			width: 100px;
+			height: 100px;
+			background: url(img/qrcode.bmp) no-repeat;
+			background-size: cover;
+			margin: 0 auto;
+		}
+		.ask-colse{
+			width: 25px;
+			height: 25px;
+			position: absolute;
+			right: 0;
+			top: 0;
+			text-align: center;
+			line-height: 25px;
+			cursor: pointer;
+		}
+
+	</style>
+	<link rel="stylesheet" type="text/css" href="css/mobileSelect.css">
+	<script src="js/mobileSelect.js" type="text/javascript"></script>
+</head>
+<body>
+	<div class="wrap">
+		<div class="header">
+			<img src="img/logo.jpg">
+			<div>奥国教育</div>
+		</div>
+		<div class="modile">
+			<div class="nav">
+				<ul class="list-nav">
+					<li>
+						<a href="#">企业文化</a>
+						
+						<a href="#" class="t-m">学习文化</a>
+						<a href="#"  class="t-m">学习排行榜</a>
+					</li>
+					<li>
+						<a href="#">组织结构</a>
+						<a href="#"  class="t-m">地区结构</a>
+						<a href="#"  class="t-m">地区排行榜</a>
+					</li>
+					<li>
+						<a href="#">老师介绍</a>
+						<a href="#"  class="t-m">荣誉老师</a>
+						<a href="#"  class="t-m"></a>
+					</li>
+					<li>
+						<a href="#">先进科技</a>
+						<a href="#"  class="t-m">VR</a>
+						<a href="#"  class="t-m">AR</a>
+					</li>
+				</ul>
+			</div>
+			<div class="list-m">
+				<video src="guancanghai.mp4" style="width: 100%" height="100%" autoplay="autoplay" id="video-a"></video>
+			</div>
+			
+		</div>
+		<!-- 教育平台 -->
+			<div class="educationplatform">
+				<!-- 中小学 -->
+				<div class="middleandprimaryschool PlatformSpacing">
+					 <h3>中小学在线教育平台</h3>
+					 <ul class="interlinkage">
+						 <li>
+							 <a href="https://live.polyv.cn/watch/234830">奥国教育</a>
+						 </li>
+					 	<li>
+					 		<a href="https://www.vipkid.com.cn/sem?channel_id=1088&amp;channel_keyword=PSbiaoti01">vipkid</a>
+					 	</li>
+					 	<li>
+					 		 <a href="https://www.dadaabc.com/?c_id=2271">哒哒英语</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://wap.51talk.com/landing/sogoupz_100051.html">51talk</a>
+					 	</li>
+					 	<li>
+					 		<a href="https://lp.tutorabc.com.cn/lpgs/nDFsUxcsiL/index.html?fromwhere=sHsBdF57Il">Tutor.ABC</a>
+					 	</li>
+					 	<li>
+					 		<a href="https://class.hujiang.com/?utm_campaign=%E5%93%81%E7%89%8C%E8%AF%8D%2D%E6%B2%AA%E6%B1%9F%E8%8B%B1%E8%AF%AD&amp;utm_adgroup=%E6%B2%AA%E6%B1%9F%E8%8B%B1%E8%AF%AD%EF%BC%88%E5%8D%95%E7%8B%AC%EF%BC%89&amp;utm_source=sogou&amp;utm_medium=cpc&amp;sem_source=sem_sogou&amp;utm_adkeyword=%E6%B2%AA%E6%B1%9F%E8%8B%B1%E8%AF%AD">沪江英语</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.koolearn.com/?a_id=ff80808133e8b8ea0133e8b8eae80000&amp;kid=ff808081597fb4d6015983064ed939b7&amp;utm_source=sogou&amp;utm_medium=pcss&amp;utm_campaign=%E6%96%B0%E4%B8%9C%E6%96%B9%E5%88%86%E5%9C%B0%E5%9F%9F-%E5%8C%97%E4%BA%AC&amp;utm_content=%E6%96%B0%E4%B8%9C%E6%96%B9%E5%88%86%E5%8C%B9%E9%85%8D-%E7%B2%BE%E7%A1%AE&amp;utm_term=%E6%96%B0%E4%B8%9C%E6%96%B9&amp;ctx=&amp;basePath=http%3A%2F%2Fun.koolearn.com%3A80%2F">新东方在线</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.acadsoc.com.cn/lps/wxhb/wxhb2.htm?_s=m&amp;search=10941">阿卡索外教网</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.hyphen100.com/xkpy-new/?adid=5364474&amp;utm_source=sg&amp;utm_medium=hfjy&amp;utm_term=%E6%B5%B7%E9%A3%8E1%E5%AF%B91%E6%95%99%E8%82%B2%E6%80%8E%E4%B9%88%E6%A0%B7&amp;utm_content=%E6%B5%B7%E9%A3%8E%E5%8F%A3%E7%A2%91&amp;utm_campaign=%E5%8C%97%E4%BA%AC%2D%E5%93%81%E7%89%8C">海风英语</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.jyeoo.com/">箐优网</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.smartpigai.com/">极智批改网</a>
+					 	</li>
+					 	<li>
+ 							<a href="https://www.aikaola.com/">爱考拉</a>
+					 	</li>
+					 	<li>
+   							<a href="http://www.xuelecn.com/">学乐中国</a>	 		
+					 	</li>
+					 	<li>
+					 		<a href="http://www.91waijiao.com/">91外教网</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.class.cn/index/main">沃学教育</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.leleketang.com/">乐乐课堂</a>
+					 	</li>
+					 	<li>
+					 		<a href="https://www.chinaedu.com/">101网校</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.91waijiao.com/">91外教</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.lanxum.com/">立思辰</a>
+					 	</li>
+					 	<li>
+					 		<a href="https://www.zhangmen.com/">掌门一对一</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.yuantiku.com/">猿题库</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.dajiahui.cn/">大家汇</a>
+					 	</li>
+					 	<li>
+					    	<a href="http://www.vko.cn/">微课网</a>
+					    </li>
+					    <li>
+					  		<a href="http://www.jd100.com/">简单学习网</a>
+					    </li>
+					    <li>
+					    	<a href="http://www.mofangge.com/">魔方格</a>
+					    </li>
+					   	<li>
+					    	<a href="http://www.xueba100.com/fudao">学霸君</a>
+					    </li>
+					    <li>
+					  		<a href="https://www.kehou.com/index.htm">课后网</a>
+					  	</li>
+					    <li>
+					    	<a href="http://www.gopep.cn/">人教学习网</a>
+					    </li>
+					    <li>
+					    	<a href="http://www.hgznedu.com/">黄冈中学网校</a>
+					    </li>
+					    <li>
+					    	<a href="http://www.xueersi.com/?">学而思网校</a>
+						</li>
+						 <li>
+							 <a href="https://www.classba.cn/">乂学教育</a>
+					     </li>
+					    <li>
+					    	<a href="http://zhibo.zuoyebang.com/">作业帮</a>
+					    </li>
+					    <li>
+					     	<a href="http://www.afanti100.com/">阿凡题</a>
+					    </li>
+					    <li>
+					    	<a href="http://edu.yy.com/">YY教育</a>
+					    </li>
+					    <li>
+					    	<a href="https://www.wanmen.org/uni/catalog?sortId=5a4309a20b61756f4d2c4503">万门中学</a>
+					    </li>
+					    <li>
+					    	<a href="http://www.yjiao.net/caseshow3.php?cid=12&amp;id=80">悦教动漫</a> 
+					    </li>
+					    <li>
+					   	 <a href="http://www.classba.cn/">乂学教育</a>
+					    </li>
+					    <li>
+					    	<a href="http://www.youwinedu.com/">优胜教育</a>
+					    </li>
+					    <li>
+					   	 <a href="http://yc.mingshi.org/">明师教育</a>
+					    </li>
+					    <li>
+					    	<a href="http://www.longwenedu.com/?from=sgss.pc.a1.0088">龙文教育</a>
+					    </li>
+					    <li>
+					    	<a href="http://zt.xueersi.com/zaixian/pc-zhu-pinpai/quanguo/?referer=aHR0cDovL3d3dy5zb2dvdS5jb20vYmlsbF9jcGM/dj0xJnA9V0o4MCR4QmZoREFlSjFsa3EzSmVoWXkwQGwkMkFleTFwUDduMjB3emdKNkR6RlFFZVlYUVNkTlk0S3pzV0diUEdXWFdrSUFsQU1DckU4Sk9icGxJV0dWdGViTmVjRWZxVmlOc01UVmY4ZDk0T2NETEdVb2dpZktYT01vUUJpejZmQXpicGp0dXVPdXpwaSRCSlBtdVFxSUxHV0JPT0p5VVFuWHJPaVdnZkNRVUkkWVFWUUskSldLWGZPVzZWbTdxQnh2b3ByN3FpaXRRSnpLenBPbXp1STdCdWl1cnBJdXgwd3I1RmE5Q0dydGxEUEpGWTRlMGxUR0Y5MW5rVTRlZVc2cEIkWHAzWXFKJEEkcFBtWXVpSUJ1VkFZcFN1WTR4eEdZOHhpRUREQkBWaHBCb1kzakZRYmpsN1dLcXJrNmpVdWV0MDlxajB3QnZLVmhHcFUzdFBtQnVWUEJ1UDdCcHc1OWg2UkF5RlBCQWRKS3ZjcHdJM0dIRzlxYWwyeG93MGxlMjhqWkdhOUNHRnloNkxhdVkxNm05cGxMNnhhQVlqcm5WbXh4eHc3Z1JlcWtQZXBpNnpwUGtidWxsY09VQVdsQnRGcFhJeU8kSlBPekpxNk9RJFVsdlM5R1owOUZaNiRaRklnQWlROSQzVVptVlFsQzFrVmozdWNtT21SMEZ5dzBCaEdldkFJbmFKRlVpcFdaR2pSR0ZaVVpwR2J1aXVsbTg2Y3FZazNWUGpudlpJcXpVZW5LWGtRdlVrWUl2QWRuOUl3MTI4eUNHMFUxRzB0VDJrM1ZBQnBPNkIzbFJsNllwWTlkdVZsNVJ4WngwdmZ4cSZxPVdKZTBsbGxsbHlseCZxdWVyeT0lRTUlQUQlQTYlRTglODAlOEMlRTYlODAlOUQlRTUlOUYlQjklRTQlQkMlOTgmbWw9OTImbWM9MTQ2Jm1hPTg0MCwwLDIzMCwxNDIsMjMzLDE1MCwxMjg1LDYwMiZibG9jaz01NTksMzA5LC0xLC0x&amp;hot_url=aHR0cDovL3d3dy54dWVlcnNpLmNvbS94ZXMucGhwP3NvdXJjZT0zOTU3NjM2NyZzaXRlX2lkPTI3OCZhZHNpdGVfaWQ9MzA3NDQxJl9zZ3B2PTFiZWQxMTc0Nzk2ODQwMjYwMA==">学而思教育</a>
+					    </li>
+					    <li>
+					    	<a href="http://www.fudaojun.com/?semjh=pc%2011.6%E7%AB%9E%E5%93%81%E8%AF%8D&amp;semdy=%E5%85%B6%E4%BB%96&amp;semk=%E4%BC%A0%E8%AF%BE%E7%BD%91&amp;mj=sg1&amp;zj=pc">辅导君</a>
+					    </li>
+					 </ul>
+				</div>
+				<!-- 职业教育平台 -->
+				<div class="Professionaleducationplatform PlatformSpacing">
+					 <h3>职业教育平台</h3>
+					 <div>
+					 	<h4>金融教育平台</h4>
+					 	<ul class="interlinkage" style="height: 70px;">
+					 	<li>
+					 		<a href="http://www.dfhe.com/#/">东方华尔</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://finance.gaodun.cn/?source=sogou&amp;plan=CFA-%B1%B1%BE%A9sgtg01&amp;unit=cfa01&amp;keyword=cfa&amp;type=sea&amp;account=01&amp;equipment=pc&amp;project=cfasemjay&amp;e_keywordid=20180007454">高顿财经</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://cfaer.gfedu.com/?sougou-mc1">金程教育</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://cfa.finance365.com/">财金通</a>
+					 	</li>
+					 	<li>
+					 		  <a href="http://www.chinacfa.com/">中国cfa</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.uibezzy.com/sub/cfa/?SG_JR_KC_10046_pc_9130">对外经济贸易CFA在职教育</a>
+					 	</li>
+					 	<li>
+  							 <a href="http://cfa.goldenglobal.org.cn/">上海财经大学CFA教育</a>					 		
+					 	</li>
+					 </ul>
+					 </div>
+					  <div >
+					 	<h4>IT互联网教育平台</h4>
+					 	<ul class="interlinkage" style="height: 70px;">
+					 	<li>
+					 		<a href="http://www.ixueyun.com/">学云网</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.tedu.cn/zt/zh/?TARENA_jtcrq-jt-SG-PC-SS-zh-pp-0000000-000-180111000000_TARENA&amp;SGpz-pc-bt">达内教育</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://rd.yytbl.cn/sg-dsj666/?sgqd=sougoujh=dashujupc-youxiaocidy=jingpincigjc=heimachengxuyuan">黑马程序员</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.51benet.com.cn/">北大青鸟</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.ibeifeng.com/">北风网</a>
+					 	</li>
+							<li>
+								<a href="http://www.xuetangx.com/">学堂在线</a>
+							</li>
+					 	<li>
+					 		<a href="http://www.kaikeba.com/">开课吧</a>
+					 	</li>
+					 	<li>
+  							<a href="http://d.fmi.com.cn/">飞马网</a>					 		
+					 	</li>
+					 	<li>
+  							<a href="http://www.maiziedu.com/">麦子学院</a>					 		
+					 	</li>
+					 	<li>
+  							<a href="http://www.bj-ccskgc.com/">创意学院课工厂</a>				 		
+					 	</li>
+					 	<li>
+  							 <a href="https://www.imooc.com/">慕课网</a>					 		
+					 	</li>
+					 	<li>
+  							<a href="http://www.jikexueyuan.com/">极客学院</a>					 		
+					 	</li>
+					 	<li>
+  							<a href="http://www.itcast.cn/">传智播客</a>					 		
+					 	</li>
+					 	<li>
+  							<a href="https://www.geeksss.com/portal.php">极客社区</a>					 		
+					 	</li>
+					 	<li>
+  							<a href="http://www.baixiucn.com/">百秀中国</a>					 		
+					 	</li>
+							<li>
+								<a href="http://test.mingrisoft.com/Index/Course/selfCourse/id/11.html">明日学院</a>
+							</li>
+							<li>
+								<a href="https://ke.qq.com/">腾讯课堂</a>
+							</li>
+					 </ul>
+					 </div>
+					  <div>
+					 	<h4>职业资格证考试平台</h4>
+					 	<ul class="interlinkage" style="height: 34px;">
+					 	<li>
+					 		<a href="http://www.highso.cn/">嗨学网</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.fenbi.com/web/">粉笔网</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.hqwx.com/">环球网校</a>
+					 	</li>
+					 </ul>
+					 </div>
+					  <div>
+					 	<h4>职业发展</h4>
+					 	<ul class="interlinkage" style="height: 34px;">
+					 	<li>
+					 		<a href="http://www.yingsheng.com/">英盛网</a>
+					 	</li>
+					 </ul>
+					 </div>
+				
+				</div>
+
+				<!-- 大学教育平台 -->
+				<div class="Universityeducationplatform PlatformSpacing">
+					 <h3>大学教育平台</h3>
+					 <ul class="interlinkage" style="height: 34px;">
+					 	<li>
+					 	   <a href="http://tsinghua.xuetangx.com/#/courseList">清华慕课</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://mooc.pku.edu.cn/mooc/course1.php?lmid=2">北京大学慕课</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://cma.cuc.edu.cn/">中国传媒大学慕课网</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://hbue.xuetangx.com/#/courseList">湖北经济学院慕课网</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://csu.xuetangx.com/#/courseList">中南大学慕课网</a>
+					 	</li>
+					 </ul>
+					
+				</div>
+				<!-- 出国留学平台 -->
+				<div class="Overseasstudyplatform PlatformSpacing">
+					 <h3>出国留学平台</h3> 
+					<ul class="interlinkage" style="height: 50px;">
+					 	<li>
+					 	    <a href="https://www.oxbridgedu.org/?baidu-pinpao">津桥留学</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://tiandaoedu.com/?utm_source=lx_sogoucpc&amp;utm_medium=cpc&amp;utm_term=%E5%8C%97%E4%BA%AC%E5%A4%A9%E9%81%93%E7%95%99%E5%AD%A6&amp;utm_content=&amp;utm_campaign=lx_pp&amp;zdinfo678=tdsg&amp;zdinfo678=tdbd">天道留学</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://zmn.yythb.com.cn/zmnlxjg/?utm_source=bj_sogou&amp;utm_medium=cpc&amp;utm_term=%E9%91%AB%E6%B3%89%E7%95%99%E5%AD%A6&amp;utm_content=%E5%90%8C%E8%A1%8C&amp;utm_campaign=sg%E7%95%99%E5%AD%A6(%E5%8C%97%E4%BA%AC)_%E5%90%8C%E8%A1%8C">啄木鸟留学</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://sg.tengmenguoji.com/?sg-pc-07-262">藤门留学</a>
+					 	</li>
+					 	<li>
+					 		<a href="https://www.shanbay.com/">扇贝英语</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.zhan.com/">小站教育</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.aplus163.com/">托福教育</a>
+					 	</li>
+					 </ul>
+					
+				</div>
+				<!-- 技能教育平台 -->
+				<div class="Skillseducationplatform PlatformSpacing">
+					 <h3>技能教育平台</h3>
+					 <ul class="interlinkage" style="height: 50px;">
+					 	<li>
+					 	   <a href="http://www.51zxw.net/">我要自学网</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://study.163.com/">网易云课堂</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.bjxdf.com/?sogou-pcc-bjcsjh14214">北京新东方烹饪学校</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.lxjx.cn/pinzhuan/#sogoupz3">山东蓝翔技师学校</a>
+					 	</li>
+					 </ul>
+				</div>
+				<!-- STEAM教育平台 -->
+				<div class="STEAmeducation platform PlatformSpacing">
+					 <h3>STEAM教育平台</h3>
+					<ul class="interlinkage" style="height: 50px;">
+					 	<li>
+					 	   <a href="http://www.it61.cn/steam/?=SS-sogoutg=JH=A=gjc=&amp;utm_source=sogou&amp;utm_medium=cpc">乐高教育</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.xiaoma.wang/">小码王</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.magoedu.com/?source=sg=legaozaojiaozhongxinguanwang">码高机器人</a>
+					 	</li>
+					 </ul>
+				</div>
+				<!-- 家庭教育平台 -->
+				<div class="familymeducation PlatformSpacing">
+					 <h3>家庭教育平台</h3>
+					 <ul class="interlinkage" style="height: 50px;">
+					 	<li>
+					 	  <a href="http://jtjy.xhd.cn/">新航道</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.chinajtjy.com/">中国家庭教育网</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.spc-360.com/">教子无忧</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.muqindaxue.com/">母亲大学</a>
+					 	</li>
+					 </ul>
+				</div>
+				<!-- 影视教育平台 -->
+				<div class="moviemeducation PlatformSpacing">
+					 <h3>影视教育平台</h3>
+					 <ul class="interlinkage" style="height: 50px;">
+					 	<li>
+					 	   <a href="http://new.cfbase.com.cn/html/hlxy/xysy/">中影华龙教育</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.qijixue.com/website/specialty/spbzB.html?utm_source=sogou&amp;utm_medium=ss03&amp;utm_term=sogouPC&amp;YS_lb&amp;id064942end">奇迹曼特</a>
+					 	</li>
+					 	<li>
+					 		 <a href="http://edu.hxsd.com/edunew/topics/2016xcltb/topic.html?campaign=96_3_zeng&amp;sougoupc&amp;bdhxsd&amp;sougou-UI&amp;utm=PC_YS_YH&amp;utm=20239566end">火星时代</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://edu.hxsd.com/edunew/topics/2016xcltb/topic.html?campaign=96_3_zeng&amp;sougoupc&amp;bdhxsd&amp;sougou-UI&amp;utm=PC_YS_YH&amp;utm=20239566end">王氏教育</a>
+					 	</li>
+					 </ul>
+				</div>
+				<!-- 艺术教育平台 -->
+				<div class="artmeducation PlatformSpacing">
+					 <h3>艺术教育平台</h3>
+					<ul class="interlinkage" style="height: 50px;">
+					 	<li>
+					 		<a href="http://www.juzishu.com.cn/#sgjj-zh-cyys-00098">桔子树</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.xy-shine.com/">先艺</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.tianxiawangxiao.com/">天下网校</a>
+					 	</li>
+					 	<li>
+					 	   <a href="http://sh.dreamaker.com.cn/?ly=sougou&amp;gjc=%e8%89%ba%e6%9c%af%e6%95%99%e8%82%b2%e6%95%99%e8%82%b2">卓美品致</a>
+					 	</li>
+					 </ul>
+				</div>
+				<!-- 早教平台 -->
+				<div class="earlyeducationmeducation PlatformSpacing">
+					 <h3>早教平台</h3>
+					 <ul class="interlinkage" style="height: 50px;">
+					 	<li>
+					 	   <a href="http://www.my-gym.mobi/April2018/pc.php?utm_source=sogou&amp;utm_medium=cpc&amp;utm_term=PC%E4%B8%A8%E7%A7%BB%E5%8A%A8-%E7%99%BE%E5%BA%A6%E8%BD%AC%E5%8C%96%E8%AF%8D%E4%B8%A8%E5%B9%BC%E5%84%BF%E5%90%AF%E8%92%99%E6%97%A9%E6%95%99%E4%B8%A8%E5%84%BF%E7%AB%A5%E7%BE%8E%E6%9C%AF">美吉姆</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.ilovegym.com/templates/default/newhtml/free.html">爱乐乐享</a>
+					 	</li>
+					 </ul>
+				</div>
+				<!-- 公务员考试平台 -->
+				<div class="civilservantmeducation PlatformSpacing">
+					 <h3>公务员考试平台</h3>
+					<ul class="interlinkage" style="height: 50px;">
+					 	<li>
+					 	   <a href="http://www.offcn.com/">中公教育</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.huatu.com/">华图教育</a>
+					 	</li>
+					 </ul>
+				</div>
+				<!-- 考研考博教育平台 -->
+				<div class="exammeducation PlatformSpacing">
+					 <h3>考研考博教育平台</h3>
+					 <ul class="interlinkage" style="height: 50px;">
+					 	<li>
+					 	   <a href="http://www.kyjxy.com/">文都教育</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://mba.yytwh.net.cn/mg/2018/?VIP_SG_PC_PP_JQ=pinpaici&amp;e_keywordid=36788359955">跨考教育</a>
+					 	</li>
+					 	<li>
+					 		 <a href="http://kaoyan.wanxue.cn/special/2018/qntxy_pc/?utm_campaign=jingpinci-beijing&amp;utm_medium=cpc&amp;utm_source=sogou-pc&amp;utm_content=diyu-jingpin&amp;utm_term=beijinghaitiankaoyan">海文考研</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://www.qihang.com.cn/zt/bnjx/?utm_source=sg&amp;utm_medium=cpc&amp;utm_term=%E8%80%83%E7%A0%94%E8%8B%B1%E8%AF%AD%E4%B8%80%E6%80%8E%E6%A0%B7%E5%A4%8D%E4%B9%A0&amp;utm_content=%E6%80%8E%E4%B9%88%E5%A4%8D%E4%B9%A0%EF%BC%9F&amp;utm_campaign=%E5%85%AC%E5%85%B1%E8%AF%BE%E8%8B%B1%E8%AF%AD%2B-%20%E5%8C%97%E4%BA%AC">启航考研</a>
+					 	</li>
+					 </ul>
+				</div>
+				<div style="width: 100%;height: 280px;border: none;" class="PlatformSpacing">
+					<h3>图书网站链接</h3>
+					<ul class="interlinkage" style="height: 145px;">
+					 	<li>
+					 		<a href="https://www.amazon.cn/%E5%9B%BE%E4%B9%A6/b/?ie=UTF8&amp;node=658390051&amp;tag=sogouhycn-23&amp;ref=pz_ic_books_1127">亚马逊网</a>
+					 	</li>
+					 	<li>
+					 		<a href="http://book.dangdang.com/?_utm_brand_id=11053&amp;_ddclickunion=559-ppzq-ms-__%B5%B1%B5%B1%CA%E9%CF%E3%BD%DA%A3%AC%CD%BC%CA%E9%C3%BF%C2%FA200%BC%F5100|ad_type=0|sys_id=1">当当网</a> 
+					 	</li>
+					 	<li>
+					 		   <a href="https://book.jd.com/?cu=true&amp;utm_source=sogou-search&amp;utm_medium=cpc&amp;utm_campaign=t_262767352_sogousearch&amp;utm_term=19202071914_0_f5d7d490c7e24d67873e42023e57e9cb">京东书城</a>  
+					 	</li>
+					 	<li>
+					 		 <a href="http://search.yhd.com/c1713-0-0">1号店书城</a>
+					 	</li>
+					 	<li>
+					 	   <a href="http://www.99read.com/">99网上书城</a> 
+					 	</li>
+					 	<li>
+					 	   <a href="http://www.bookschina.com/">中国图书网</a>  
+					 	</li>
+					 	<li>
+					 	   <a href="http://book.zxhsd.com/">浙江新华书店网</a>
+					 	</li>
+					 	<li>
+					 	    <a href="http://elib.9yue.com/">优课数字图书馆</a>
+					 	</li>
+					 	<li>
+					 	  <a href="http://book.sina.com.cn/">新浪读书</a>
+					 	</li>
+					 	<li>
+					 	  <a href="https://book.douban.com/">豆瓣读书</a>
+					 	</li>
+					 	<li>
+					 	    <a href="http://www.cndushu.com/">中国读书网</a> 
+					 	</li>
+					 	<li>
+					 	   <a href="http://www.cnread.net/">中国青少年新世纪读书网</a>
+					 	</li>
+					 	<li>
+					 	   <a href="http://epaper.gmw.cn/zhdsb/html/2018-04/11/nbs.D110000zhdsb_01.htm">中华读书报</a> 
+					 	</li>
+					 	<li>
+					 	   <a href="http://www.cflac.org.cn/zgysb/dz/ysb/">中国艺术报</a>
+					 	</li>
+					 	<li>
+					 	   <a href="http://zqb.cyol.com/html/2018-04/19/nbs.D110000zgqnb_01.htm">中国青年报</a> 
+					 	</li>
+					 	<li>
+					 	    <a href="http://wenhui.news365.com.cn/html/2017-07/31/node_1584.html">读书周报</a>
+					 	</li>
+					 	<li>
+					 	   <a href="http://www.cndushu.com/">2035读写新世纪</a>
+					 	</li>
+
+					 </ul>
+				</div>
+			</div>
+			<div class="ask" style="display: none;">
+				<p style="text-align: center;font-weight: bold;line-height: 30px;">详情咨询</p>
+				<div class="ask-q"></div>
+				<!-- <div class="ask-colse">X</div> -->
+			</div>
+		
+	</div>
+	<!--  登录注册弹出层 -->
+		<div class="loginandregistration">
+			<div class="slick-wrap">
+				<div class="slick-close">X</div>
+				<h2 >欢迎加入奥国大家庭</h2>
+				<div id="slick-login">
+					<input type="text" name="username" class="placeholder" id="user" placeholder="请输入用户名" data-form-un="1525682973149.1375" style=";background-color:#FAFFBD !important;box-shadow:none;">
+		            <span id="messageUser"></span>
+					<input type="password" name="password" class="placeholder" id="password" placeholder="请输入密码">
+		            <span id="messagePW"></span>
+		            <div class="remember">
+						<input type="checkbox" class="rememberCheckbox checkboxs">记住密码
+						<a href="#" class="register">注册账号</a>
+					</div>
+					<input type="submit" value="登录" id="login" style="pointer-events: auto;">
+				</div>
+			</div>
+			<!-- <div class="registerpage">
+				 用户名：<input type="text" name="user_name" value=""><br>
+			     密&nbsp;码: <input type="password" name="password" value=""><br>
+			    <form method="get" action="http://1.aoguojiaoyu.applinzi.com/getuserinfo.php" enctype="multipant-form-data">
+			   		性&nbsp;别:<input type="radio" name="sex" value="男">男
+			        <input type="radio" name="sex" value="女">女
+			      	<br>
+			   家长学历:
+			       <select name="xueli">
+			           <option value="学前班">学前班</option>
+			           <option value="小学">小学</option>
+			           <option value="初中">初中</option>
+			           <option value="高中">高中</option>
+			           <option value="大学">大学</option>
+			       </select><br>
+			   学生年级：<br>
+			       <input type="select" name="年级" value="小学">
+			       <select name="小学">
+			           <option value="一年级">一年级</option>
+			           <option value="二年级">二年级</option>
+			           <option value="三年级">三年级</option>
+			           <option value="四年级">四年级</option>
+			           <option value="五年级">五年级</option>
+			           <option value="六年级">六年级</option>
+			       </select><br>
+			       <input type="select" name="年级" value="初中">
+			       <select name="初中">
+			           <option value="一年级">一年级</option>
+			           <option value="二年级">二年级</option>
+			           <option value="三年级">三年级</option>
+			       </select><br>
+			       <input type="select" name="年级" value="高中">
+			       <select name="高中">
+			           <option value="一年级">一年级</option>
+			           <option value="二年级">二年级</option>
+			           <option value="三年级">三年级</option>
+			       </select><br>
+			       <input type="select" name="年级" value="大学">
+			       <select name="大学">
+			           <option value="一年级">一年级</option>
+			           <option value="二年级">二年级</option>
+			           <option value="三年级">三年级</option>
+			           <option value="四年级">四年级</option>
+			       </select><br>
+			   学校:<br>
+			       <input type="select" name="省份" value="省份">
+			       <select name="省份">
+			           <option value="北京">北京</option>
+			           <option value="上海">上海</option>
+			           <option value="广州">广州</option>
+			           <option value="深圳">深圳</option>
+			           <option value="珠海">珠海</option>
+			           <option value="河北">河北</option>
+			       </select><br>
+			       <input type="select" name="市" value="市">
+			       <select name="市">
+			           <option value="石家庄">石家庄</option>
+			           <option value="邯郸">邯郸</option>
+			           <option value="邢台">邢台</option>
+			           <option value="衡水">衡水</option>
+			           <option value="正定">正定</option>
+			           <option value="保定">保定</option>
+			           <option value="张家口">张家口</option>
+			       </select><br>
+			       <input type="select" name="区" value="区">
+			       <select name="区">
+			           <option value="新华区">新华区</option>
+			           <option value="桥西区">桥西区</option>
+			           <option value="正定区">正定区</option>
+			           <option value="藁城区">藁城区</option>
+			           <option value="赵县区">赵县区</option>
+			           <option value="栾城区">栾城区</option>
+			           <option value="栾城区">鹿泉区</option>
+			       </select><br>
+			       <input type="select" name="学校" value="选择学校">
+			       <select name="校名">
+			           <option value="实验学校">实验学校</option>
+			           <option value="通安街小学">通安街小学</option>
+			           <option value="实验小学">实验小学</option>
+			           <option value="廉州一中">廉州一中</option>
+			           <option value="东城小学">东城小学</option>
+			           <option value="八中">八中</option>
+			       </select><br>
+			   照片：  <input type="file" name="tou" value=""><br>
+			   身份证号码:<input type="password" name="password" value=""><br>
+			   学生证号码:<input type="password" name="password" value=""><br>
+			   预约听课  电话号码:<input type="password" name="password" value="">  <br>  
+			    </form>
+			   简历：<input type="file" name="id" value="1"><br>
+			   <input type="submit" value="提交"><br> 
+			   会员免费    会员服务内容包括：1学习测评 2推荐学习课程内容 3预约上课  4跟踪反馈  5课后辅导  6学习规划 7职业发展规划 8学校选择 9督促学习 <br>
+			</div> -->
+		</div>
+</body>
+</html>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+	// $(".register").click(function(){
+	// 	$(".slick-wrap").css("display","none");
+	// })
+
+	var myVideo=document.getElementById("video-a");
+	var play = true;
+	$("#video-a").click(function(){
+		if(play == true){
+	 		pauseVid();
+	 		play = false;
+
+		}else if(play == false){
+			playVid();
+	 		play = true;
+
+		}
+	})
+	function playVid()
+	  {
+	  myVideo.play();
+	  }
+
+	function pauseVid()
+	  {
+	  myVideo.pause();
+	  }
+	  $(".ask-colse").click(function(){
+	  	$(".ask").css("display","none");
+	  })
+	   $(".slick-close").click(function(){
+	  	$(".loginandregistration").css("display","none");
+	  })
+
+	  setTimeout(function(){
+	  	$(".loginandregistration").css("display","block");
+	  },12000);
+	  setTimeout(function(){
+	  	$(".ask").css("display","block");
+	  },8000);
+
+
+</script>
+
+
+
+
+
+
+
+
+

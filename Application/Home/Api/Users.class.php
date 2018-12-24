@@ -28,7 +28,13 @@ class Users extends Base
         $data['password'] = md5($param['password']);//密码
         $data['add_time'] = time();//添加时间
         $input_code = $param['input_code'];//用户填写的验证码
-        $send_code = session('code');//系统发送验证码
+        $code_info = D('api_phone_code')->where(array('phone' => $param['phone']))->limit(0, 1)->order('id desc')->select();//系统发送的验证码
+        $time = time();
+        $limit_time = 60 * 5 + $code_info[0]['add_time'];
+        if ($time > $limit_time) {
+            Response::error(-9, '验证码已过期');
+        }
+        $send_code = $code_info[0]['code'];//系统发送验证码
         $user_type = $param['user_type'];//用户类型(STU:学生;TEA:老师;COM:机构)
         $preg = '/^1[3456789]\d{9}$/';
         $preg_pass = '/^[\da-zA-Z]{6,20}$/';
@@ -53,7 +59,7 @@ class Users extends Base
         if ($input_code != $send_code) {
             Response::error(-8, '输入验证码不正确');
         }
-        session('code',null);
+
         if ($user_type == 'STU') {
             $is_phone = D('api_users')->field('id')->where(array('phone' => $param['phone']))->select();
             $is_ct_phone = D('api_ct_users')->field('id')->where(array('phone' => $param['phone']))->select();
@@ -62,13 +68,14 @@ class Users extends Base
             }
             $insert = D('api_users')->add($data);
             if ($insert) {
-                Response::success(array('id' => $insert));
+                Response::setSuccessMsg('注册成功');
+                Response::success(array());
             } else {
                 Response::error(-1, '注册失败');
             }
 
         } else {
-            $is_phone = D('api_ct_users')->field('id')->where(array('phone' => $param['phone']))->select();
+            $is_phone = D('api_users')->field('id')->where(array('phone' => $param['phone']))->select();
             $is_ct_phone = D('api_ct_users')->field('id')->where(array('phone' => $param['phone']))->select();
             if ($is_phone || $is_ct_phone) {
                 Response::error(-9, '手机号已经注册');
@@ -76,7 +83,8 @@ class Users extends Base
             $data['user_type'] = $user_type;
             $insert = D('api_ct_users')->add($data);
             if ($insert) {
-                Response::success(array('id' => $insert));
+                Response::setSuccessMsg('注册成功');
+                Response::success(array());
             } else {
                 Response::error(-1, '注册失败');
             }
@@ -180,10 +188,15 @@ class Users extends Base
         $phone = $param['phone'];//手机号
         $password = md5($param['password']);//密码
         Response::debug($phone . '+' . $param['password'] . '+' . $password);
-        $user_info = D('api_users')->field('id,phone,user_name,icon,balance,nickname')->where(array('phone' => $phone, 'password' => $password, 'use_status' => 1))->find();//先查询学生表
+        $user_info = D('api_users')->field('id,phone,user_name,icon,balance,nickname')->where(array('phone' => $phone, 'password' => $password))->find();//先查询学生表
         if ($user_info) { //如果有该账户
-            $user_info['user_type'] = 'STU';//身份为学生
-            Response::success($user_info);
+            if($user_info['use_status']==1){
+                $user_info['user_type'] = 'STU';//身份为学生
+                Response::success($user_info);
+            }else{
+                Response::error(-4,'账号被禁用');
+            }
+
         } else {
             $com_info = D('api_ct_users')->field('id,phone,user_name,com_name,user_type,icon,balance,nickname,audit_status')->where(array('phone' => $phone, 'password' => $password, 'del_status' => 2))->find();//查询机构表
             if ($com_info) { //如果机构表中有该用户
@@ -278,7 +291,13 @@ class Users extends Base
     {
         $phone = $param['phone'];//手机号
         $verify_code = $param['input_code'];//用户输入的验证码
-        $sys_code = session('code');//发送的验证码
+        $code_info = D('api_phone_code')->where(array('phone' => $param['phone']))->limit(0, 1)->order('id desc')->select();//系统发送的验证码
+        $time = time();
+        $limit_time = 60 * 5 + $code_info[0]['add_time'];
+        if ($time > $limit_time) {
+            Response::error(-9, '验证码已过期');
+        }
+        $sys_code = $code_info[0]['code'];//系统发送验证码
         $password = md5($param['password']); //密码
         $preg = '/^1[3456789]\d{9}$/';//手机号正则
         $preg_pass = '/^[\da-zA-Z]{6,20}$/';//密码正则
@@ -291,23 +310,25 @@ class Users extends Base
         if ($param['password'] == '' || !preg_match($preg_pass, $param['password'])) {
             Response::error(-4,'密码格式不正确');
         }
-        session('code',null);
+
         Response::debug($phone . '+' . $param['password'] . '+' . $password);
         $data['password'] = $password;
         $user_info = D('api_users')->field('id')->where(array('phone' => $phone))->find();
-        if ($user_info!==false) {
-            $res = D('api_users')->where(array('phone' => $phone, 'id' => $user_info['id']))->save($data);
+        if ($user_info) {
+            $res = D('api_users')->where(array('id' => $user_info['id']))->save($data);
             if ($res) {
-                Response::success(array('update_num'=>$res));
+                Response::setSuccessMsg('修改成功');
+                Response::success(array());
             } else {
                 Response::error(-1,'修改失败');
             }
         } else {
             $com_info = D('api_ct_users')->field('id,user_type')->where(array('phone' => $phone))->find();
             if ($com_info) {
-                $com = D('api_ct_users')->where(array('phone' => $phone, 'id' => $com_info['id']))->save($data);
+                $com = D('api_ct_users')->where(array('id' => $com_info['id']))->save($data);
                 if ($com!==false) {
-                    Response::success(array('update_num'=>$com));
+                    Response::setSuccessMsg('修改成功');
+                    Response::success(array());
                 } else {
                     Response::error(-1,'修改失败');
                 }

@@ -120,6 +120,28 @@ class Common extends Base
             Response::error(-1, '收藏失败');
         }
     }
+    /**
+     * 判断收藏状态
+     * @author: 李胜辉
+     * @time: 2018/11/05 09:34
+     * @param: $param['item_type'] 收藏项目的类型(STORE:商城;GOODS:商品;KAP:知识;EXE:习题;WOR:试题;RADIO:广播;LIB:图书馆
+     * @param: $param['item_category'] 项目分类(ART:知识点,句子,阅读文章,词组;VID:视频;TEX:课本;OTHER:其他的)
+     * @param: $param['pub_type'] 发布人的类型(COM:机构;TEA:老师;STU:学生;ADM:后台)
+     * @param: $param['is_catalog'] 是否目录详情(Y:是;N:否)
+     * @param: $param['item_id'] 收藏表id
+     * @param: $param['user_id'] 用户id
+     */
+    public function isCollect($param)
+    {
+        $where = $param;
+        $res = D('api_collect')->where($where)->find();
+        if ($res) {
+            Response::setSuccessMsg('已收藏');
+            Response::success(array('status'=>1));//已收藏
+        } else {
+            Response::error(-1, '未收藏',array('status'=>2));//未收藏
+        }
+    }
 
     /**
      * 添加评论
@@ -138,7 +160,7 @@ class Common extends Base
 
         $res = D('api_comment')->add($data);
         if ($res) {
-            Response::success(array('id' => $res));
+            Response::success(array());
         } else {
             Response::error(-1, '评论失败');
         }
@@ -478,7 +500,7 @@ class Common extends Base
         $url = 'http://' . $_SERVER['HTTP_HOST'] . '/' . substr($str, 0, strpos($str, '/') + 1);
         Response::debug($url);
         $upload = new \Think\Upload();   // 实例化上传类
-        $upload->maxSize = 3145728;    // 设置附件上传大小
+        $upload->maxSize = 314572800000;    // 设置附件上传大小
         /*$upload->exts = array('jpg', 'gif', 'png', 'jpeg'); // 设置附件上传类型*/
         $upload->rootPath = THINK_PATH;          // 设置附件上传根目录
         $upload->savePath = '../Public/uploads/';    // 设置附件上传（子）目录
@@ -515,7 +537,15 @@ class Common extends Base
         session('code', $code);
         $res = SmsDemo::sendSms($phone, $code);
         if ($res['Message'] == 'OK') {
-            Response::success(array());
+            $data['code'] = $code;
+            $data['phone'] = $phone;
+            $data['add_time'] = time();
+            $add = D('api_phone_code')->add($data);
+            if($add){
+                Response::success(array());
+            }else{
+                Response::error(-2, '发生错误');
+            }
         } else {
             Response::error(-1, $res['Message']);
         }
