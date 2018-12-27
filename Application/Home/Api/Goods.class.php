@@ -84,6 +84,10 @@ class Goods extends Base
         $id = $param['id'];//课程id
         $res = D('api_curriculum')->field('id,curriculum_name,price,intro,cover,FROM_UNIXTIME(add_time,"%Y-%m-%d") as add_time,add_id,content,category_id,user_type,FROM_UNIXTIME(curriculum_start_time,"%Y-%m-%d") as curriculum_start_time,FROM_UNIXTIME(curriculum_end_time,"%Y-%m-%d") as curriculum_end_time,lesson_time,inventory_num')->where(array('id' => $id))->find();
         if ($res) {
+            $common = new Common();
+            $info = $common->getUserInfo(array('user_type'=>$res['user_type'],'user_id'=>$res['add_id']));
+            $res['icon'] = $info['icon'];
+            $res['user_name'] = $info['user_name'];
             Response::success($res);
         } else {
             Response::error(-1, '暂无数据');

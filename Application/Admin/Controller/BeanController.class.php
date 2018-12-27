@@ -113,46 +113,30 @@ class BeanController extends BaseController
         $curr = $getInfo['curr'] ? $getInfo['curr'] : 1;//当前页
         $limit = $getInfo['limit'] ? $getInfo['limit'] : C('PAGENUM');//每页显示条数
         $start = ($curr - 1) * $limit;//开始
-        $year = $getInfo['year'] ? $getInfo['year'] : '';//添加时间年
-
-        $month = $getInfo['month'] ? $getInfo['month'] : '';//添加时间月
-        $day = $getInfo['day'] ? $getInfo['day'] : '';//添加时间日
+        $moth = $getInfo['month'] ? date('Y-m',strtotime($getInfo['moth'])) : date('Y-m',time());//添加时间
         $user_type = $getInfo['user_type'] ? $getInfo['user_type'] : 'COM';//角色类型(STU:学生;TEA:老师;COM:机构)
         $com_name = $getInfo['com_name'] ? $getInfo['com_name'] : '';
         $where = array();
         $where['c.audit_status'] = 'S';
         if($user_type != ''){
-            $where['b.user_type'] = $user_type;//角色类型(STU:学生;TEA:老师;COM:机构)
+            $where['user_type'] = $user_type;//角色类型(STU:学生;TEA:老师;COM:机构)
         }
         if($com_name != ''){
-            $where['c.com_name'] = array('like', '%'.$com_name.'%');//角色类型(STU:学生;TEA:老师;COM:机构)
-        }
-
-        if ($year != '') {
-            $where['_string'] = 'FROM_UNIXTIME(b.add_time,"%Y")="' . $year . '"';
-            if ($month != '') {
-                $month = $year . '-' . $month;
-                $where['_string'] = 'FROM_UNIXTIME(b.add_time,"%Y-%m")="' . $month . '"';
-                if ($day != '') {
-                    $day = $year . '-' . $month . '-' . $day;
-                    $where['_string'] = 'FROM_UNIXTIME(b.add_time,"%Y-%m-%d")="' . $day . '"';
-                }
-            }
+            $where['com_name'] = array('like', '%'.$com_name.'%');//角色类型(STU:学生;TEA:老师;COM:机构)
         }
         //查询总条数
-        $total = D('api_ct_users as c')->join('left join api_bean_io as b on b.user_id=c.id')->where($where)->count();//查询满足要求的总记录数
+        $total = D('api_ct_users')->where($where)->count();//查询满足要求的总记录数
 
-        $info = D('api_ct_users as c')->join('left join api_bean_io as b on b.user_id=c.id')->field('c.id,c.user_name,c.com_name,c.phone,c.balance,c.bean_balance,b.id as bid,b.num,b.io_type,b.user_type,b.explain,b.add_time')->where($where)->order('c.id desc')->limit($start, $limit)->select();
+        $info = D('api_ct_users')->field('id,user_name,com_name,phone,balance,bean_balance')->where($where)->order('id desc')->limit($start, $limit)->select();
         foreach ($info as $keys => $values) {
             //收支类型(SIGN:签到;READ:阅读;SHARE:分享;NOSIGN:未签到;PUB:发布;INVITE:邀请;SHOP:购物;PUBGET:发布所得;)
-            $sign_total = D('api_bean_io')->where(array('user_type'=>$values['user_type'],'user_id'=>$values['id'],'io_type'=>'SIGN'))->sum('num');//签到所得总数
-
-            $read_total = D('api_bean_io')->where(array('user_type'=>$values['user_type'],'user_id'=>$values['id'],'io_type'=>'READ'))->sum('num');//阅读
-            $share_total = D('api_bean_io')->where(array('user_type'=>$values['user_type'],'user_id'=>$values['id'],'io_type'=>'SHARE'))->sum('num');//分享
-            $pub_total = D('api_bean_io')->where(array('user_type'=>$values['user_type'],'user_id'=>$values['id'],'io_type'=>'PUB'))->sum('num');//发布
-            $invite_total = D('api_bean_io')->where(array('user_type'=>$values['user_type'],'user_id'=>$values['id'],'io_type'=>'INVITE'))->sum('num');//邀请
-            $shop_total = D('api_bean_io')->where(array('user_type'=>$values['user_type'],'user_id'=>$values['id'],'io_type'=>'SHOP'))->sum('num');//购物消费
-            $pubget_total = D('api_bean_io')->where(array('user_type'=>$values['user_type'],'user_id'=>$values['id'],'io_type'=>'PUBGET'))->sum('num');//发布内容被阅读所得
+            $sign_total = D('api_bean_io')->where(array('user_type'=>$values['user_type'],'user_id'=>$values['id'],'io_type'=>'SIGN','_string'=>'FROM_UNIXTIME(add_time,"%Y-%m")="' . $moth . '"'))->sum('num');//签到所得总数
+            $read_total = D('api_bean_io')->where(array('user_type'=>$values['user_type'],'user_id'=>$values['id'],'io_type'=>'READ','_string'=>'FROM_UNIXTIME(add_time,"%Y-%m")="' . $moth . '"'))->sum('num');//阅读
+            $share_total = D('api_bean_io')->where(array('user_type'=>$values['user_type'],'user_id'=>$values['id'],'io_type'=>'SHARE','_string'=>'FROM_UNIXTIME(add_time,"%Y-%m")="' . $moth . '"'))->sum('num');//分享
+            $pub_total = D('api_bean_io')->where(array('user_type'=>$values['user_type'],'user_id'=>$values['id'],'io_type'=>'PUB','_string'=>'FROM_UNIXTIME(add_time,"%Y-%m")="' . $moth . '"'))->sum('num');//发布
+            $invite_total = D('api_bean_io')->where(array('user_type'=>$values['user_type'],'user_id'=>$values['id'],'io_type'=>'INVITE','_string'=>'FROM_UNIXTIME(add_time,"%Y-%m")="' . $moth . '"'))->sum('num');//邀请
+            $shop_total = D('api_bean_io')->where(array('user_type'=>$values['user_type'],'user_id'=>$values['id'],'io_type'=>'SHOP','_string'=>'FROM_UNIXTIME(add_time,"%Y-%m")="' . $moth . '"'))->sum('num');//购物消费
+            $pubget_total = D('api_bean_io')->where(array('user_type'=>$values['user_type'],'user_id'=>$values['id'],'io_type'=>'PUBGET','_string'=>'FROM_UNIXTIME(add_time,"%Y-%m")="' . $moth . '"'))->sum('num');//发布内容被阅读所得
 
             $expend_total = $read_total+$shop_total;//支出总和
             $income_total= $sign_total+$share_total+$pub_total+$invite_total+$pubget_total;//收入总和

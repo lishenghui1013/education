@@ -65,9 +65,7 @@ class KnowledgeController extends BaseController
         $total = D('api_article_publish as a')->join('left join api_class as c on c.id=a.class_id')->join('left join api_subject as s on s.id=a.subject_id')->join('left join api_versions as v on v.id=a.versions_id')->join('left join api_user as u on u.id=a.pub_userid')->where($where)->count();//查询满足要求的总记录数
         $info = D('api_article_publish as a')->join('left join api_class as c on c.id=a.class_id')->join('left join api_subject as s on s.id=a.subject_id')->join('left join api_versions as v on v.id=a.versions_id')->join('left join api_user as u on u.id=a.pub_userid')->field('a.id,a.title,a.content,a.versions_id,a.class_id,a.subject_id,a.pub_time,a.show_status,a.read_num,a.collect_num,a.share_num,u.username,v.versions_name,c.class_name,s.subject_name')->where($where)->order('a.id desc')->limit($start, $limit)->select();
         foreach($info as $keys=>$values){
-
             foreach($values as $key=>$value){
-
                 if($values[$key]===null){
                     $info[$keys][$key] = '';
 

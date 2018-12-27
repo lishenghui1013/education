@@ -84,37 +84,73 @@ class Common extends Base
      * @param: $param['item_category'] 项目分类(ART:知识点,句子,阅读文章,词组;VID:视频;TEX:课本;OTHER:其他的)
      * @param: $param['pub_type'] 发布人的类型(COM:机构;TEA:老师;STU:学生;ADM:后台)
      * @param: $param['is_catalog'] 是否目录详情(Y:是;N:否)
-     * @param: $param['item_id'] 收藏表id
+     * @param: $param['item_id'] 收藏项目id
      * @param: $param['user_id'] 用户id
+     * @param: $param['user_type'] 收藏人的类型(COM:机构;TEA:老师;STU:学生;ADM:后台)
      */
     public function addCollect($param)
     {
-        $param['add_time'] = time();
-        $res = D('api_collect')->add($param);
+        $data['item_type'] = $param['item_type'];
+        $data['item_category'] = $param['item_category'];
+        $data['pub_type'] = $param['pub_type'];
+        $data['item_id'] = $param['item_id'];
+        $data['user_id'] = $param['user_id'];
+        $data['is_catalog'] = $param['is_catalog'];
+        $data['user_type'] = $param['user_type'];
+        $data['add_time'] = time();
+        $res = D('api_collect')->add($data);
         if ($res) {
-            $model = new Model();
-            $item_category = $param['item_category'];
-            switch ($item_category) {
-                case 'ART':
-                    $sql = 'update api_article_publish set collect_num=collect_num+1 where id=' . $param['item_id'];
-                    $model->query($sql);
+            $info = D("api_collect")->where(array('id'=>$res))->find();
+            switch ($info['item_category']) {
+                case 'STORE'://商城
+                    $collect_num = D('api_publish_content')->where(array('id'=>$info['item_id']))->getField('collect_num');
+                    $collect_num = $collect_num+1;
+                    $update = D('api_publish_content')->where(array('id'=>$info['item_id']))->save(array('collect_num'=>$collect_num));
                     break;
-                case 'VID':
-                    $sql = 'update api_video_content set collect_num=collect_num+1 where id=' . $param['item_id'];
-                    $model->query($sql);
+                case 'GOODS'://商品
+                    $collect_num = D('api_curriculum')->where(array('id'=>$info['item_id']))->getField('collect_num');
+                    $collect_num = $collect_num+1;
+                    $update = D('api_curriculum')->where(array('id'=>$info['item_id']))->save(array('collect_num'=>$collect_num));
                     break;
-                case 'TEX':
-                    $sql = 'update api_textbook_content set collect_num=collect_num+1 where id=' . $param['item_id'];
-                    $model->query($sql);
+                case 'KAP'://知识
+                    switch ($info['item_type']) {
+                        case 'ART'://知识点,句子,阅读文章,词组
+                            $collect_num = D('api_article_publish')->where(array('id' => $info['item_id']))->getField('collect_num');
+                            $collect_num = $collect_num + 1;
+                            $update = D('api_article_publish')->where(array('id' => $info['item_id']))->save(array('collect_num' => $collect_num));
+                            break;
+                        case 'VID'://视频
+                            $collect_num = D('api_video_content')->where(array('id' => $info['item_id']))->getField('collect_num');
+                            $collect_num = $collect_num + 1;
+                            $update = D('api_video_content')->where(array('id' => $info['item_id']))->save(array('collect_num' => $collect_num));
+                            break;
+                        case 'TEX'://课本
+                            $collect_num = D('api_textbook_content')->where(array('id' => $info['item_id']))->getField('collect_num');
+                            $collect_num = $collect_num + 1;
+                            $update = D('api_textbook_content')->where(array('id' => $info['item_id']))->save(array('collect_num' => $collect_num));
+                            break;
+                        case 'OTHER'://其他的
+                            break;
+                        default :
+                            break;
+                    }
                     break;
-                case 'OTHER':
-                    $sql = 'update api_publish_content set collect_num=collect_num+1 where id=' . $param['item_id'];
-                    $model->query($sql);
+                case 'EXE'://习题
+
+                    break;
+                case 'WOR'://试题
+
+                    break;
+                case 'RADIO'://广播
+
+                    break;
+                case 'LIB'://图书馆
+
                     break;
                 default :
                     break;
             }
-
+            Response::setSuccessMsg('收藏成功');
             Response::success(array());
         } else {
             Response::error(-1, '收藏失败');
@@ -129,17 +165,18 @@ class Common extends Base
      * @param: $param['pub_type'] 发布人的类型(COM:机构;TEA:老师;STU:学生;ADM:后台)
      * @param: $param['is_catalog'] 是否目录详情(Y:是;N:否)
      * @param: $param['item_id'] 收藏表id
+     * @param: $param['user_type'] 收藏人类型(COM:机构;TEA:老师;STU:学生;)
      * @param: $param['user_id'] 用户id
      */
     public function isCollect($param)
     {
         $where = $param;
-        $res = D('api_collect')->where($where)->find();
+        $res = D('api_collect')->where($where)->getField('id');
         if ($res) {
             Response::setSuccessMsg('已收藏');
-            Response::success(array('status'=>1));//已收藏
+            Response::success(array('id'=>$res));//已收藏
         } else {
-            Response::error(-1, '未收藏',array('status'=>2));//未收藏
+            Response::error(-1, '未收藏',array('id'=>''));//未收藏
         }
     }
 
@@ -632,5 +669,31 @@ class Common extends Base
 
 
     /*******************************************************************************************地址 结束*******************************************************/
+    /**
+     * 查询用户信息
+     * @author: 李胜辉
+     * @time: 2018/11/06 09:34
+     */
+    public function getUserInfo($param)
+    {
+        $user_type = $param['user_type'];//用户类型(STU:学生;TEA:老师;COM:机构;)
+        $user_id = $param['user_id'];//用户id
+        if($user_type=='STU'){
+            $user_info = D('api_users')->where(array('id'=>$user_id))->find();
+            if($user_info){
+                return $user_info;
+            }else{
+                Response::error(-1,'暂无数据');
+            }
+
+        }else{
+            $user_info = D('api_ct_users')->where(array('id'=>$user_id))->find();
+            if($user_info){
+                return $user_info;
+            }else{
+                Response::error(-1,'暂无数据');
+            }
+        }
+    }
 
 }
