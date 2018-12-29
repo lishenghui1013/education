@@ -203,13 +203,30 @@ class Common extends Base
         }
     }
 
-
+    /**
+     * 判断是否已经加入生词本
+     * @author: 李胜辉
+     * @time: 2018/11/05 09:34
+     */
+    public function judgeIsHaveInCodes($param)
+    {
+        $where['add_userid'] = $param['add_userid'];//用户id
+        $where['new_words'] = $param['words'];//单词
+        $where['words_type'] = $param['words_type'];//生词类型(SPACE:学习空间的;OTHER:其他的)
+        $is_have = D('api_new_words')->where($where)->getField('id');
+        if($is_have){
+            Response::setSuccessMsg('已加入生词本');
+            Response::success(array());
+        }else{
+            Response::error(-1,'尚未添加');
+        }
+    }
     /*******************************************************************************************翻译 开始*******************************************************/
 
     const CURL_TIMEOUT = 20;
     const URL = 'http://openapi.youdao.com/api';
-    const APP_KEY = '1baeb55ce326cf32';  //替换为您的应用ID
-    const SEC_KEY = 'mGsITpcCqpGicOm0Xr0jmafvzAUpQgnq';  //替换为您的密钥
+    const APP_KEY = '2a1128aef8894bd4';  //替换为您的应用ID
+    const SEC_KEY = 'wTbAYO7cwFnK2ACoYjmz3WX8V1sJNbNo';  //替换为您的密钥
 
     /**
      * 有道智云 公共翻译入口
@@ -221,7 +238,6 @@ class Common extends Base
      */
     public function commonTranslate($param)
     {
-
         $query = $param['query'];//查询内容
         $from = $param['from'] ? $param['from'] : 'EN';//要翻译的语言
         $to = $param['to'] ? $param['to'] : 'zh-CHS';//翻译成什么语言
@@ -234,9 +250,24 @@ class Common extends Base
         );
         $args['sign'] = $this->buildSign(self::APP_KEY, $query, $args['salt'], self::SEC_KEY);
         $ret = $this->call(self::URL, $args);
-        $ret = json_decode($ret, true);
-        if ($ret) {
-            Response::success($ret);
+        $arr_ret['translate'] = json_decode($ret,true);
+        /************修改************/
+        $return['us-phonetic'] = $arr_ret['translate']['basic']['us-phonetic'];//音标
+        $usphonetic = $arr_ret['translate']['basic']['explains'];
+        $str_us = '';
+        if($usphonetic){
+            foreach($usphonetic as $key=>$value){
+                $str_us .= $value . ' ';
+            }
+            unset($key,$value);
+            $str_us = substr($str_us,0,-1);
+
+        }
+        $return['explains'] = $str_us?$str_us:'';//翻译
+        $return['uk-speech'] = $arr_ret['translate']['basic']['uk-speech'];//发音
+        /****************修改结束************/
+        if ($return) {
+            Response::success($return);
         } else {
             Response::error(-1, '未查到数据');
         }
@@ -290,7 +321,7 @@ class Common extends Base
 
         }
         $return['explains'] = $str_us?$str_us:'';//翻译
-        $return['speakUrl'] = $arr_ret['translate']['speakUrl'];//发音
+        $return['uk-speech'] = $arr_ret['translate']['basic']['uk-speech'];//发音
         /****************修改结束************/
         if ($return) {
             $is_have = D('api_new_words')->where($where)->getField('id');
@@ -584,7 +615,88 @@ class Common extends Base
                 Response::error(-2, '发生错误');
             }
         } else {
-            Response::error(-1, $res['Message']);
+            $msg = '发送失败';
+            switch($res['Code']){
+                case 'isp.RAM_PERMISSION_DENY':
+                    $msg = '子账号未未授权';
+                    break;
+                case 'isv.OUT_OF_SERVICE':
+                    $msg = '余额不足';
+                    break;
+                case 'isv.PRODUCT_UN_SUBSCRIPT':
+                    $msg = '未开通阿里云';
+                    break;
+                case 'isv.PRODUCT_UNSUBSCRIBE':
+                    $msg = '未开通云通信';
+                    break;
+                case 'isv.ACCOUNT_NOT_EXISTS':
+                    $msg = '云通信账户不存在';
+                    break;
+                case 'isv.ACCOUNT_ABNORMAL':
+                    $msg = '云通信账户异常';
+                    break;
+                case 'isv.SMS_TEMPLATE_ILLEGAL':
+                    $msg = '短信模版不合法';
+                    break;
+                case 'isv.SMS_SIGNATURE_ILLEGAL':
+                $msg = '短信签名不合法';
+                break;
+                case 'isv.INVALID_PARAMETERS':
+                    $msg = '参数异常	';
+                    break;
+                case 'isp.SYSTEM_ERROR':
+                    $msg = '请重新发送';
+                    break;
+                case 'isv.MOBILE_NUMBER_ILLEGAL':
+                    $msg = '非法手机号';
+                    break;
+                case 'isv.MOBILE_COUNT_OVER_LIMIT':
+                    $msg = '批量上传超限';
+                    break;
+                case 'isv.TEMPLATE_MISSING_PARAMETERS':
+                    $msg = '缺少参数';
+                    break;
+                case 'isv.BUSINESS_LIMIT_CONTROL':
+                    $msg = '请等会再发送';
+                    break;
+                case 'isv.INVALID_JSON_PARAM':
+                    $msg = '参数不合法';
+                    break;
+                case 'isv.BLACK_KEY_CONTROL_LIMIT':
+                    $msg = '黑名单管控';
+                    break;
+                case 'isv.PARAM_LENGTH_LIMIT':
+                    $msg = '参数超出长度限制';
+                    break;
+                case 'isv.PARAM_NOT_SUPPORT_URL':
+                    $msg = '不支持URL';
+                    break;
+                case 'isv.AMOUNT_NOT_ENOUGH':
+                    $msg = '账户余额不足';
+                    break;
+                case 'isv.TEMPLATE_PARAMS_ILLEGAL':
+                    $msg = '含非法关键字';
+                    break;
+                case 'SignatureDoesNotMatch':
+                    $msg = '加密错误';
+                    break;
+                case 'InvalidTimeStamp.Expired':
+                    $msg = '时间戳错误';
+                    break;
+                case 'SignatureNonceUsed':
+                    $msg = '随机数重复';
+                    break;
+                case 'InvalidVersion':
+                    $msg = '版本号错误';
+                    break;
+                case 'InvalidAction.NotFound':
+                    $msg = '接口名错误';
+                    break;
+                default:
+                    $msg = '发送失败';
+                    break;
+            }
+            Response::error(-1, $msg);
         }
     }
 

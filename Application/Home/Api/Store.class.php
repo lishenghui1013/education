@@ -139,13 +139,13 @@ class Store extends Base
                         $where['item_type'] = $item_type;
                     }
                     $child_list = D('api_publish as p')->join('left join api_ct_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,FROM_UNIXTIME(p.pub_time,"%Y-%m-%d") as pub_time,p.share_num,p.collect_num,p.item_type,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->select();
-                   if($child_list){
-                       $list[$key]['child_list'] = $child_list;
-                   }else{
-                       $list[$key]['child_list'] = array();
-                   }
+                    if ($child_list) {
+                        $list[$key]['child_list'] = $child_list;
+                    } else {
+                        $list[$key]['child_list'] = array();
+                    }
                 }
-                unset($key,$value);
+                unset($key, $value);
                 Response::success($list);
             } else {
                 Response::error(-1, '暂无数据');
@@ -158,10 +158,10 @@ class Store extends Base
                     if ($item_type !== '') {
                         $where['item_type'] = $item_type;
                     }
-                        $child_list = D('api_publish as p')->join('left join api_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,FROM_UNIXTIME(p.pub_time,"%Y-%m-%d") as pub_time,p.share_num,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->select();
-                    if($child_list){
+                    $child_list = D('api_publish as p')->join('left join api_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,FROM_UNIXTIME(p.pub_time,"%Y-%m-%d") as pub_time,p.share_num,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->select();
+                    if ($child_list) {
                         $list[$key]['child_list'] = $child_list;
-                    }else{
+                    } else {
                         $list[$key]['child_list'] = array();
                     }
                     Response::success($list);
@@ -173,6 +173,7 @@ class Store extends Base
             Response::error(-1, '暂无数据');
         }
     }
+
     /**
      * 发布信息列表(分类显示版)
      * @author: 李胜辉
@@ -195,13 +196,13 @@ class Store extends Base
                         $where['item_type'] = $item_type;
                     }
                     $child_list = D('api_publish as p')->join('left join api_ct_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,FROM_UNIXTIME(p.pub_time,"%Y-%m-%d") as pub_time,p.share_num,p.collect_num,p.item_type,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->select();
-                    if($child_list){
+                    if ($child_list) {
                         $list[$key]['child_list'] = $child_list;
-                    }else{
+                    } else {
                         $list[$key]['child_list'] = array();
                     }
                 }
-                unset($key,$value);
+                unset($key, $value);
                 Response::success($list);
             } else {
                 Response::error(-1, '暂无数据');
@@ -215,9 +216,9 @@ class Store extends Base
                         $where['item_type'] = $item_type;
                     }
                     $child_list = D('api_publish as p')->join('left join api_users as c on c.id=p.pub_userid')->join('left join api_publish_category as pc on pc.id=p.category_id')->field('p.id,p.title,FROM_UNIXTIME(p.pub_time,"%Y-%m-%d") as pub_time,p.share_num,p.collect_num,p.cover,c.icon,c.user_name,pc.category_name')->where($where)->order('p.id desc')->select();
-                    if($child_list){
+                    if ($child_list) {
                         $list[$key]['child_list'] = $child_list;
-                    }else{
+                    } else {
                         $list[$key]['child_list'] = array();
                     }
                     Response::success($list);
@@ -272,7 +273,21 @@ class Store extends Base
             switch ($pub_type) { //非系列视频
                 case 'STU':
                     $list = D('api_publish as p')->join('left join api_publish_content as c on c.publish_id=p.id')->join('left join api_users as u on u.id=p.pub_userid')->field('p.id,p.cover,p.user_type,p.title,u.icon,u.user_name,u.nickname,p.pub_userid,FROM_UNIXTIME(p.pub_time,"%Y-%m-%d") as pub_time,c.content,c.content_pic')->where(array('c.publish_id' => $id, 'c.del_status' => 2))->select();
+                    $cont = array();
                     if ($list) {
+                        if ($item_type == 'PIC') {
+                            foreach ($list as $key => $value) {
+                                $content = explode(';', $value['content']);
+                                if ($content) {
+                                    foreach ($content as $keys => $values) {
+                                        $cont[$keys]['pic'] = $values;
+                                    }
+                                    unset($keys, $values);
+                                }
+                                $list[$key]['content']=$cont;
+                            }
+                            unset($key, $value);
+                        }
                         Response::success($list);
                     } else {
                         Response::error(-1, '失败');
@@ -281,7 +296,21 @@ class Store extends Base
                 case 'TEA':
                 case 'COM':
                     $list = D('api_publish as p')->join('left join api_publish_content as c on c.publish_id=p.id')->join('left join api_ct_users as u on u.id=p.pub_userid')->field('p.id,p.user_type,p.cover,p.title,u.icon,u.user_name,u.com_name,u.nickname,p.pub_userid,FROM_UNIXTIME(p.pub_time,"%Y-%m-%d") as pub_time,c.content,c.content_pic')->where(array('c.publish_id' => $id, 'c.del_status' => 2))->select();
+                    $cont = array();
                     if ($list) {
+                        if ($item_type == 'PIC') {
+                            foreach ($list as $key => $value) {
+                                $content = explode(';', $value['content']);
+                                if ($content) {
+                                    foreach ($content as $keys => $values) {
+                                        $cont[$keys]['pic'] = $values;
+                                    }
+                                    unset($keys, $values);
+                                }
+                                $list[$key]['content']=$cont;
+                            }
+                            unset($key, $value);
+                        }
                         Response::success($list);
                     } else {
                         Response::error(-1, '失败');
@@ -326,7 +355,7 @@ class Store extends Base
         $id = $param['id'];//视频目录id
         $detail = D('api_publish_content as c')->join('left join api_publish as p on p.id=c.publish_id')->field('c.id,c.cover,c.title,c.content,FROM_UNIXTIME(c.pub_time,"%Y-%m-%d") as pub_time,p.user_type,p.pub_userid')->where(array('c.id' => $id, 'c.del_status' => 2))->find();
         $common = new Common();
-        $info = $common->getUserInfo(array('user_type'=>$detail['user_type'],'user_id'=>$detail['pub_userid']));
+        $info = $common->getUserInfo(array('user_type' => $detail['user_type'], 'user_id' => $detail['pub_userid']));
         $detail['icon'] = $info['icon'];
         $detail['user_name'] = $info['user_name'];
         if ($detail) {
@@ -479,14 +508,13 @@ class Store extends Base
             $content['pub_userid'] = $param['user_id'];//发布人id
             unset($url['cover']);
             if ($url) {
-                $i = 0;
-                foreach ($url as $keys => $values) {
-                    $content['title'] = $param['title' . $i];//标题
-                    $content['content'] = $url[$keys];//内容
+                $arr_content = explode(';',$url['content']);
+                foreach($arr_content as $key=>$value){
+                    $content['title'] = $param['titles'][$key];//标题
+                    $content['content'] = $value;//内容
                     $datas[] = $content;
-                    $i++;
                 }
-                unset($keys, $values);
+                unset($key,$value);
             }
             $add = D('api_publish_content')->addAll($datas);
             if ($add) {
@@ -525,7 +553,6 @@ class Store extends Base
         $return = array();
 
         if ($_FILES) {
-
             foreach ($_FILES as $key => $value) {
                 $temp = array();
                 $temp[$key] = $_FILES[$key];

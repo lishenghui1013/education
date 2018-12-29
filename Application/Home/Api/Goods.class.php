@@ -139,5 +139,43 @@ class Goods extends Base
         }
         return $return;
     }
+    /**
+     * 创建充值订单
+     * @author: 李胜辉
+     * @time: 2018/12/29 09:34
+     *
+     */
+    public function buildOrder($param)
+    {
+        $obj = array(
+            "user_id" => $uid,
+            "money" => $price,
+            'add_time' => time(),
+            "pay_type" => 'W',
+            "role_type" => $role_type,
+            "explain" => '充值',
+            "gold_num" => $gold_num,
+            "order" => $order
+        );
+    }
+    /**
+     * 创建充值订单
+     * @author: 李胜辉
+     * @time: 2018/12/29 09:34
+     *
+     */
+    public function buildCurriculumOrder($param)
+    {
+        $obj = array(
+            "user_id" => $uid,
+            "money" => $price,
+            'add_time' => time(),
+            "pay_type" => 'W',
+            "role_type" => $role_type,
+            "explain" => '充值',
+            "gold_num" => $gold_num,
+            "order" => $order
+        );
+    }
 
 }

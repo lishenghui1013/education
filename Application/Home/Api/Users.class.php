@@ -32,39 +32,39 @@ class Users extends Base
         $time = time();
         $limit_time = 60 * 5 + $code_info[0]['add_time'];
         if ($time > $limit_time) {
-            Response::error(-9, '验证码已过期');
+            Response::error(-1, '验证码已过期');
         }
         $send_code = $code_info[0]['code'];//系统发送验证码
         $user_type = $param['user_type'];//用户类型(STU:学生;TEA:老师;COM:机构)
         $preg = '/^1[3456789]\d{9}$/';
         $preg_pass = '/^[\da-zA-Z]{6,20}$/';
         if (!$param['phone']) {
-            Response::error(-2, '手机号不能为空');
+            Response::error(-1, '手机号不能为空');
         }
         if (!preg_match_all($preg, $param['phone'])) {
-            Response::error(-3, '手机号格式不正确');
+            Response::error(-1, '手机号格式不正确');
         }
         if (!$param['password']) {
-            Response::error(-4, '密码不能为空');
+            Response::error(-1, '密码不能为空');
         }
         if (!preg_match_all($preg_pass, $param['password'])) {
-            Response::error(-5, '密码格式不正确');
+            Response::error(-1, '密码格式不正确');
         }
         if (!$user_type) {
-            Response::error(-6, '注册类型不能为空');
+            Response::error(-1, '注册类型不能为空');
         }
         if ($input_code === '' || $send_code === '') {
-            Response::error(-7, '验证码不能为空');
+            Response::error(-1, '验证码不能为空');
         }
         if ($input_code != $send_code) {
-            Response::error(-8, '输入验证码不正确');
+            Response::error(-1, '输入验证码不正确');
         }
 
         if ($user_type == 'STU') {
             $is_phone = D('api_users')->field('id')->where(array('phone' => $param['phone']))->select();
             $is_ct_phone = D('api_ct_users')->field('id')->where(array('phone' => $param['phone']))->select();
             if ($is_phone || $is_ct_phone) {
-                Response::error(-9, '手机号已经注册');
+                Response::error(-1, '手机号已经注册');
             }
             $insert = D('api_users')->add($data);
             if ($insert) {
@@ -78,7 +78,7 @@ class Users extends Base
             $is_phone = D('api_users')->field('id')->where(array('phone' => $param['phone']))->select();
             $is_ct_phone = D('api_ct_users')->field('id')->where(array('phone' => $param['phone']))->select();
             if ($is_phone || $is_ct_phone) {
-                Response::error(-9, '手机号已经注册');
+                Response::error(-1, '手机号已经注册');
             }
             $data['user_type'] = $user_type;
             $insert = D('api_ct_users')->add($data);
@@ -188,7 +188,7 @@ class Users extends Base
         $phone = $param['phone'];//手机号
         $password = md5($param['password']);//密码
         Response::debug($phone . '+' . $param['password'] . '+' . $password);
-        $user_info = D('api_users')->field('id,phone,user_name,icon,balance,nickname')->where(array('phone' => $phone, 'password' => $password))->find();//先查询学生表
+        $user_info = D('api_users')->field('id,phone,user_name,icon,balance,nickname,use_status')->where(array('phone' => $phone, 'password' => $password))->find();//先查询学生表
         if ($user_info) { //如果有该账户
             if($user_info['use_status']==1){
                 $user_info['user_type'] = 'STU';//身份为学生
@@ -295,20 +295,20 @@ class Users extends Base
         $time = time();
         $limit_time = 60 * 5 + $code_info[0]['add_time'];
         if ($time > $limit_time) {
-            Response::error(-9, '验证码已过期');
+            Response::error(-1, '验证码已过期');
         }
         $sys_code = $code_info[0]['code'];//系统发送验证码
         $password = md5($param['password']); //密码
         $preg = '/^1[3456789]\d{9}$/';//手机号正则
         $preg_pass = '/^[\da-zA-Z]{6,20}$/';//密码正则
         if ($phone == '' || !preg_match($preg, $phone)) {
-            Response::error(-2,'手机号格式不正确');
+            Response::error(-1,'手机号格式不正确');
         }
         if ($verify_code == '' || $verify_code != $sys_code) {
-            Response::error(-3,'验证码不正确');
+            Response::error(-1,'验证码不正确');
         }
         if ($param['password'] == '' || !preg_match($preg_pass, $param['password'])) {
-            Response::error(-4,'密码格式不正确');
+            Response::error(-1,'密码格式不正确');
         }
 
         Response::debug($phone . '+' . $param['password'] . '+' . $password);
@@ -333,7 +333,7 @@ class Users extends Base
                     Response::error(-1,'修改失败');
                 }
             } else {
-                Response::error(-9,'该手机号尚未注册');
+                Response::error(-1,'该手机号尚未注册');
             }
         }
     }
